@@ -1,0 +1,23 @@
+{
+    "source": {
+        "include": ["scripts", "README.md"]
+    },
+     "templates": {
+      "default": {
+        "outputSourceFiles": true
+      }
+    },
+    "opts": {
+        "xtemplate" : "node_modules/docdash",
+        "template" : "node_modules/clean-jsdoc-theme",
+        "encoding": "utf8",
+        "readme": "./README.md",
+        "destination": "docs/",
+        "recurse": true,
+        "verbose": true,
+        "xtutorials": "./tutorials",
+        "theme_opts": {
+            "theme": "dark"
+        }
+    }
+}
