@@ -119,3 +119,39 @@ footer {
     display: flex;
     justify-content: space-between;
 }
+
+#motion-path-example-span {
+    width: 200px;
+    height: 100px;
+    background-color: red;
+    position: absolute;
+    border: 1px solid black;
+    margin: 15px;
+    text-align: center;
+    /* clip-path: rect(50px 70px 80% 20%); */
+    offset-path: path(
+      "M0,0 C2,8 80,400 500,500"
+    );
+    /*offset-rotate: auto;*/
+    animation: example2 6s infinite linear forwards;
+}
+
+@keyframes example2 {
+    0% {
+      opacity: 1;
+      offset-distance: 0%;
+    }
+  
+    10% {
+      opacity: 1;
+    }
+  
+    90% {
+      opacity: 1;
+    }
+  
+    100% {
+      opacity: 1;
+      offset-distance: 100%;
+    }
+  }
