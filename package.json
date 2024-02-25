@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "description": "a basic poker game",
   "main": "scripts/app.js",
+  "type":"module",
   "directories": {
     "test": "tests"
   },

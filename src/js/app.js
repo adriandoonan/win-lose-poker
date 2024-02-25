@@ -16,8 +16,7 @@ spinTimer = setInterval(() => {
   }
   element.style.offsetRotate = `${spin}deg`
   spin++
-},10
-)
+},10)
 
 setTimeout(() => clearInterval(spinTimer),100000)
 

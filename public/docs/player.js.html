@@ -1,15 +1,16 @@
 <!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><title>player.js - Documentation</title><script src="/win-lose-poker/prettify.dd1ebd81.js"></script><script src="/win-lose-poker/lang-css.4a982418.js"></script><!--[if lt IE 9]>
       <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]--><link type="text/css" rel="stylesheet" href="/win-lose-poker/prettify.2f485a99.css"><link type="text/css" rel="stylesheet" href="/win-lose-poker/jsdoc.cb1ab6a1.css"><script src="/win-lose-poker/nav.ab7cb23c.js" defer></script><meta name="viewport" content="width=device-width, initial-scale=1.0"></head><body> <input type="checkbox" id="nav-trigger" class="nav-trigger"> <label for="nav-trigger" class="navicon-button x"> <div class="navicon"></div> </label> <label for="nav-trigger" class="overlay"></label> <nav> <h2><a href="/win-lose-poker/docs/index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="/win-lose-poker/docs/Game.html">Game</a><ul class="methods"><li data-type="method"><a href="/win-lose-poker/docs/Game.html#addPlayer">addPlayer</a></li></ul></li><li><a href="/win-lose-poker/docs/Player.html">Player</a></li></ul><h3>Global</h3><ul><li><a href="/win-lose-poker/docs/global.html#deal">deal</a></li><li><a href="/win-lose-poker/docs/global.html#makeBettingRound">makeBettingRound</a></li></ul> </nav> <div id="main"> <h1 class="page-title">player.js</h1> <section> <article> <pre class="linenums prettyprint source"><code>
+    <![endif]--><link type="text/css" rel="stylesheet" href="/win-lose-poker/prettify.2f485a99.css"><link type="text/css" rel="stylesheet" href="/win-lose-poker/jsdoc.cb1ab6a1.css"><script src="/win-lose-poker/nav.ab7cb23c.js" defer></script><meta name="viewport" content="width=device-width, initial-scale=1.0"></head><body> <input type="checkbox" id="nav-trigger" class="nav-trigger"> <label for="nav-trigger" class="navicon-button x"> <div class="navicon"></div> </label> <label for="nav-trigger" class="overlay"></label> <nav> <h2><a href="/win-lose-poker/docs/index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="/win-lose-poker/docs/Game.html">Game</a><ul class="methods"><li data-type="method"><a href="/win-lose-poker/docs/Game.html#addPlayer">addPlayer</a></li></ul></li><li><a href="/win-lose-poker/docs/Player.html">Player</a><ul class="methods"><li data-type="method"><a href="/win-lose-poker/docs/Player.html#fold">fold</a></li><li data-type="method"><a href="/win-lose-poker/docs/Player.html#placeBet">placeBet</a></li></ul></li></ul><h3>Global</h3><ul><li><a href="/win-lose-poker/docs/global.html#circularIncrement">circularIncrement</a></li><li><a href="/win-lose-poker/docs/global.html#deal">deal</a></li><li><a href="/win-lose-poker/docs/global.html#knuthShuffle">knuthShuffle</a></li><li><a href="/win-lose-poker/docs/global.html#makeBettingRound">makeBettingRound</a></li><li><a href="/win-lose-poker/docs/global.html#pipe">pipe</a></li></ul> </nav> <div id="main"> <h1 class="page-title">player.js</h1> <section> <article> <pre class="linenums prettyprint source"><code>
 class Player {
     /**
      * A player of the game.
      *
-     * @param {string} name     - The name of this player
-     * @param {number} purse    - How much money this player has to bet with
-     * @param {string} strategy - What kind of a player this is. This will
-     *                            define how a computer-controlled player
-     *                            responds in different situations 
+     * @param {string} name          - The name of this player
+     * @param {number} purse         - How much money this player has to bet with
+     * @param {number} currentBet    - The amount this player has thrown into the current pot
+     * @param {Array.&lt;Object>} cards - The cards held by this player
+     * @param {bool} folded          - Whether this player has already folded
+     * @param {integer} seatNumber   - The position this player has around the table
      * 
      * @class Player
      */
@@ -17,9 +18,20 @@ class Player {
         this.name = name;
         this.purse = purse || 100;
         this.currentBet = 0;
+        this.cards = [];
+        this.folded = false;
         this.seatNumber = null
     }
 
+    /**
+     * Decreases the purse and increases the current bet
+     *
+     * @param {number} amount - The amount being bet
+     * @param {string} type   - The type of bet, can be a `call`, `raise`,
+     *                          `small blind` or `big blind`
+     * @return {*} 
+     * @memberof Player
+     */
     placeBet(amount,type) {
 
         console.log(`${this.name} is placing a ${type || 'bet'} of ${amount}`)
@@ -29,13 +41,19 @@ class Player {
         
         return this
     }
+
+    /**
+     * Sets fold to true for this player
+     *
+     * @return {*} 
+     * @memberof Player
+     */
     fold() {
         console.log(`${this.name} is folding`)
         this.folded = true
 
         return this
     }
-
 }
 
-export default Player</code></pre> </article> </section> </div> <br class="clear"> <footer> Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.2</a> on Sun Feb 25 2024 19:17:55 GMT+0100 (Central European Standard Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme. </footer> <script>prettyPrint();</script> <script src="/win-lose-poker/polyfill.5a41dc2b.js"></script> <script src="/win-lose-poker/linenumber.11c435be.js"></script> </body></html>
+export default Player</code></pre> </article> </section> </div> <br class="clear"> <footer> Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.2</a> on Sun Feb 25 2024 22:06:04 GMT+0100 (Central European Standard Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme. </footer> <script>prettyPrint();</script> <script src="/win-lose-poker/polyfill.5a41dc2b.js"></script> <script src="/win-lose-poker/linenumber.11c435be.js"></script> </body></html>
