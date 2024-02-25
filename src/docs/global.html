@@ -29,7 +29,7 @@
 <nav >
     
     
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Game.html">Game</a><ul class='methods'><li data-type='method'><a href="Game.html#addPlayer">addPlayer</a></li></ul></li><li><a href="Player.html">Player</a></li></ul><h3>Global</h3><ul><li><a href="global.html#deal">deal</a></li><li><a href="global.html#makeBettingRound">makeBettingRound</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Game.html">Game</a><ul class='methods'><li data-type='method'><a href="Game.html#addPlayer">addPlayer</a></li></ul></li><li><a href="Player.html">Player</a><ul class='methods'><li data-type='method'><a href="Player.html#fold">fold</a></li><li data-type='method'><a href="Player.html#placeBet">placeBet</a></li></ul></li></ul><h3>Global</h3><ul><li><a href="global.html#circularIncrement">circularIncrement</a></li><li><a href="global.html#deal">deal</a></li><li><a href="global.html#knuthShuffle">knuthShuffle</a></li><li><a href="global.html#makeBettingRound">makeBettingRound</a></li><li><a href="global.html#pipe">pipe</a></li></ul>
     
 </nav>
 
@@ -130,6 +130,268 @@
 
     
 
+    <h4 class="name" id="circularIncrement"><span class="type-signature"></span>circularIncrement<span class="signature">(arrayLength, increment, startIndex<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {integer}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li>Takes an array length, a starting point and a distance and gives
+back an index that will, if the distance from the start index exceeds
+the length of the array, loop back and start counting from position 0.</li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="helperFunctions.js.html">helperFunctions.js</a>, <a href="helperFunctions.js.html#line57">line 57</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+    <h5 class="h5-examples">Example</h5>
+    
+    <pre class="prettyprint"><code>const arr = [0,1,2,3,4]
+arr.length === 5          // true
+
+circularIncrement(5,1)    // 1
+circularIncrement(5,3,3)  // 1
+circularIncrement(5,-3,4) // 1</code></pre>
+
+
+
+
+    <h5 class="h5-parameters">Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>arrayLength</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">integer</span>
+
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">The length of the array you want to use</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>increment</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">integer</span>
+
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">The distance from the starting index</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>startIndex</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">integer</span>
+
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    <code>0</code>
+                
+                </td>
+            
+
+            <td class="description last">The index to start counting from</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5 class="h5-returns">Returns:</h5>
+
+        
+<div class="param-desc">
+    the index
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">integer</span>
+
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
     <h4 class="name" id="deal"><span class="type-signature"></span>deal<span class="signature">(cardDeck, player)</span><span class="type-signature"></span></h4>
 
     
@@ -148,7 +410,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="game.js.html">game.js</a>, <a href="game.js.html#line116">line 116</a>
+        <a href="game.js.html">game.js</a>, <a href="game.js.html#line103">line 103</a>
     </li></ul></dd>
     
 
@@ -291,6 +553,165 @@
 
     
 
+    <h4 class="name" id="knuthShuffle"><span class="type-signature"></span>knuthShuffle<span class="signature">(arrayToShuffle)</span><span class="type-signature"> &rarr; {array}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li>Takes an array of values and shufles the entries
+to get a random sort</li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="helperFunctions.js.html">helperFunctions.js</a>, <a href="helperFunctions.js.html#line26">line 26</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5 class="h5-parameters">Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>arrayToShuffle</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">array</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The array you would like to mix up</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5 class="h5-returns">Returns:</h5>
+
+        
+<div class="param-desc">
+    a copy of the original array
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">array</span>
+
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
     <h4 class="name" id="makeBettingRound"><span class="type-signature"></span>makeBettingRound<span class="signature">()</span><span class="type-signature"></span></h4>
 
     
@@ -319,7 +740,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="game.js.html">game.js</a>, <a href="game.js.html#line308">line 308</a>
+        <a href="game.js.html">game.js</a>, <a href="game.js.html#line249">line 249</a>
     </li></ul></dd>
     
 
@@ -384,6 +805,175 @@
 
 
         
+            
+
+    
+
+    <h4 class="name" id="pipe"><span class="type-signature"></span>pipe<span class="signature">(&hellip;funcs)</span><span class="type-signature"> &rarr; {*}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li>Pipes an input through a series of functions. Make
+sure that types and expected arguments match to the
+return values of preceding functions.</li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="helperFunctions.js.html">helperFunctions.js</a>, <a href="helperFunctions.js.html#line12">line 12</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5 class="h5-parameters">Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>funcs</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">functions</span>
+
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                    &lt;repeatable><br>
+                
+                </td>
+            
+
+            
+
+            <td class="description last">A list of functions to be applied to the
+                           input</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5 class="h5-returns">Returns:</h5>
+
+        
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">*</span>
+
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
     
 
     
@@ -403,7 +993,7 @@
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.2</a> on Sun Feb 25 2024 19:17:55 GMT+0100 (Central European Standard Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.2</a> on Sun Feb 25 2024 22:06:04 GMT+0100 (Central European Standard Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
 </footer>
 
 <script>prettyPrint();</script>

@@ -1,26 +1,23 @@
 "use strict;"
 
-import Player from "./player";
+import Player from './player.js';
+import {pipe, knuthShuffle, circularIncrement} from './helperFunctions.js'
 
-const pipe = (...funcs) => {
-    return (value) => {
-      return funcs.reduce((res, fn) => fn(res), value);
-    };
-  };
+
 
 class Game {
     /**
      * a class
      * 
-     * @param {array}  players - An array of players, see Player class
+     * @param {array}  players  - An array of players, see Player class
      * @param {number} hands    - The current hand since the game was started
-     * @param {number} round   - The current round in this hand. A round is counted
-     *                           after every player has made a move. Rounds start
-     *                           counting from 1, a round of 0 indicates that the
-     *                           hand has not started and new players can potentially
-     *                           enter the game
-     * @param {number} pot     - The amount currently in the pot and available to win
-     *                           in this hand 
+     * @param {number} round    - The current round in this hand. A round is counted
+     *                            after every player has made a move. Rounds start
+     *                            counting from 1, a round of 0 indicates that the
+     *                            hand has not started and new players can potentially
+     *                            enter the game
+     * @param {number} pot      - The amount currently in the pot and available to win
+     *                            in this hand 
      *
      * @class Game
      */
@@ -38,6 +35,10 @@ class Game {
      */
     addPlayer(player) {
       this.players.push(player)
+      this.players[this.players.length - 1].seatNumber = this.players.length
+    }
+    startNewHand() {
+      
     }
   }
 
@@ -52,15 +53,7 @@ class Game {
             deck.push({suit,card})
         }
     }
-    if (shuffled) {
-        for (let i = deck.length -1, j, temp; i > 0; i--) {
-            j = Math.floor(Math.random()*(i+1));
-            temp = deck[j];
-            deck[j] = deck[i];
-            deck[i] = temp;
-        }
-    }
-    return deck
+    return shuffled ? knuthShuffle(deck) : deck
   }
 
 
@@ -95,12 +88,6 @@ class Game {
     new Player('jij',100),
   ]
 
-  const jsonCopy = JSON.parse(JSON.stringify(playersArray))
-  const structuredCopy = structuredClone(playersArray)
-
- playersArray[0].constructor.name
- jsonCopy[0].constructor.name
- structuredCopy[0].constructor.name
   
   
   
@@ -118,15 +105,12 @@ const deal = (cardDeck, player) => {
   }
 
   const dealPreFlop = ({deck,arrayOfPlayers,communityCards = {}}) => {
-    deck = JSON.parse(JSON.stringify(deck))
-    arrayOfPlayers = JSON.parse(JSON.stringify(arrayOfPlayers))
-    
     if (
-            arrayOfPlayers.some(player => player.cards.length) || 
-            communityCards?.cards?.length
+        arrayOfPlayers.some(player => player.cards.length) || 
+        communityCards?.cards?.length
         ) {
-            console.error('can only deal pre-flop once')
-            return
+        console.error('can only deal pre-flop once')
+        return
     }
     for (let i = 2; i > 0; i--) {
         arrayOfPlayers.forEach(player => deal(deck,player))
@@ -135,19 +119,16 @@ const deal = (cardDeck, player) => {
   }
 
   const dealFlop = ({deck,arrayOfPlayers,communityCards = {}}) => {
-    deck = JSON.parse(JSON.stringify(deck))
-    arrayOfPlayers = JSON.parse(JSON.stringify(arrayOfPlayers))
-    
     if (
-            arrayOfPlayers.some(player => player.cards.length !== 2) || 
-            communityCards?.cards?.length
+        arrayOfPlayers.some(player => player.cards.length !== 2) || 
+        communityCards?.cards?.length
         ) {
-            console.error('can only deal the flop once, after players have cards')
-            return
+        console.error('can only deal the flop once, after players have cards')
+        return
     }
     const burnedCard = deck.pop()
     communityCards.cards = []
-    for (i = 3; i > 0; i--) {
+    for (let i = 3; i > 0; i--) {
         deal(deck,communityCards)
     }
     
@@ -155,9 +136,6 @@ const deal = (cardDeck, player) => {
   }
 
   const dealTurn = ({deck, arrayOfPlayers,communityCards = {}}) => {
-    deck = JSON.parse(JSON.stringify(deck))
-    arrayOfPlayers = JSON.parse(JSON.stringify(arrayOfPlayers))
-
     if ( communityCards?.cards?.length !== 3) {
         console.error(`can only deal the turn once, after the flop and before the river`)
         return // it is better to always return something
@@ -168,9 +146,6 @@ const deal = (cardDeck, player) => {
   }
    
   const dealRiver = ({deck, arrayOfPlayers,communityCards = {}}) => {
-    deck = JSON.parse(JSON.stringify(deck))
-    arrayOfPlayers = JSON.parse(JSON.stringify(arrayOfPlayers))
-    
     if ( communityCards?.cards?.length !== 4 ) {
         console.error(`can only deal the river once, after the flop and turn`)
         return
@@ -180,13 +155,13 @@ const deal = (cardDeck, player) => {
     return {deck,arrayOfPlayers,communityCards}
   }
 
-//   console.log(dealPreFlop(deckToDeal,playersArray,[]))
+    // console.log(dealPreFlop(deckToDeal,playersArray,[]))
 
-//   console.log(playersArray);
+    // console.log(playersArray);
 
-     //dealPreFlop({deck:deckToDeal, arrayOfPlayers:playersArray})
+    // dealPreFlop({deck:deckToDeal, arrayOfPlayers:playersArray})
 
-     //console.log(playersArray);
+    // console.log(playersArray);
 
     // dealFlop({deck: deckToDeal, arrayOfPlayers: playersArray})
 
@@ -201,7 +176,7 @@ const deal = (cardDeck, player) => {
     // console.log(playersArray);
 
 
-    // console.log(JSON.stringify(pipe(dealPreFlop, dealFlop, dealTurn, dealRiver)({deck:deckToDeal, arrayOfPlayers:playersArray}),null,4));
+    console.log(JSON.stringify(pipe(dealPreFlop, dealFlop, dealTurn, dealRiver)({deck:deckToDeal, arrayOfPlayers:playersArray}),null,4));
 
 //  dealPreFlop(deckToDeal,playersArray)
 //  console.log(playersArray)
@@ -209,50 +184,20 @@ const deal = (cardDeck, player) => {
 //  playersArray.find(player => player.player === 40)
 
 
-  const circularIncrement = (arrayLength,increment,startIndex = 0) => {
-    //console.log('length',arrayLength,'increment',increment,'start',startIndex);
-    
-    if (arrayLength === 0 || startIndex > arrayLength) {
-        //console.log('fail 1')
-        console.error('circular index start point is out of the array')
-        return -1
-    }
-    if (arrayLength === 1) {
-        //console.log('condition 1')
-        return 0
-    }
-    if (increment + startIndex < 0) {
-        //console.log('foo')
-        // length: 4, inc: - 1, start: 0  = 3
-        const modulo = startIndex + increment % arrayLength
-        
-        //console.log(Math.abs(modulo));
-        return modulo === 0 ? startIndex : arrayLength - Math.abs(modulo)
-    }
-    if (startIndex + increment < arrayLength) {
-        //console.log('condition 2');
-        return startIndex + increment
-    }
-    //console.log('condition 3');
-    const modulo = (startIndex + 1 + increment ) % (arrayLength)
-    //console.log(modulo);
-    return modulo === 0 ? startIndex : modulo - 1
 
-  }
 
-  const testArray = ['a','b','c','d']
+  //const testArray = ['a','b','c','d']
 
   //circularIncrement(testArray.length,2,0)
 
-  testArray[circularIncrement(testArray.length,5,0)]
+  //testArray[circularIncrement(testArray.length,5,0)]
 
 
-   console.log(playersArray);
+   //console.log(playersArray);
 
 
   
   const anteUp = (arrOfPlayers, dealerIndex = 0, blinds = {}) => {
-    const players = structuredClone(arrOfPlayers);
     const bigBlind = blinds.bigBlind || 4;
     const smallBlind = blinds.smallBlind || 2;
     let pot = 0;
@@ -271,22 +216,18 @@ const deal = (cardDeck, player) => {
     const bigBlindPlayerIndex = circularIncrement(numberOfPlayers,1,dealerIndex)
     const smallBlindPlayerIndex = circularIncrement(numberOfPlayers,2,dealerIndex)
 
-    //if (players.length === 2) {
-        { // handle big blind
-            arrOfPlayers[bigBlindPlayerIndex].placeBet(bigBlind,'big blind')
-            // this should be a method on the player
-            pot += bigBlind
-        }
-        { // handle small blind
-            arrOfPlayers[smallBlindPlayerIndex].placeBet(smallBlind, 'small blind')
+    { // handle big blind
+        arrOfPlayers[bigBlindPlayerIndex].placeBet(bigBlind,'big blind')
+        // this should be a method on the player
+        pot += bigBlind
+    }
+    { // handle small blind
+        arrOfPlayers[smallBlindPlayerIndex].placeBet(smallBlind, 'small blind')
 
-            pot += smallBlind
-        }
-    //}
+        pot += smallBlind
+    }
 
-
-    return {players,dealerIndex,pot}
-
+    return {arrOfPlayers,dealerIndex,pot}
   } 
 
   anteUp(playersArray)
@@ -306,8 +247,6 @@ const deal = (cardDeck, player) => {
    *  on a call: 
    */
   const makeBettingRound = (arrOfPlayers,dealerIndex,pot = 0,communityCards = {}) => {
-
-    
     let round = 0
     let totalMoves = 0;
     let currentRoundMoves = 0;
@@ -316,7 +255,7 @@ const deal = (cardDeck, player) => {
     do {
         totalMoves += currentRoundMoves;
         currentRoundMoves = 0;
-        console.log('\nmake some moves in round',round);
+        console.log('\nmaking some moves in round',round);
         // as a player makes a move that is not a check the 
         // current moves increases by one
         // once every player has had the option to make a move
@@ -327,7 +266,6 @@ const deal = (cardDeck, player) => {
         // start of round
         
         arrOfPlayers.forEach(player => {
-            
             
             if (!player.folded && player.currentBet < currentHighestBet) {
                 console.log(player.name,' is chumpin->',player.currentBet,'highest',currentHighestBet,);
@@ -346,17 +284,15 @@ const deal = (cardDeck, player) => {
                     player.fold()
                 }
             }
-
-
         })
-        console.log('moves',totalMoves,'currentRoundMoves',currentRoundMoves,'round',round);
+        console.log('round',round,'currentRoundMoves',currentRoundMoves,'totalMoves',totalMoves);
         round++
     }
     while (
         currentRoundMoves > 0 && round < 5
     )
     //console.log(playersArray);
-    console.log('moves',totalMoves,'currentRoundMoves',currentRoundMoves,'round',round);
+    console.log('round',round,'currentRoundMoves',currentRoundMoves,'totalMoves',totalMoves);
     
     return {playersArray, dealerIndex, pot, communityCards}
   }
