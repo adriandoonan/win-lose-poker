@@ -8,8 +8,8 @@
       }
     },
     "opts": {
-        "xtemplate" : "node_modules/docdash",
-        "template" : "node_modules/clean-jsdoc-theme",
+        "template" : "node_modules/docdash",
+        "xtemplate" : "node_modules/clean-jsdoc-theme",
         "encoding": "utf8",
         "readme": "./README.md",
         "destination": "src/docs/",
@@ -17,7 +17,8 @@
         "verbose": true,
         "xtutorials": "./tutorials",
         "theme_opts": {
-            "theme": "dark"
+            "theme": "dark",
+            "favicon":"src/static/cards.png"
         }
     }
 }
