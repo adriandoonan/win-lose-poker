@@ -1,3 +1,5 @@
+import Game from "./game";
+
 window.onload = function(){
     setTimeout(function(){
     document.getElementById("fadein").remove();
@@ -18,3 +20,4 @@ spinTimer = setInterval(() => {
 )
 
 setTimeout(() => clearInterval(spinTimer),100000)
+

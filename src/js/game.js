@@ -1,5 +1,7 @@
 "use strict;"
 
+import Player from "./player";
+
 const pipe = (...funcs) => {
     return (value) => {
       return funcs.reduce((res, fn) => fn(res), value);
@@ -38,6 +40,7 @@ class Game {
       this.players.push(player)
     }
   }
+
 
 
   const newDeck = (shuffled = true, aceHigh = true) => {
@@ -86,44 +89,21 @@ class Game {
 
   let deckToDeal = newDeck()
   let playersArray = [
-    {
-        player: 1,
-        name: 'foo',
-        purse: 100,
-        currentBet: 0,
-        dealer: false,
-        folded: false,
-        cards: []
-    },
-    {
-        player: 2,
-        name: 'bar',
-        purse: 100,
-        currentBet: 0,
-        dealer: false,
-        folded: false,
-        cards: []
-    },
-    {
-        player: 3,
-        name: 'baz',
-        purse: 100,
-        currentBet: 0,
-        dealer: false,
-        folded: false,
-        cards: []
-    },
-    {
-        player: 4,
-        name: 'jij',
-        purse: 100,
-        currentBet: 0,
-        dealer: false,
-        folded: false,
-        cards: []
-    }
+    new Player('foo',100),
+    new Player('bar',100),
+    new Player('baz',100),
+    new Player('jij',100),
   ]
 
+  const jsonCopy = JSON.parse(JSON.stringify(playersArray))
+  const structuredCopy = structuredClone(playersArray)
+
+ playersArray[0].constructor.name
+ jsonCopy[0].constructor.name
+ structuredCopy[0].constructor.name
+  
+  
+  
 
 /**
  * TODO - make functional so we return a new deck and
@@ -230,7 +210,7 @@ const deal = (cardDeck, player) => {
 
 
   const circularIncrement = (arrayLength,increment,startIndex = 0) => {
-    console.log('length',arrayLength,'increment',increment,'start',startIndex);
+    //console.log('length',arrayLength,'increment',increment,'start',startIndex);
     
     if (arrayLength === 0 || startIndex > arrayLength) {
         //console.log('fail 1')
@@ -267,12 +247,12 @@ const deal = (cardDeck, player) => {
   testArray[circularIncrement(testArray.length,5,0)]
 
 
-   
+   console.log(playersArray);
 
 
   
   const anteUp = (arrOfPlayers, dealerIndex = 0, blinds = {}) => {
-    const players = JSON.parse(JSON.stringify(arrOfPlayers));
+    const players = structuredClone(arrOfPlayers);
     const bigBlind = blinds.bigBlind || 4;
     const smallBlind = blinds.smallBlind || 2;
     let pot = 0;
@@ -293,11 +273,13 @@ const deal = (cardDeck, player) => {
 
     //if (players.length === 2) {
         { // handle big blind
-            players[bigBlindPlayerIndex].purse -= bigBlind
+            arrOfPlayers[bigBlindPlayerIndex].placeBet(bigBlind,'big blind')
+            // this should be a method on the player
             pot += bigBlind
         }
         { // handle small blind
-            players[smallBlindPlayerIndex].purse -=smallBlind
+            arrOfPlayers[smallBlindPlayerIndex].placeBet(smallBlind, 'small blind')
+
             pot += smallBlind
         }
     //}
@@ -307,7 +289,7 @@ const deal = (cardDeck, player) => {
 
   } 
 
-  console.log(anteUp(playersArray))
+  anteUp(playersArray)
 
   /** start betting round, we should use fixed for a start and
    *  not allow unlimited betting so we can fix the amounts that
@@ -323,16 +305,18 @@ const deal = (cardDeck, player) => {
    *  to call, check, raise or fold.
    *  on a call: 
    */
-  const makeBettingRound = (arrOfPlayers,dealerIndex,pot,communityCards = {}) => {
+  const makeBettingRound = (arrOfPlayers,dealerIndex,pot = 0,communityCards = {}) => {
+
+    
     let round = 0
     let totalMoves = 0;
     let currentRoundMoves = 0;
-    let currentHighestBet = 0
+    let currentHighestBet = arrOfPlayers.reduce((acc,cur) => cur.currentBet > acc ? cur.currentBet : acc,0)
 
     do {
         totalMoves += currentRoundMoves;
         currentRoundMoves = 0;
-        console.log('make some moves');
+        console.log('\nmake some moves in round',round);
         // as a player makes a move that is not a check the 
         // current moves increases by one
         // once every player has had the option to make a move
@@ -341,33 +325,43 @@ const deal = (cardDeck, player) => {
         // we can move the number of moves from current round
         // to moves variable and reset current round to 0 at
         // start of round
+        
         arrOfPlayers.forEach(player => {
-            console.log('moves',totalMoves,'currentRoundMoves',currentRoundMoves,'round',round);
             
-            if ( !player.folded && Math.random() > 0.7 ) {
-                const bet = 5
-                player.purse -=  bet
-                player.currentBet += bet
-                pot += bet
-                currentRoundMoves++
-                if (player.currentBet > currentHighestBet) {
-                    currentHighestBet = player.currentBet
-                } 
-            } else if (Math.random() > 0.7) {
-                player.folded = true
+            
+            if (!player.folded && player.currentBet < currentHighestBet) {
+                console.log(player.name,' is chumpin->',player.currentBet,'highest',currentHighestBet,);
+                if ( Math.random() > 0.4 ) {
+                    const currentDeficit = currentHighestBet - player.currentBet
+                    const bet = Math.random() > 0.4 ? currentDeficit : 4
+                    
+                    bet === currentDeficit ? player.placeBet(bet,'call') :player.placeBet(4)
+                    
+                    pot += bet
+                    currentRoundMoves++
+                    if (player.currentBet > currentHighestBet) {
+                        currentHighestBet = player.currentBet
+                    } 
+                } else  {
+                    player.fold()
+                }
             }
+
+
         })
+        console.log('moves',totalMoves,'currentRoundMoves',currentRoundMoves,'round',round);
         round++
     }
     while (
-        currentRoundMoves !== 0 && round < 50
+        currentRoundMoves > 0 && round < 5
     )
-    console.log(arrOfPlayers);
+    //console.log(playersArray);
     console.log('moves',totalMoves,'currentRoundMoves',currentRoundMoves,'round',round);
     
-    return {players, dealerIndex, pot, communityCards}
+    return {playersArray, dealerIndex, pot, communityCards}
   }
 
-  //console.log(makeBettingRound(playersArray,0));
+  console.log(makeBettingRound(playersArray,0));
 
+  export default Game
   
