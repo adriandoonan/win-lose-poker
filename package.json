@@ -10,7 +10,7 @@
     "test": "jasmine-browser-runner runSpecs",
     "doc": "jsdoc --configure jsdoc.json --verbose",
     "dev": "mkdir -p dist/static && cp src/static/* dist/static/ && parcel src/index.html src/docs/*.html src/pres/index.html --public-url /win-lose-poker",
-    "build": "parcel build src/index.html src/docs/*.html src/pres/index.html --public-url /win-lose-poker --out-dir public && mkir -p public/static && cp src/static/* public/static/"
+    "build": "parcel build src/index.html src/docs/*.html src/pres/index.html --public-url /win-lose-poker --out-dir public && mkdir -p public/static && cp src/static/* public/static/"
   },
   "repository": {
     "type": "git",
