@@ -117,7 +117,7 @@ poker is a game
 <div class="mermaid">
     <pre>
     classDiagram
-        note "From Duck till Zebra"
+        <!-- note "From Duck till Zebra"
         Animal <|-- Duck
         note for Duck "can fly\ncan swim\ncan dive\ncan help in debugging"
         Animal <|-- Fish
@@ -138,6 +138,39 @@ poker is a game
         class Zebra{
             +bool is_wild
             +run()
+        } -->
+        class Game{
+            +Array~obj~ players
+            +Array~obj~ hands
+            +addPlayer(player)
+            +startHand(hand)
         }
+        class Player{
+            +int player
+            +String name
+            +int purse
+            +int currentBet
+            +bool folded
+            +Array~obj~ cards
+            makeBet(round)
+            buyBack()
+        }
+        class Hand{
+            +Array~obj~ players
+            +Array~obj~ communityCards
+            +int round
+            +int totalMoves
+            +int currentRoundMoves
+            +int pot
+            +int dealerIndex
+            anteUp()
+            makeBettingRound()
+            dealPreFlop()
+            dealFlop()
+            dealTurn()
+            dealRiver()
+        }
+        Game --> Player
+        Game --> Hand
     </pre>
 </div>
