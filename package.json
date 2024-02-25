@@ -9,8 +9,8 @@
   "scripts": {
     "test": "jasmine-browser-runner runSpecs",
     "doc": "jsdoc --configure jsdoc.json --verbose",
-    "dev": "parcel src/index.html src/docs/*.html src/pres/index.html --public-url /win-lose-poker && mkdir dist/static && cp src/static/* dist/static/",
-    "build": "parcel build src/index.html src/docs/*.html src/pres/index.html --public-url /win-lose-poker --out-dir public && mkir public/static && cp src/static/* public/static/"
+    "dev": "mkdir -p dist/static && cp src/static/* dist/static/ && parcel src/index.html src/docs/*.html src/pres/index.html --public-url /win-lose-poker",
+    "build": "parcel build src/index.html src/docs/*.html src/pres/index.html --public-url /win-lose-poker --out-dir public && mkir -p public/static && cp src/static/* public/static/"
   },
   "repository": {
     "type": "git",
