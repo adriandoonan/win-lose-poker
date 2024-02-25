@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<title>Win Lose Poker | Presentation</title>
+
+		<link rel="stylesheet" href="reveal/reset.css">
+		<link rel="stylesheet" href="reveal/reveal.css">
+		<link rel="stylesheet" href="reveal/theme/black.css">
+
+		<!-- Theme used for syntax highlighted code -->
+		<link rel="stylesheet" href="plugin/highlight/monokai.css">
+	</head>
+	<body>
+		<div class="reveal">
+			<div class="slides">
+                <section data-markdown="pres.md"></section>
+                <section>
+                    <h3>Flowchart</h3>
+                    <div class="mermaid">
+                      <pre>
+                        %%{init: {'theme': 'dark', 'themeVariables': { 'darkMode': true }}}%%
+                        flowchart TD
+                          A[Start] --> B{Is it?};
+                          B -- Yes --> C[OK];
+                          C --> D[Rethink];
+                          D --> B;
+                          B -- No ----> E[End];
+                      </pre>
+                    </div>
+                  </section>
+			</div>
+		</div>
+
+		<script src="reveal/reveal.js"></script>
+		<script src="plugin/notes/notes.js"></script>
+		<script src="plugin/markdown/markdown.js"></script>
+		<script src="plugin/highlight/highlight.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/reveal.js-mermaid-plugin@2.1.0/plugin/mermaid/mermaid.js"></script>
+		<script>
+			// More info about initialization & config:
+			// - https://revealjs.com/initialization/
+			// - https://revealjs.com/config/
+			Reveal.initialize({
+				hash: true,
+
+                    // mermaid initialize config
+                mermaid: {
+                // flowchart: {
+                //   curve: 'linear',
+                // },
+                },
+
+				// Learn about plugins: https://revealjs.com/plugins/
+				plugins: [ RevealMarkdown, RevealHighlight, RevealNotes, RevealMermaid ]
+			});
+		</script>
+	</body>
+</html>

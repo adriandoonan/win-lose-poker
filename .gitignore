@@ -131,3 +131,6 @@ dist
 
 # mac os junk
 .DS_Store
+
+# vs code settings
+.vscode

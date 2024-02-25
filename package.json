@@ -1,0 +1,34 @@
+{
+  "name": "win-lose-poker",
+  "version": "0.0.1",
+  "description": "a basic poker game",
+  "main": "scripts/app.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "jasmine-browser-runner runSpecs",
+    "doc": "jsdoc --configure jsdoc.json --verbose",
+    "dev": "parcel src/index.html --public-url /win-lose-poker",
+    "build": "parcel build src/index.html --public-url /win-lose-poker --out-dir public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/adriandoonan/win-lose-poker.git"
+  },
+  "author": "adrian doonan",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/adriandoonan/win-lose-poker/issues"
+  },
+  "homepage": "https://github.com/adriandoonan/win-lose-poker#readme",
+  "devDependencies": {
+    "clean-jsdoc-theme": "^4.2.17",
+    "cssnano": "^4.1.11",
+    "docdash": "^2.0.2",
+    "jasmine-browser-runner": "^2.3.0",
+    "jasmine-core": "^5.1.2",
+    "jsdoc": "^4.0.2",
+    "postcss": "^8.4.35"
+  }
+}
