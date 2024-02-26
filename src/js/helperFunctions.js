@@ -54,7 +54,7 @@ const knuthShuffle = (arrayToShuffle) => {
  * circularIncrement(5,-3,4) // 1
  * 
  */
-const circularIncrement = (arrayLength,increment,startIndex = 0) => {
+const circularIncrement = (arrayLength,increment = 0,startIndex = 0) => {
     //console.log('length',arrayLength,'increment',increment,'start',startIndex);
     
     if (arrayLength === 0 || startIndex > arrayLength) {

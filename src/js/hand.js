@@ -1,5 +1,5 @@
 import Player from "./player.js";
-import { knuthShuffle } from "./helperFunctions.js";
+import { circularIncrement, knuthShuffle } from "./helperFunctions.js";
 
 class Deck {
 
@@ -59,7 +59,7 @@ class Deck {
 // or with creating a new deck on instantiation, it is just undefined before i
 // set using another fucntion
 class Hand {
-    constructor(players) {
+    constructor(players,round = 0, blind = 2) {
         this.deck = new Deck();
         this.players = function() {
             if (!players) return []
@@ -74,6 +74,9 @@ class Hand {
         }() || [];
         this.communityCards = [];
         this.pot = 20;
+        this.blind = blind;
+        this.dealerIndex = circularIncrement(this.players.length,round);
+        this.stage = 'ante';
     }
     
     addPlayers(players) {
@@ -98,7 +101,39 @@ class Hand {
     acesLow()  {
             this.deck.acesLow();
             return this.deck.cards
+    }
+
+    anteUp() {
+        const bigBlind = this.blind * 2
+        const smallBlind = this.blind
+        const numberOfPlayers = this.players.length
+    
+        if (numberOfPlayers < 2) {
+            console.error('you don\'t have enough players for a game')
+            return
         }
+        
+        if (this.dealerIndex > numberOfPlayers -1) {
+            console.error('dealerIndex is more than the number of players')
+            return 
+        }
+    
+        const bigBlindPlayerIndex = circularIncrement(numberOfPlayers,1,this.dealerIndex)
+        const smallBlindPlayerIndex = circularIncrement(numberOfPlayers,2,this.dealerIndex)
+    
+        { // handle big blind
+            this.players[bigBlindPlayerIndex].placeBet(bigBlind,'big blind')
+            // this should be a method on the player
+            this.pot += bigBlind
+        }
+        { // handle small blind
+            this.players[smallBlindPlayerIndex].placeBet(smallBlind, 'small blind')
+    
+            this.pot += smallBlind
+        }
+    
+        return this
+    }
 
     dealPreFlop() {
         this.deck.shuffle()
@@ -112,8 +147,9 @@ class Hand {
         for (let i = 2; i > 0; i--) {
             this.players.forEach(player => player.cards.push(this.deck.deal()))
         }
+        this.stage = 'preFlop'
         return this
-      }
+    }
     
     dealFlop() {
         if (
@@ -126,8 +162,9 @@ class Hand {
         const burnedCard = this.deck.burn()
         this.communityCards = this.communityCards.concat(this.deck.deal(3))
 
+        this.stage = 'flop'
         return this
-      }
+    }
     
     dealTurn() {
         if ( this.communityCards.length !== 3) {
@@ -136,8 +173,9 @@ class Hand {
         }
         const burnedCard = this.deck.burn()
         this.communityCards = this.communityCards.concat(this.deck.deal())
+        this.stage = 'turn'
         return this
-      }
+    }
        
     dealRiver() {
         if ( this.communityCards.length !== 4 ) {
@@ -146,6 +184,58 @@ class Hand {
         }
         const burnedCard = this.deck.burn()
         this.communityCards = this.communityCards.concat(this.deck.deal())
+        this.stage = 'river'
+        return this
+    }
+    
+    makeBettingRound() {
+        let bettingRound = 0;
+        let totalMoves = 0;
+        let currentRoundMoves = 0;
+        let currentHighestBet = this.players.reduce((acc,cur) => cur.currentBet > acc ? cur.currentBet : acc,0)
+    
+        do {
+            totalMoves += currentRoundMoves;
+            currentRoundMoves = 0;
+            console.log('\nmaking some moves in round',bettingRound,'of the',this.stage);
+            // as a player makes a move that is not a check the 
+            // current moves increases by one
+            // once every player has had the option to make a move
+            // and the move count does not increase in that round
+            // we can end the round
+            // we can move the number of moves from current round
+            // to moves variable and reset current round to 0 at
+            // start of round
+            
+            this.players.forEach(player => {
+                
+                if (!player.folded && player.currentBet < currentHighestBet) {
+                    console.log(player.name,' is chumpin->',player.currentBet,'highest',currentHighestBet,);
+                    if ( Math.random() > 0.4 ) {
+                        const currentDeficit = currentHighestBet - player.currentBet
+                        const bet = Math.random() > 0.4 ? currentDeficit : 4
+                        
+                        bet === currentDeficit ? player.placeBet(bet,'call') : player.placeBet(4)
+                        
+                        this.pot += bet
+                        currentRoundMoves++
+                        if (player.currentBet > currentHighestBet) {
+                            currentHighestBet = player.currentBet
+                        } 
+                    } else  {
+                        player.fold()
+                    }
+                }
+            })
+            console.log('round',bettingRound,'currentRoundMoves',currentRoundMoves,'totalMoves',totalMoves);
+            bettingRound++
+        }
+        while (
+            currentRoundMoves !== 0 && bettingRound < 5
+        )
+        //console.log(playersArray);
+        console.log('round',bettingRound,'currentRoundMoves',currentRoundMoves,'totalMoves',totalMoves);
+        
         return this
       }
 }

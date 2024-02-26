@@ -10,13 +10,14 @@ class Game {
     /**
      * a class
      * 
-     * @param {array}  players          - An array of players, see Player class
-     * @param {Array.<Object>} hands    - The current hand since the game was started
+     * @param {array}  players          - An array of players, see Player class.
+     * @param {Array.<Object>} hands    - The current hand since the game was started.
      * @param {number} round            - The current round in this hand. A round is counted
      *                                    after every player has made a move. Rounds start
      *                                    counting from 1, a round of 0 indicates that the
      *                                    hand has not started and new players can potentially
-     *                                    enter the game
+     *                                    enter the game. The round will be used to select the
+     *                                    'dealer' for the next hand.
      *
      * @class Game
      */
@@ -24,7 +25,6 @@ class Game {
       this.players = players || [];
       this.hands = [];
       this.round = 0;
-
     }
   
     /**
@@ -38,14 +38,70 @@ class Game {
       this.players[this.players.length - 1].seatNumber = this.players.length
     }
 
-
     startNewHand() {
       this.players.sort((player1,player2) => player1.seatNumber < player2.seatNumber ? -1 : 1)
-      this.hands.push(new Hand(this.players))
+      this.hands.push(new Hand(this.players,this.round))
+    }
 
+    advanceCurrentHand() {
+        if (this.round >= this.hands.length ) {
+          console.log('hey, this round is over');
+          return this
+        }
+        let currentHand = this.hands[this.round];
+        let playersRemaining = this.hands[this.round].players.filter(player => player.folded).length
+        console.log('\n\nstarting next round after',currentHand.stage,'with',playersRemaining,'players remaining')
+      switch (currentHand.stage) {
+        case 'ante': {
+          //console.log('round 0',);
+          currentHand.anteUp()
+          currentHand.dealPreFlop()
+          console.log('now we would start a betting round after the',currentHand.stage);
+          currentHand.makeBettingRound()
+          break;
+        }
+        case 'preFlop': {
+          if (playersRemaining === 1) {
+            this.endCurrentHand(currentHand.players.findIndex(player => player.folded === true))
+          } else {
+            currentHand.dealFlop();
+            console.log('now we would start a betting round after the',currentHand.stage);
+            currentHand.makeBettingRound()
+          }
+          break
+        }
+        case 'flop': {
+          if (playersRemaining === 1) {
+            this.endCurrentHand(currentHand.players.findIndex(player => player.folded === true))
+          } else {
+          currentHand.dealTurn()
+          console.log('now we would start a betting round after the',currentHand.stage);
+          currentHand.makeBettingRound()
+          }
+          break;
+        }
+        case 'turn': {
+          if (playersRemaining === 1) {
+            this.endCurrentHand(currentHand.players.findIndex(player => player.folded === true))
+          } else {
+          currentHand.dealRiver()
+          console.log('now we would start a betting round after the',currentHand.stage);
+          currentHand.makeBettingRound()
+          }
+          break;
+        }
+        case 'river': {
+          if (playersRemaining === 1) {
+            this.endCurrentHand(currentHand.players.findIndex(player => player.folded === true))
+          } else {
+            console.log('looks like a split pot with',currentHand.players.filter(player => !player.folded));
+          }
+        }
+      }
     }
 
     endCurrentHand(winnerIndex) {
+      console.log('ending current round',this.round,'and declaring',winnerIndex,'the winner');
       this.players[winnerIndex].purse += this.hands[this.round].pot;
       this.players[winnerIndex].wins++
       this.round++
@@ -66,15 +122,7 @@ class Game {
 
   const newGeem = new Game(playersArray)
 
-  console.log(newGeem)
-
-  newGeem.startNewHand()
-  console.log(newGeem)
-  newGeem.hands[newGeem.hands.length - 1].dealPreFlop()
-  console.log(newGeem.hands[0].players[0].cards);
-  
-  newGeem.endCurrentHand(3)
-  console.log(newGeem.players)
+  //console.log(newGeem)
 
   newGeem.players[0].seatNumber = 6
   //console.log(newGeem.players[0]);
@@ -82,12 +130,24 @@ class Game {
   //console.log(newGeem.players[3]);
 
   newGeem.startNewHand()
-  console.log(newGeem.hands[1].players);
+  //console.log(newGeem.hands[0].players);
 
-  newGeem.hands[1].addPlayers([new Player('joji')])
+  newGeem.hands[0].addPlayers([new Player('joji')])
 
 
-    console.log(newGeem.hands[1].players);
+  //console.log(newGeem.hands[0].players);
+
+  newGeem.hands[0].stage
+  newGeem.advanceCurrentHand()
+  //console.log(newGeem.hands[0]);
+  newGeem.advanceCurrentHand()
+  //console.log(newGeem.hands[0]);
+  newGeem.advanceCurrentHand()
+  //console.log(newGeem.hands[0]);
+  newGeem.advanceCurrentHand()
+  //console.log(newGeem.hands[0]);
+
+
   
 
 /**
@@ -196,40 +256,41 @@ class Game {
 
 
   
-  const anteUp = (arrOfPlayers, dealerIndex = 0, blinds = {}) => {
-    const bigBlind = blinds.bigBlind || 4;
-    const smallBlind = blinds.smallBlind || 2;
-    let pot = 0;
-    const numberOfPlayers = arrOfPlayers.length
+  // const anteUp = (arrOfPlayers, dealerIndex = 0, blinds = {}) => {
+  //   const bigBlind = blinds.bigBlind || 4;
+  //   const smallBlind = blinds.smallBlind || 2;
+  //   let pot = 0;
+  //   const numberOfPlayers = arrOfPlayers.length
 
-    if (numberOfPlayers < 2) {
-        console.error('you don\'t have enough players for a game')
-        return
-    }
+  //   if (numberOfPlayers < 2) {
+  //       console.error('you don\'t have enough players for a game')
+  //       return
+  //   }
     
-    if (dealerIndex > numberOfPlayers -1) {
-        console.error('dealerIndex is more than the number of players')
-        return 
-    }
+  //   if (dealerIndex > numberOfPlayers -1) {
+  //       console.error('dealerIndex is more than the number of players')
+  //       return 
+  //   }
 
-    const bigBlindPlayerIndex = circularIncrement(numberOfPlayers,1,dealerIndex)
-    const smallBlindPlayerIndex = circularIncrement(numberOfPlayers,2,dealerIndex)
+  //   const bigBlindPlayerIndex = circularIncrement(numberOfPlayers,1,dealerIndex)
+  //   const smallBlindPlayerIndex = circularIncrement(numberOfPlayers,2,dealerIndex)
 
-    { // handle big blind
-        arrOfPlayers[bigBlindPlayerIndex].placeBet(bigBlind,'big blind')
-        // this should be a method on the player
-        pot += bigBlind
-    }
-    { // handle small blind
-        arrOfPlayers[smallBlindPlayerIndex].placeBet(smallBlind, 'small blind')
+  //   { // handle big blind
+  //       arrOfPlayers[bigBlindPlayerIndex].placeBet(bigBlind,'big blind')
+  //       // this should be a method on the player
+  //       pot += bigBlind
+  //   }
+  //   { // handle small blind
+  //       arrOfPlayers[smallBlindPlayerIndex].placeBet(smallBlind, 'small blind')
 
-        pot += smallBlind
-    }
+  //       pot += smallBlind
+  //   }
 
-    return {arrOfPlayers,dealerIndex,pot}
-  } 
+  //   return {arrOfPlayers,dealerIndex,pot}
+  // } 
 
-  //anteUp(playersArray)
+  // //anteUp(playersArray)
+  // ABOVE HAS BEEN MOVED TO HAND CLASS
 
   /** start betting round, we should use fixed for a start and
    *  not allow unlimited betting so we can fix the amounts that
@@ -245,56 +306,57 @@ class Game {
    *  to call, check, raise or fold.
    *  on a call: 
    */
-  const makeBettingRound = (arrOfPlayers,dealerIndex,pot = 0,communityCards = {}) => {
-    let round = 0
-    let totalMoves = 0;
-    let currentRoundMoves = 0;
-    let currentHighestBet = arrOfPlayers.reduce((acc,cur) => cur.currentBet > acc ? cur.currentBet : acc,0)
+  // const makeBettingRound = (arrOfPlayers,dealerIndex,pot = 0,communityCards = {}) => {
+  //   let round = 0
+  //   let totalMoves = 0;
+  //   let currentRoundMoves = 0;
+  //   let currentHighestBet = arrOfPlayers.reduce((acc,cur) => cur.currentBet > acc ? cur.currentBet : acc,0)
 
-    do {
-        totalMoves += currentRoundMoves;
-        currentRoundMoves = 0;
-        console.log('\nmaking some moves in round',round);
-        // as a player makes a move that is not a check the 
-        // current moves increases by one
-        // once every player has had the option to make a move
-        // and the move count does not increase in that round
-        // we can end the round
-        // we can move the number of moves from current round
-        // to moves variable and reset current round to 0 at
-        // start of round
+  //   do {
+  //       totalMoves += currentRoundMoves;
+  //       currentRoundMoves = 0;
+  //       console.log('\nmaking some moves in round',round);
+  //       // as a player makes a move that is not a check the 
+  //       // current moves increases by one
+  //       // once every player has had the option to make a move
+  //       // and the move count does not increase in that round
+  //       // we can end the round
+  //       // we can move the number of moves from current round
+  //       // to moves variable and reset current round to 0 at
+  //       // start of round
         
-        arrOfPlayers.forEach(player => {
+  //       arrOfPlayers.forEach(player => {
             
-            if (!player.folded && player.currentBet < currentHighestBet) {
-                console.log(player.name,' is chumpin->',player.currentBet,'highest',currentHighestBet,);
-                if ( Math.random() > 0.4 ) {
-                    const currentDeficit = currentHighestBet - player.currentBet
-                    const bet = Math.random() > 0.4 ? currentDeficit : 4
+  //           if (!player.folded && player.currentBet < currentHighestBet) {
+  //               console.log(player.name,' is chumpin->',player.currentBet,'highest',currentHighestBet,);
+  //               if ( Math.random() > 0.4 ) {
+  //                   const currentDeficit = currentHighestBet - player.currentBet
+  //                   const bet = Math.random() > 0.4 ? currentDeficit : 4
                     
-                    bet === currentDeficit ? player.placeBet(bet,'call') :player.placeBet(4)
+  //                   bet === currentDeficit ? player.placeBet(bet,'call') :player.placeBet(4)
                     
-                    pot += bet
-                    currentRoundMoves++
-                    if (player.currentBet > currentHighestBet) {
-                        currentHighestBet = player.currentBet
-                    } 
-                } else  {
-                    player.fold()
-                }
-            }
-        })
-        console.log('round',round,'currentRoundMoves',currentRoundMoves,'totalMoves',totalMoves);
-        round++
-    }
-    while (
-        currentRoundMoves > 0 && round < 5
-    )
-    //console.log(playersArray);
-    console.log('round',round,'currentRoundMoves',currentRoundMoves,'totalMoves',totalMoves);
+  //                   pot += bet
+  //                   currentRoundMoves++
+  //                   if (player.currentBet > currentHighestBet) {
+  //                       currentHighestBet = player.currentBet
+  //                   } 
+  //               } else  {
+  //                   player.fold()
+  //               }
+  //           }
+  //       })
+  //       console.log('round',round,'currentRoundMoves',currentRoundMoves,'totalMoves',totalMoves);
+  //       round++
+  //   }
+  //   while (
+  //       currentRoundMoves > 0 && round < 5
+  //   )
+  //   //console.log(playersArray);
+  //   console.log('round',round,'currentRoundMoves',currentRoundMoves,'totalMoves',totalMoves);
     
-    return {playersArray, dealerIndex, pot, communityCards}
-  }
+  //   return {playersArray, dealerIndex, pot, communityCards}
+  // }
+  // THIS HAS BEEN MOVED TO THE HANDS CLASS
 
   //console.log(makeBettingRound(playersArray,0));
 
