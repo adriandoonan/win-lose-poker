@@ -5,6 +5,7 @@ class Player {
      *
      * @param {string} name          - The name of this player
      * @param {number} purse         - How much money this player has to bet with
+     * @param {integer} wins         - How many wins this player has in the current game
      * @param {number} currentBet    - The amount this player has thrown into the current pot
      * @param {Array.<Object>} cards - The cards held by this player
      * @param {bool} folded          - Whether this player has already folded
@@ -15,10 +16,11 @@ class Player {
     constructor(name, purse) {
         this.name = name;
         this.purse = purse || 100;
+        this.wins = 0;
         this.currentBet = 0;
         this.cards = [];
         this.folded = false;
-        this.seatNumber = null
+        this.seatNumber = null;
     }
 
     /**

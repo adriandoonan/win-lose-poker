@@ -1,7 +1,8 @@
 "use strict;"
 
 import Player from './player.js';
-import {pipe, knuthShuffle, circularIncrement} from './helperFunctions.js'
+import Hand from './hand.js';
+import {pipe, knuthShuffle, circularIncrement} from './helperFunctions.js';
 
 
 
@@ -9,21 +10,20 @@ class Game {
     /**
      * a class
      * 
-     * @param {array}  players  - An array of players, see Player class
-     * @param {number} hands    - The current hand since the game was started
-     * @param {number} round    - The current round in this hand. A round is counted
-     *                            after every player has made a move. Rounds start
-     *                            counting from 1, a round of 0 indicates that the
-     *                            hand has not started and new players can potentially
-     *                            enter the game
-     * @param {number} pot      - The amount currently in the pot and available to win
-     *                            in this hand 
+     * @param {array}  players          - An array of players, see Player class
+     * @param {Array.<Object>} hands    - The current hand since the game was started
+     * @param {number} round            - The current round in this hand. A round is counted
+     *                                    after every player has made a move. Rounds start
+     *                                    counting from 1, a round of 0 indicates that the
+     *                                    hand has not started and new players can potentially
+     *                                    enter the game
      *
      * @class Game
      */
-    constructor() {
-      this.players = [];
+    constructor(players) {
+      this.players = players || [];
       this.hands = [];
+      this.round = 0;
 
     }
   
@@ -37,50 +37,26 @@ class Game {
       this.players.push(player)
       this.players[this.players.length - 1].seatNumber = this.players.length
     }
+
+
     startNewHand() {
-      
+      this.players.sort((player1,player2) => player1.seatNumber < player2.seatNumber ? -1 : 1)
+      this.hands.push(new Hand(this.players))
+
+    }
+
+    endCurrentHand(winnerIndex) {
+      this.players[winnerIndex].purse += this.hands[this.round].pot;
+      this.players[winnerIndex].wins++
+      this.round++
     }
   }
 
 
 
-  const newDeck = (shuffled = true, aceHigh = true) => {
-    const suits = ['spades','diamonds','clubs','hearts']
-    const cardValues = [2,3,4,5,6,7,8,9,10,11,12,13,aceHigh ? 14 : 1]
-    let deck = [];
-    for (const suit of suits) {
-        for (const card of cardValues) {
-            deck.push({suit,card})
-        }
-    }
-    return shuffled ? knuthShuffle(deck) : deck
-  }
 
 
-//#region some stuff to test that shuffle is random
-//   const arrayOfRandos = () => {
-//     let cardStack = []
-//     for (let i = 1000000;i > 0; i--) {
-//         const card = newDeck()[0]
-//         cardDef = Object.values(card).join('')
-//         cardStack.push(cardDef)
-//     }
-//     return cardStack.sort((a,b) => a.localeCompare(b))
-//   }
 
-//   const testCards = arrayOfRandos()
-
-//   const frequency = testCards.reduce((acc,cur) => {
-//     acc[cur] ? acc[cur] += 1 : acc[cur] = 1;
-//     return acc
-//   },{})
-
-//   console.log(frequency)
-//
-//#endregion
-
-
-  let deckToDeal = newDeck()
   let playersArray = [
     new Player('foo',100),
     new Player('bar',100),
@@ -88,8 +64,30 @@ class Game {
     new Player('jij',100),
   ]
 
+  const newGeem = new Game(playersArray)
+
+  console.log(newGeem)
+
+  newGeem.startNewHand()
+  console.log(newGeem)
+  newGeem.hands[newGeem.hands.length - 1].dealPreFlop()
+  console.log(newGeem.hands[0].players[0].cards);
   
-  
+  newGeem.endCurrentHand(3)
+  console.log(newGeem.players)
+
+  newGeem.players[0].seatNumber = 6
+  //console.log(newGeem.players[0]);
+  newGeem.players[3].seatNumber = 1
+  //console.log(newGeem.players[3]);
+
+  newGeem.startNewHand()
+  console.log(newGeem.hands[1].players);
+
+  newGeem.hands[1].addPlayers([new Player('joji')])
+
+
+    console.log(newGeem.hands[1].players);
   
 
 /**
@@ -100,60 +98,61 @@ class Game {
  * @param {*} cardDeck
  * @param {*} player
  */
-const deal = (cardDeck, player) => {
-    player.cards.push(cardDeck.pop())
-  }
+// const deal = (cardDeck, player) => {
+//     player.cards.push(cardDeck.pop())
+//   }
 
-  const dealPreFlop = ({deck,arrayOfPlayers,communityCards = {}}) => {
-    if (
-        arrayOfPlayers.some(player => player.cards.length) || 
-        communityCards?.cards?.length
-        ) {
-        console.error('can only deal pre-flop once')
-        return
-    }
-    for (let i = 2; i > 0; i--) {
-        arrayOfPlayers.forEach(player => deal(deck,player))
-    }
-    return {deck,arrayOfPlayers}
-  }
+//   const dealPreFlop = ({deck,arrayOfPlayers,communityCards = {}}) => {
+//     if (
+//         arrayOfPlayers.some(player => player.cards.length) || 
+//         communityCards?.cards?.length
+//         ) {
+//         console.error('can only deal pre-flop once')
+//         return
+//     }
+//     for (let i = 2; i > 0; i--) {
+//         arrayOfPlayers.forEach(player => deal(deck,player))
+//     }
+//     return {deck,arrayOfPlayers}
+//   }
 
-  const dealFlop = ({deck,arrayOfPlayers,communityCards = {}}) => {
-    if (
-        arrayOfPlayers.some(player => player.cards.length !== 2) || 
-        communityCards?.cards?.length
-        ) {
-        console.error('can only deal the flop once, after players have cards')
-        return
-    }
-    const burnedCard = deck.pop()
-    communityCards.cards = []
-    for (let i = 3; i > 0; i--) {
-        deal(deck,communityCards)
-    }
+//   const dealFlop = ({deck,arrayOfPlayers,communityCards = {}}) => {
+//     if (
+//         arrayOfPlayers.some(player => player.cards.length !== 2) || 
+//         communityCards?.cards?.length
+//         ) {
+//         console.error('can only deal the flop once, after players have cards')
+//         return
+//     }
+//     const burnedCard = deck.pop()
+//     communityCards.cards = []
+//     for (let i = 3; i > 0; i--) {
+//         deal(deck,communityCards)
+//     }
     
-    return {deck,arrayOfPlayers,communityCards}
-  }
+//     return {deck,arrayOfPlayers,communityCards}
+//   }
 
-  const dealTurn = ({deck, arrayOfPlayers,communityCards = {}}) => {
-    if ( communityCards?.cards?.length !== 3) {
-        console.error(`can only deal the turn once, after the flop and before the river`)
-        return // it is better to always return something
-    }
-    const burnedCard = deck.pop()
-    deal(deck,communityCards)
-    return {deck,arrayOfPlayers,communityCards}
-  }
+//   const dealTurn = ({deck, arrayOfPlayers,communityCards = {}}) => {
+//     if ( communityCards?.cards?.length !== 3) {
+//         console.error(`can only deal the turn once, after the flop and before the river`)
+//         return // it is better to always return something
+//     }
+//     const burnedCard = deck.pop()
+//     deal(deck,communityCards)
+//     return {deck,arrayOfPlayers,communityCards}
+//   }
    
-  const dealRiver = ({deck, arrayOfPlayers,communityCards = {}}) => {
-    if ( communityCards?.cards?.length !== 4 ) {
-        console.error(`can only deal the river once, after the flop and turn`)
-        return
-    }
-    const burnedCard = deck.pop()
-    deal(deck,communityCards)
-    return {deck,arrayOfPlayers,communityCards}
-  }
+//   const dealRiver = ({deck, arrayOfPlayers,communityCards = {}}) => {
+//     if ( communityCards?.cards?.length !== 4 ) {
+//         console.error(`can only deal the river once, after the flop and turn`)
+//         return
+//     }
+//     const burnedCard = deck.pop()
+//     deal(deck,communityCards)
+//     return {deck,arrayOfPlayers,communityCards}
+//   }
+// ABOVE HAS BEEN MOVED TO HAND CLASS
 
     // console.log(dealPreFlop(deckToDeal,playersArray,[]))
 
@@ -176,7 +175,7 @@ const deal = (cardDeck, player) => {
     // console.log(playersArray);
 
 
-    console.log(JSON.stringify(pipe(dealPreFlop, dealFlop, dealTurn, dealRiver)({deck:deckToDeal, arrayOfPlayers:playersArray}),null,4));
+    //console.log(JSON.stringify(pipe(dealPreFlop, dealFlop, dealTurn, dealRiver)({deck:deckToDeal, arrayOfPlayers:playersArray}),null,4));
 
 //  dealPreFlop(deckToDeal,playersArray)
 //  console.log(playersArray)
@@ -230,7 +229,7 @@ const deal = (cardDeck, player) => {
     return {arrOfPlayers,dealerIndex,pot}
   } 
 
-  anteUp(playersArray)
+  //anteUp(playersArray)
 
   /** start betting round, we should use fixed for a start and
    *  not allow unlimited betting so we can fix the amounts that
@@ -297,7 +296,7 @@ const deal = (cardDeck, player) => {
     return {playersArray, dealerIndex, pot, communityCards}
   }
 
-  console.log(makeBettingRound(playersArray,0));
+  //console.log(makeBettingRound(playersArray,0));
 
   export default Game
   
