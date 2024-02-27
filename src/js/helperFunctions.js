@@ -84,4 +84,25 @@ const circularIncrement = (arrayLength,increment = 0,startIndex = 0) => {
     return modulo === 0 ? startIndex : modulo - 1
   }
 
-  export {circularIncrement, knuthShuffle, pipe}
+
+  const addToElement = (htmlElement,content,tag = 'p') => {
+    console.log(`trying to add`,content,'to',htmlElement);
+    htmlElement.innerHTML += `<${tag}>${content}</${tag}>`
+  }
+
+
+  const replaceInnerText = (htmlElement,content) => {
+    htmlElement.innerText = content
+  }
+
+
+  const removeElements = (...elements) => {
+    elements.forEach(element => element.remove())
+  }
+   
+
+  const clearElements = (...elements) => {
+    elements.forEach(element => element.innerText = '')
+  }
+
+  export {circularIncrement, knuthShuffle, pipe, addToElement, replaceInnerText, removeElements, clearElements}

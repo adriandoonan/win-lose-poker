@@ -1,3 +1,4 @@
+import { addToElement } from "./helperFunctions.js";
 
 class Player {
     /**
@@ -21,6 +22,7 @@ class Player {
         this.cards = [];
         this.folded = false;
         this.seatNumber = null;
+        this.eventsElement = document.getElementById('game-events')
     }
 
     /**
@@ -34,7 +36,9 @@ class Player {
      */
     placeBet(amount,type) {
 
-        console.log(`${this.name} is placing a ${type || 'bet'} of ${amount}`)
+        const message = `${this.name} is placing a ${type || 'bet'} of ${amount}`
+        console.log(message)
+        addToElement(this.eventsElement,message)
         
         this.purse -= amount
         this.currentBet += amount
@@ -49,11 +53,15 @@ class Player {
      * @memberof Player
      */
     fold() {
-        console.log(`${this.name} is folding`)
+        const message = `${this.name} is folding`
+        console.log(message)
+        addToElement(this.eventsElement,message)
         this.folded = true
 
         return this
     }
 }
+
+
 
 export default Player

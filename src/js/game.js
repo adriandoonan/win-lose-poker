@@ -2,7 +2,7 @@
 
 import Player from './player.js';
 import Hand from './hand.js';
-import {pipe, knuthShuffle, circularIncrement} from './helperFunctions.js';
+import {pipe, knuthShuffle, circularIncrement, addToElement} from './helperFunctions.js';
 
 
 
@@ -25,6 +25,7 @@ class Game {
       this.players = players || [];
       this.hands = [];
       this.round = 0;
+      this.eventElement = document.getElementById('game-events')
     }
   
     /**
@@ -101,7 +102,9 @@ class Game {
     }
 
     endCurrentHand(winnerIndex) {
-      console.log('ending current round',this.round,'and declaring',winnerIndex,'the winner');
+      const message = `ending current round ${this.round},'and declaring ${winnerIndex} the winner`
+      console.log(message);
+      addToElement(this.eventElement,message)
       this.players[winnerIndex].purse += this.hands[this.round].pot;
       this.players[winnerIndex].wins++
       this.round++
@@ -120,32 +123,35 @@ class Game {
     new Player('jij',100),
   ]
 
-  const newGeem = new Game(playersArray)
+  // const newGeem = new Game(playersArray)
 
-  //console.log(newGeem)
+  // //console.log(newGeem)
 
-  newGeem.players[0].seatNumber = 6
-  //console.log(newGeem.players[0]);
-  newGeem.players[3].seatNumber = 1
-  //console.log(newGeem.players[3]);
+  // newGeem.players[0].seatNumber = 6
+  // //console.log(newGeem.players[0]);
+  // newGeem.players[3].seatNumber = 1
+  // //console.log(newGeem.players[3]);
 
-  newGeem.startNewHand()
-  //console.log(newGeem.hands[0].players);
+  // newGeem.startNewHand()
+  // //console.log(newGeem.hands[0].players);
 
-  newGeem.hands[0].addPlayers([new Player('joji')])
+  // newGeem.hands[0].addPlayers([new Player('joji')])
+
+  
 
 
-  //console.log(newGeem.hands[0].players);
+  // //console.log(newGeem.hands[0].players);
 
-  newGeem.hands[0].stage
-  newGeem.advanceCurrentHand()
-  //console.log(newGeem.hands[0]);
-  newGeem.advanceCurrentHand()
-  //console.log(newGeem.hands[0]);
-  newGeem.advanceCurrentHand()
-  //console.log(newGeem.hands[0]);
-  newGeem.advanceCurrentHand()
-  //console.log(newGeem.hands[0]);
+  // newGeem.hands[0].stage
+  // newGeem.advanceCurrentHand()
+  // //console.log(newGeem.hands[0]);
+  // newGeem.advanceCurrentHand()
+  // console.log('carrrds',newGeem.hands[0].players[0].cards)
+  // //console.log(newGeem.hands[0]);
+  // newGeem.advanceCurrentHand()
+  // //console.log(newGeem.hands[0]);
+  // newGeem.advanceCurrentHand()
+  // //console.log(newGeem.hands[0]);
 
 
   
