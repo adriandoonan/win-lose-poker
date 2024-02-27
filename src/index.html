@@ -21,10 +21,10 @@
   <div id="fadein"></div>
   <header>
     <nav>
-      <a id="splash-screen-link" href="#">Home</a>
-      <a id="game-screen-link" href="#">Play</a>
-      <a id="presentation-link" href="pres">About this game</a>
-      <a id="docs-link" href="docs">Documentation</a> 
+      <a class="nav-link" id="splash-screen-link" href="#">Home</a>
+      <a class="nav-link" id="game-screen-link" href="#">Play</a>
+      <a class="nav-link" id="presentation-link" href="pres">About this game</a>
+      <a class="nav-link" id="docs-link" href="docs">Documentation</a> 
     </nav>
   </header>
 
@@ -35,8 +35,18 @@
       <div id="motion-path-test">
         <!-- <span id="motion-path-example-span"></span> -->
       </div>
+      <div style="margin-top: auto;">
+        <div id="card-target" style="width: 100px; height:120px;"></div>
+      </div>
     </div>
     <div id="game-screen" class="hidden">
+
+      <dialog id="winner-modal">
+        <button autofocus>Close</button>
+        <p></p>
+      </dialog>
+
+
       <h2>This would be the game screen</h2>
       <button id="start-game-button">Start Game</button><br>
       <button id="start-new-hand-button" disabled>Start new hand</button>
@@ -64,7 +74,7 @@
 
   <footer>
     <small>© <script>document.write(new Date().getFullYear())</script> Jijman Enterprises. All Rights Reserved.</small>
-    <small><a href="pres/">about this game</a></small>
+    <small><a id="don-shades" href="#">put your sunglasses on</a></small>
   </footer>
   
 </body>

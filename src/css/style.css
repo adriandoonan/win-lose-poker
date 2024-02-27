@@ -115,6 +115,10 @@ body {
     padding-bottom: 10px;
     margin: 0;
 }
+body.dark {
+  background-color: #696969;
+  color: beige;
+}
 header {
     width: 100%;
     background-color: #0099f7;
@@ -125,18 +129,24 @@ main {
 }
 nav {
     display: flex;
-    flex-direction: row;
+    flex-flow: row wrap;
     justify-content: space-between;
     padding: 0.75rem 2rem;
     max-width: 800px;
     margin: 0 auto;
     background-color: #0099f7;
-    color: white;
+
 }
-nav a {
+a.nav-link {
   text-transform: uppercase;
   text-decoration: none;
+  color: white;
   font-weight: 700;
+  padding: 10px;
+}
+
+#game-events {
+  line-height: 0.5;
 }
 
 footer {
@@ -165,8 +175,9 @@ footer {
     animation: example2 6s infinite linear forwards;
 }
 
-spinning-card {
-  width: 100px;
+spinning-card,
+playing-card {
+  width: 99px;
   height: 140px;
   /* background-color: red; */
   color: white;
@@ -183,6 +194,7 @@ spinning-card {
   /*offset-rotate: auto;*/
   animation: example2 6s linear forwards;
   transition: offset-rotate cubic-bezier(0.47, 0, 0.745, 0.715);
+  overflow: hidden;
 }
 
 @keyframes example2 {
