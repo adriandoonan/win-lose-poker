@@ -85,10 +85,16 @@ const circularIncrement = (arrayLength,increment = 0,startIndex = 0) => {
   }
 
 
-  const addToElement = (htmlElement,content,tag = 'p') => {
-    console.log(`trying to add`,content,'to',htmlElement);
-    htmlElement.innerHTML += `<${tag}>${content}</${tag}>`
+  const addToElement = (htmlElement,content,tag = 'p', prepend) => {
+    //console.log(`trying to add`,content,'to',htmlElement);
+    if (prepend) {
+      htmlElement.innerHTML = `<${tag}>${content}</${tag}>` + htmlElement.innerHTML
+    }else {
+      htmlElement.innerHTML += `<${tag}>${content}</${tag}>`
+    }
   }
+
+
 
 
   const replaceInnerText = (htmlElement,content) => {
@@ -105,4 +111,59 @@ const circularIncrement = (arrayLength,increment = 0,startIndex = 0) => {
     elements.forEach(element => element.innerText = '')
   }
 
-  export {circularIncrement, knuthShuffle, pipe, addToElement, replaceInnerText, removeElements, clearElements}
+  const calculateChenFormula = (cardPair) => {
+    let score = 0;
+    const card1Value = cardPair[0].card
+    const card2Value = cardPair[1].card
+    const cardScores = [ , , 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 6, 7, 8, 10]
+    const highestCard = card1Value > card2Value ? cardScores[card1Value] : cardScores[card2Value]
+    const gap = Math.abs(card1Value - card2Value)
+    //score += highestCard
+    if (
+      card1Value === card2Value
+    ) {
+      const pairBonus = highestCard * 2
+      score += pairBonus > 5 ?  pairBonus  : 5
+      //score += highestCard < 5 ? highestCard  : 5
+    } else {
+      score += highestCard
+    }
+    if (cardPair[0].suit === cardPair[1].suit) {
+      score += 2
+    }
+    switch(gap) {
+      case 0:
+      case 1:
+        break
+      case 2:
+        score -= 1
+        break
+      case 3: 
+        score -= 2
+        break
+      case 4:
+        score -= 4
+        break
+      default:
+        score -=5
+    }
+    if (gap && gap <= 2 && card1Value < 12 && card2Value < 12) {
+      score++
+    }
+    return Math.round(score)
+  }
+
+  // const myCardsArray = [
+  //   {card: 7, suit: 'spades'},
+  //   {card: 8, suit:'diamonds'},
+  //   {card: 10, suit:'clubs'},
+  //   {card: 11, suit:'diamonds'},
+  //   {card: 10, suit:'spades'},
+  //   {card: 14, suit:'clubs'},
+  //   {card: 13, suit:'clubs'}
+  // ]
+
+  // calculateChenFormula(myCardsArray.slice(-2))
+  // should be 4 + -5 = -1
+
+  export {circularIncrement, knuthShuffle, pipe, addToElement, replaceInnerText, removeElements, clearElements, calculateChenFormula}

@@ -1,8 +1,8 @@
 "use strict;"
 
-import Player from './player.js';
+import {Player,Playbot} from './player.js';
 import Hand from './hand.js';
-import {pipe, knuthShuffle, circularIncrement, addToElement} from './helperFunctions.js';
+import {pipe, knuthShuffle, circularIncrement, addToElement,clearElements} from './helperFunctions.js';
 
 
 
@@ -25,7 +25,12 @@ class Game {
       this.players = players || [];
       this.hands = [];
       this.round = 0;
-      this.eventElement = document.getElementById('game-events')
+      this.winner = []; 
+      this.eventElement = document.getElementById('game-events');
+      this.communityCardsElement = document.getElementById('community-cards');
+      this.playerCardsElement = document.getElementById('player-cards');
+      this.gameScreen = document.getElementById('game-screen');
+      this.gameOverScreen = document.getElementById('game-over-screen')
     }
   
     /**
@@ -39,12 +44,24 @@ class Game {
       this.players[this.players.length - 1].seatNumber = this.players.length
     }
 
+    async introduce() {
+      for (const player of this.players) {
+          if ( player.type === 'bot' ) {
+              await player.doSomethingAsync(player.sayHello())
+              console.log('did something async')
+          }
+
+        }
+  }
+
     startNewHand() {
       this.players.sort((player1,player2) => player1.seatNumber < player2.seatNumber ? -1 : 1)
       this.hands.push(new Hand(this.players,this.round))
+
     }
 
     advanceCurrentHand() {
+
         if (this.round >= this.hands.length ) {
           console.log('hey, this round is over');
           return this
@@ -97,18 +114,38 @@ class Game {
             console.log('looks like,',currentHand.players.find(player => !player.folded).name,'won the game');
           } else {
             console.log('looks like we need a showdown with',currentHand.players.filter(player => !player.folded),'to decide the winner');
+            const winnersArr = currentHand.decideWinner()
+            console.log('we looked at the cards and decided the winner(s)',winnersArr);
+            
+            this.endCurrentHand(winnersArr[0].index)
           }
         }
+
       }
     }
 
     endCurrentHand(winnerIndex) {
+      if (winnerIndex === -1) {
+        console.log('ending early and not declaring a winner')
+        return
+      }
       const message = `ending current round ${this.round}, and declaring ${this.hands[this.round].players[winnerIndex].name} the winner`
       console.log(message);
       addToElement(this.eventElement,message)
+      this.players.forEach(player => player.cards.splice(0))
+      clearElements(this.playerCardsElement,this.communityCardsElement)
       this.players[winnerIndex].purse += this.hands[this.round].pot;
       this.players[winnerIndex].wins++
       this.round++
+      if (this.players[0].purse < 0){
+        console.log('oh no, the game is over, you are out of money');
+        this.endWholeDamnGame()
+      }
+    }
+
+    endWholeDamnGame() {
+      this.gameScreen.classList.add('hidden')
+      this.gameOverScreen.classList.remove('hidden')
     }
   }
 

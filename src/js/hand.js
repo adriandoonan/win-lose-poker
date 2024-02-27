@@ -1,6 +1,7 @@
-import Player from "./player.js";
+"use strict;"
+import {Player,Playbot} from "./player.js";
 import { circularIncrement, knuthShuffle, addToElement } from "./helperFunctions.js";
-import { myCardToHash } from "./cactus.js";
+import { myCardToHash,findBestHand } from "./cactus.js";
 
 
 class Deck {
@@ -150,6 +151,8 @@ class Hand {
         this.stage = 'ante';
     }
     
+
+    
     addPlayers(players) {
         const allPlayers = [...this.players,...players]
         const takenSeats = allPlayers.map(player => player.seatNumber)
@@ -221,6 +224,9 @@ class Hand {
                 player.cards.push(...this.deck.deal())
             })
         }
+        for (const player of this.players) {
+            player.decideBet(this.communityCards)
+        }
         this.stage = 'preFlop'
         return this
     }
@@ -238,6 +244,9 @@ class Hand {
         this.communityCards = this.communityCards.concat(this.deck.deal(3))
 
         this.stage = 'flop'
+        for (const player of this.players) {
+            player.decideBet(this.communityCards)
+        }
         return this
     }
     
@@ -250,6 +259,9 @@ class Hand {
         const burnedCard = this.deck.burn()
         this.communityCards = this.communityCards.concat(this.deck.deal())
         this.stage = 'turn'
+        for (const player of this.players) {
+            player.decideBet(this.communityCards)
+        }
         return this
     }
        
@@ -262,59 +274,111 @@ class Hand {
         const burnedCard = this.deck.burn()
         this.communityCards = this.communityCards.concat(this.deck.deal())
         this.stage = 'river'
+        for (const player of this.players) {
+            player.decideBet(this.communityCards)
+        }
         return this
     }
     
-    makeBettingRound() {
+    async makeBettingRound() {
         let bettingRound = 0;
         let totalMoves = 0;
         let currentRoundMoves = 0;
         let currentHighestBet = this.players.reduce((acc,cur) => cur.currentBet > acc ? cur.currentBet : acc,0)
-    
-        do {
-            totalMoves += currentRoundMoves;
-            currentRoundMoves = 0;
-            console.log('\nmaking some moves in round',bettingRound,'of the',this.stage);
-            // as a player makes a move that is not a check the 
-            // current moves increases by one
-            // once every player has had the option to make a move
-            // and the move count does not increase in that round
-            // we can end the round
-            // we can move the number of moves from current round
-            // to moves variable and reset current round to 0 at
-            // start of round
-            
-            this.players.forEach(player => {
-                
-                if (!player.folded && player.currentBet < currentHighestBet) {
-                    console.log(player.name,' is chumpin->',player.currentBet,'highest',currentHighestBet,);
-                    if ( Math.random() > 0.4 ) {
-                        const currentDeficit = currentHighestBet - player.currentBet
-                        const bet = Math.random() > 0.4 ? currentDeficit : 4
-                        
-                        bet === currentDeficit ? player.placeBet(bet,'call') : player.placeBet(4)
-                        
-                        this.pot += bet
-                        currentRoundMoves++
-                        if (player.currentBet > currentHighestBet) {
-                            currentHighestBet = player.currentBet
-                        } 
-                    } else  {
-                        player.fold()
-                    }
+        console.log('round fed to makebettinground',this.stage);
+        for (const player of this.players) {
+            const decision = await player.doSomethingAsync(player.decideBet(this.communityCards))
+            if (this.stage === 'preFlop') {
+                if (currentHighestBet > player.currentBet) {
+                    this.pot += player.placeBet(currentHighestBet - player.currentBet,'call')
                 }
-            })
-            console.log('round',bettingRound,'currentRoundMoves',currentRoundMoves,'totalMoves',totalMoves);
-            bettingRound++
+            } else {
+                this.pot += player.placeBet(20,'wild speculation')
+            }
+            console.log('logging decision',decision)
         }
-        while (
-            currentRoundMoves !== 0 && bettingRound < 5
-        )
+    
+        // do {
+        //     totalMoves += currentRoundMoves;
+        //     currentRoundMoves = 0;
+        //     console.log('\nmaking some moves in round',bettingRound,'of the',this.stage);
+        //     // as a player makes a move that is not a check the 
+        //     // current moves increases by one
+        //     // once every player has had the option to make a move
+        //     // and the move count does not increase in that round
+        //     // we can end the round
+        //     // we can move the number of moves from current round
+        //     // to moves variable and reset current round to 0 at
+        //     // start of round
+            
+        //     this.players.forEach(player => {
+
+        //         if (!player.folded && player.currentBet < currentHighestBet) {
+        //             console.log(player.name,' is chumpin->',player.currentBet,'highest',currentHighestBet,);
+        //             if ( Math.random() > 0.4 ) {
+        //                 const currentDeficit = currentHighestBet - player.currentBet
+        //                 const bet = Math.random() > 0.4 ? currentDeficit : 4
+                        
+        //                 bet === currentDeficit ? player.placeBet(bet,'call') : player.placeBet(4)
+                        
+        //                 this.pot += bet
+        //                 currentRoundMoves++
+        //                 if (player.currentBet > currentHighestBet) {
+        //                     currentHighestBet = player.currentBet
+        //                 } 
+        //             } else  {
+        //                 player.fold()
+        //             }
+        //         }
+        //     })
+        //     console.log('round',bettingRound,'currentRoundMoves',currentRoundMoves,'totalMoves',totalMoves);
+        //     bettingRound++
+        // }
+        // while (
+        //     currentRoundMoves !== 0 && bettingRound < 5
+        // )
         //console.log(playersArray);
         console.log('round',bettingRound,'currentRoundMoves',currentRoundMoves,'totalMoves',totalMoves);
         
         return this
     }
+
+    decideWinner() {
+        const playersStillInIt = this.players.filter(player => !player.folded)
+        if (playersStillInIt.length === 1) {
+            return this.players.findIndex(player => !player.folded)
+        }
+        let winners = [];
+        let bestHand = {};
+        let bestHandRank = Infinity;
+    
+        for (let i = 0; i < playersStillInIt.length; i++) {
+            console.log(playersStillInIt[i].name,'is still in it')
+            //const playerBestHand = findBestHand(playersStillInIt[i].cards,this.communityCards).highCard.card
+            const playerBestHand = findBestHand(playersStillInIt[i].cards.concat(this.communityCards));
+            console.log('just cards for besthand', playersStillInIt[i].cards.concat(this.communityCards),findBestHand(playersStillInIt[i].cards.concat(this.communityCards)));
+            console.log(playersStillInIt[i].name,'best hand',playerBestHand);
+            if (playerBestHand.rank < bestHandRank) {
+                bestHandRank = playerBestHand.rank;
+                bestHand = playerBestHand
+                console.log('besthand was beaten by',playersStillInIt[i].name,'with',playerBestHand)
+                winners = [{name:playersStillInIt[i].name, index: this.players.findIndex(player => player.name === playersStillInIt[i].name),bestHand:playerBestHand}]
+            }
+            else if (playerBestHand.rank === bestHandRank) {
+                winners.push({name:playersStillInIt[i].name, index: this.players.findIndex(player => player.name === playersStillInIt[i].name),bestHand:playerBestHand})
+            }
+        }
+        console.log('winners',winners);
+        winners.forEach(winner => {
+            console.log(winner.name,'won with',winner.bestHand.description,'oh, and they are at index',winner.index)
+        })
+        if (winners.length === 1) {
+            console.log('going to award the winner a pot of',this.pot)
+        }
+
+        return winners
+    }
+    
 }
 
 
@@ -322,26 +386,26 @@ class Hand {
 
 // newt.players
 
-const findBestHand = (cardsInHand = [],communityCards = []) => {
-    const allCards = cardsInHand.concat(communityCards).sort((a,b) => b.card - a.card)
-    if (!allCards.length) {
-        console.log('no cards to sort through');
-        return {highCard: {card:null,suit:null}, allCards}
-    }
-    else if (allCards.length <= 5) {
+// const findBestHand = (cardsInHand = [],communityCards = []) => {
+//     const allCards = cardsInHand.concat(communityCards).sort((a,b) => b.card - a.card)
+//     if (!allCards.length) {
+//         console.log('no cards to sort through');
+//         return {highCard: {card:null,suit:null}, allCards}
+//     }
+//     else if (allCards.length <= 5) {
        
-        return {highCard: allCards[0], allCards}
-    }
+//         return {highCard: allCards[0], allCards}
+//     }
 
-    return {highCard: allCards[0], allCards}
-}
+//     return {highCard: allCards[0], allCards}
+// }
 
-const communityCardsTestEmpty = []
-const communityCardsTest3 = [{card: 2,suit:'diamonds'},{card: 4,suit:'spades'},{card: 10,suit:'hearts'}]
-const communityCardsTest4 = [{card: 2,suit:'diamonds'},{card: 4,suit:'spades'},{card: 3,suit:'hearts'},{card: 11,suit:'clubs'}]
-const communityCardsTest5 = [{card: 2,suit:'diamonds'},{card: 4,suit:'spades'},{card: 3,suit:'hearts'},{card: 11,suit:'clubs'},{card: 12,suit:'spades'}]
-const cardsArrayEmpty = []
-const cardsArray2 = [{card: 2,suit:'hearts'},{card:7,suit:'clubs'}]
+// const communityCardsTestEmpty = []
+// const communityCardsTest3 = [{card: 2,suit:'diamonds'},{card: 4,suit:'spades'},{card: 10,suit:'hearts'}]
+// const communityCardsTest4 = [{card: 2,suit:'diamonds'},{card: 4,suit:'spades'},{card: 3,suit:'hearts'},{card: 11,suit:'clubs'}]
+// const communityCardsTest5 = [{card: 2,suit:'diamonds'},{card: 4,suit:'spades'},{card: 3,suit:'hearts'},{card: 11,suit:'clubs'},{card: 12,suit:'spades'}]
+// const cardsArrayEmpty = []
+// const cardsArray2 = [{card: 2,suit:'hearts'},{card:7,suit:'clubs'}]
 
 // console.log(findBestHand(cardsArrayEmpty,communityCardsTestEmpty).highCard.card);
 // console.log(findBestHand(cardsArray2,communityCardsTestEmpty).highCard.card);
@@ -351,29 +415,29 @@ const cardsArray2 = [{card: 2,suit:'hearts'},{card:7,suit:'clubs'}]
 
 
 
-const decideWinner = (playersArray,communityCards) => {
-    const playersStillInIt = playersArray.filter(player => !player.folded)
-    if (playersStillInIt.length === 1) {
-        return playersArray.findIndex(player => !player.folded)
-    }
-    let winners = [];
-    let bestHand = 0;
+// const decideWinner = (playersArray,communityCards) => {
+//     const playersStillInIt = playersArray.filter(player => !player.folded)
+//     if (playersStillInIt.length === 1) {
+//         return playersArray.findIndex(player => !player.folded)
+//     }
+//     let winners = [];
+//     let bestHand = 0;
 
 
 
-    for (let i = 0; i < playersStillInIt.length; i++) {
-        console.log(playersStillInIt[i].name,'foo')
-        const playerBestHand = findBestHand(playersStillInIt[i].cards,communityCards).highCard.card
-        if (playerBestHand > bestHand) {
-            bestHand = playerBestHand
-            winners = [{name:playersStillInIt[i].name, index: playersArray.findIndex(player => player.name === playersStillInIt[i].name)}]
-        }
-        else if (playerBestHand === bestHand) {
-            winners.push({name:playersStillInIt[i].name, index: playersArray.findIndex(player => player.name === playersStillInIt[i].name)})
-        }
-    }
-    return winners
-}
+//     for (let i = 0; i < playersStillInIt.length; i++) {
+//         console.log(playersStillInIt[i].name,'foo')
+//         const playerBestHand = findBestHand(playersStillInIt[i].cards.concat(communityCards)).highCard.card
+//         if (playerBestHand > bestHand) {
+//             bestHand = playerBestHand
+//             winners = [{name:playersStillInIt[i].name, index: playersArray.findIndex(player => player.name === playersStillInIt[i].name)}]
+//         }
+//         else if (playerBestHand === bestHand) {
+//             winners.push({name:playersStillInIt[i].name, index: playersArray.findIndex(player => player.name === playersStillInIt[i].name)})
+//         }
+//     }
+//     return winners
+// }
 
 const playersTestArray = [
     {

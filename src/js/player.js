@@ -1,4 +1,11 @@
-import { addToElement } from "./helperFunctions.js";
+import { addToElement,calculateChenFormula } from "./helperFunctions.js";
+import { findBestHand } from "./cactus.js";
+
+async function randomWait() {
+    const timeToWait = Math.floor(Math.random() * 1000)
+    await new Promise((resolve) => setTimeout(resolve, timeToWait))
+    return timeToWait
+}
 
 class Player {
     /**
@@ -14,15 +21,57 @@ class Player {
      * 
      * @class Player
      */
-    constructor(name, purse) {
+    constructor(name, purse, purseElement) {
         this.name = name;
         this.purse = purse || 100;
+        this.purseElement = purseElement || null;
         this.wins = 0;
         this.currentBet = 0;
         this.cards = [];
         this.folded = false;
         this.seatNumber = null;
-        this.eventsElement = document.getElementById('game-events')
+        this.chenScore = 0;
+        this.bestHand = {};
+        this.eventsElement = document?.getElementById('game-events') || 'foo'
+    }
+
+    async doSomethingAsync(callbackFunction) {
+        const waited = await randomWait()
+        console.log('waited for',waited)
+        if (typeof callbackFunction === 'function') {
+            callbackFunction()
+        }
+        return waited
+    }
+
+    sayHello() {
+        const message = `Hey, this is ${this.name}, let's play!`
+        addToElement(this.eventsElement,message,'p',true)
+    }
+
+    /**
+     * Updates the players chen score and best hand based on
+     * the available cards in the current stage of the hand
+     *
+     * @param {Array.<object>} [communityCards=[]]
+     * @return {object} 
+     * @memberof Player
+     */
+    decideBet(communityCards = []) {
+        if (this.folded) return
+
+        const hand = this.cards.concat(communityCards)
+        if (hand.length === 2) {
+            this.chenScore = calculateChenFormula(hand)
+            console.log(`${this.name} has two cards and chen score of ${this.chenScore}`)
+        }
+        if (hand.length >= 5) {
+            this.bestHand = findBestHand(hand)
+            console.log(`${this.name} has a best hand of`,this.bestHand)
+
+        }
+
+        return this
     }
 
     /**
@@ -35,15 +84,18 @@ class Player {
      * @memberof Player
      */
     placeBet(amount,type) {
-
         const message = `${this.name} is placing a ${type || 'bet'} of ${amount}`
         console.log(message)
-        addToElement(this.eventsElement,message)
+        addToElement(this.eventsElement,message,'p',true)
         
         this.purse -= amount
         this.currentBet += amount
+
+        if (this.purseElement) {
+            this.purseElement.innerText = this.purse
+        }
         
-        return this
+        return amount
     }
 
     /**
@@ -55,13 +107,27 @@ class Player {
     fold() {
         const message = `${this.name} is folding`
         console.log(message)
-        addToElement(this.eventsElement,message)
+        addToElement(this.eventsElement,message,'p',true)
         this.folded = true
 
         return this
     }
 }
 
+class Playbot extends Player {
+    constructor(name,purse,aggression) {
+        super(`${name}bot`,purse);
+        this.aggression = aggression || 5;
+        this.type = 'bot';
+       
+       
+    } 
+    
+    
 
+}
 
-export default Player
+const newBot = new Playbot('bob')
+newBot
+
+export {Player,Playbot}

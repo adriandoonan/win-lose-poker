@@ -13,3 +13,25 @@ A computer-controlled player who has lost their money will leave the game. When 
 ## What else can I say?
 
 Happy pokering
+
+## burndown tasks
+
+- [ ] add logic for declaring a winner based on their hand and not just because they are the last player standing (but also declare winner if only one player)
+- [ ] add makeBet function to go through all the steps of deciding on and placing a bet async
+- [ ] make betting round loop async
+- [x] add a function calculate chen formula from the starting two cards
+- [x] allow players to know their chen formula result to help making a decision on whether to bet and how much
+
+## MVP
+
+limited functionality for MVP
+
+- [ ] can start a game
+- [ ] can move through the different rounds
+- [ ] betting always starts at same person
+- [ ] everyone always make the same bets: first round we match the big blind, later rounds always bet 20 to speed up game
+- [ ] no one folds
+- [ ] at the end who ever has the best hand wins the pot, handle split pot
+- [ ] when the use player runs out of money the game is over
+- [ ] when the playbots run out of money, they retire
+- [ ] if no playbots are left the player wins

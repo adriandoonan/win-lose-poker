@@ -117,7 +117,11 @@ body {
 }
 header {
     width: 100%;
-    background-color: cadetblue;
+    background-color: #0099f7;
+}
+main {
+    padding: 0 1rem;
+    max-width: 800px;
 }
 nav {
     display: flex;
@@ -126,12 +130,20 @@ nav {
     padding: 0.75rem 2rem;
     max-width: 800px;
     margin: 0 auto;
-    background-color: burlywood;
+    background-color: #0099f7;
+    color: white;
 }
+nav a {
+  text-transform: uppercase;
+  text-decoration: none;
+  font-weight: 700;
+}
+
 footer {
     margin-top: auto;
     display: flex;
     justify-content: space-between;
+    padding: 0 1rem;
 }
 
 #motion-path-example-span {
@@ -169,7 +181,8 @@ spinning-card {
     "M0,0 C2,8 80,400 500,500"
   );
   /*offset-rotate: auto;*/
-  animation: example2 6s infinite linear forwards;
+  animation: example2 6s linear forwards;
+  transition: offset-rotate cubic-bezier(0.47, 0, 0.745, 0.715);
 }
 
 @keyframes example2 {
