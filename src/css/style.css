@@ -117,7 +117,7 @@ body {
 }
 header {
     width: 100%;
-    background-color: cadetblue;
+    background-color: #0099f7;
 }
 main {
     padding: 0 1rem;
@@ -130,8 +130,15 @@ nav {
     padding: 0.75rem 2rem;
     max-width: 800px;
     margin: 0 auto;
-    background-color: burlywood;
+    background-color: #0099f7;
+    color: white;
 }
+nav a {
+  text-transform: uppercase;
+  text-decoration: none;
+  font-weight: 700;
+}
+
 footer {
     margin-top: auto;
     display: flex;

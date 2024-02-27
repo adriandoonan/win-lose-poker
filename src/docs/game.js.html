@@ -29,7 +29,7 @@
 <nav >
     
     
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Deck.html">Deck</a><ul class='methods'><li data-type='method'><a href="Deck.html#acesHigh">acesHigh</a></li><li data-type='method'><a href="Deck.html#acesLow">acesLow</a></li><li data-type='method'><a href="Deck.html#burn">burn</a></li><li data-type='method'><a href="Deck.html#deal">deal</a></li><li data-type='method'><a href="Deck.html#shuffle">shuffle</a></li></ul></li><li><a href="Game.html">Game</a><ul class='methods'><li data-type='method'><a href="Game.html#addPlayer">addPlayer</a></li></ul></li><li><a href="Player.html">Player</a><ul class='methods'><li data-type='method'><a href="Player.html#fold">fold</a></li><li data-type='method'><a href="Player.html#placeBet">placeBet</a></li></ul></li></ul><h3>Global</h3><ul><li><a href="global.html#circularIncrement">circularIncrement</a></li><li><a href="global.html#knuthShuffle">knuthShuffle</a></li><li><a href="global.html#pipe">pipe</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Deck.html">Deck</a><ul class='methods'><li data-type='method'><a href="Deck.html#acesHigh">acesHigh</a></li><li data-type='method'><a href="Deck.html#acesLow">acesLow</a></li><li data-type='method'><a href="Deck.html#burn">burn</a></li><li data-type='method'><a href="Deck.html#deal">deal</a></li><li data-type='method'><a href="Deck.html#shuffle">shuffle</a></li></ul></li><li><a href="Game.html">Game</a><ul class='methods'><li data-type='method'><a href="Game.html#addPlayer">addPlayer</a></li></ul></li><li><a href="Hand.html">Hand</a></li><li><a href="Player.html">Player</a><ul class='methods'><li data-type='method'><a href="Player.html#decideBet">decideBet</a></li><li data-type='method'><a href="Player.html#fold">fold</a></li><li data-type='method'><a href="Player.html#placeBet">placeBet</a></li></ul></li></ul><h3>Global</h3><ul><li><a href="global.html#circularIncrement">circularIncrement</a></li><li><a href="global.html#knuthShuffle">knuthShuffle</a></li><li><a href="global.html#pipe">pipe</a></li></ul>
     
 </nav>
 
@@ -47,9 +47,9 @@
         <article>
             <pre class="prettyprint source linenums"><code>"use strict;"
 
-import Player from './player.js';
+import {Player,Playbot} from './player.js';
 import Hand from './hand.js';
-import {pipe, knuthShuffle, circularIncrement} from './helperFunctions.js';
+import {pipe, knuthShuffle, circularIncrement, addToElement,clearElements} from './helperFunctions.js';
 
 
 
@@ -72,6 +72,12 @@ class Game {
       this.players = players || [];
       this.hands = [];
       this.round = 0;
+      this.winner = []; 
+      this.eventElement = document.getElementById('game-events');
+      this.communityCardsElement = document.getElementById('community-cards');
+      this.playerCardsElement = document.getElementById('player-cards');
+      this.gameScreen = document.getElementById('game-screen');
+      this.gameOverScreen = document.getElementById('game-over-screen')
     }
   
     /**
@@ -85,12 +91,24 @@ class Game {
       this.players[this.players.length - 1].seatNumber = this.players.length
     }
 
+    async introduce() {
+      for (const player of this.players) {
+          if ( player.type === 'bot' ) {
+              await player.doSomethingAsync(player.sayHello())
+              console.log('did something async')
+          }
+
+        }
+  }
+
     startNewHand() {
       this.players.sort((player1,player2) => player1.seatNumber &lt; player2.seatNumber ? -1 : 1)
       this.hands.push(new Hand(this.players,this.round))
+
     }
 
     advanceCurrentHand() {
+
         if (this.round >= this.hands.length ) {
           console.log('hey, this round is over');
           return this
@@ -139,19 +157,42 @@ class Game {
         }
         case 'river': {
           if (playersRemaining === 1) {
-            this.endCurrentHand(currentHand.players.findIndex(player => player.folded === true))
+            this.endCurrentHand(currentHand.players.findIndex(player => !player.folded))
+            console.log('looks like,',currentHand.players.find(player => !player.folded).name,'won the game');
           } else {
-            console.log('looks like a split pot with',currentHand.players.filter(player => !player.folded));
+            console.log('looks like we need a showdown with',currentHand.players.filter(player => !player.folded),'to decide the winner');
+            const winnersArr = currentHand.decideWinner()
+            console.log('we looked at the cards and decided the winner(s)',winnersArr);
+            
+            this.endCurrentHand(winnersArr[0].index)
           }
         }
+
       }
     }
 
     endCurrentHand(winnerIndex) {
-      console.log('ending current round',this.round,'and declaring',winnerIndex,'the winner');
+      if (winnerIndex === -1) {
+        console.log('ending early and not declaring a winner')
+        return
+      }
+      const message = `ending current round ${this.round}, and declaring ${this.hands[this.round].players[winnerIndex].name} the winner`
+      console.log(message);
+      addToElement(this.eventElement,message)
+      this.players.forEach(player => player.cards.splice(0))
+      clearElements(this.playerCardsElement,this.communityCardsElement)
       this.players[winnerIndex].purse += this.hands[this.round].pot;
       this.players[winnerIndex].wins++
       this.round++
+      if (this.players[0].purse &lt; 0){
+        console.log('oh no, the game is over, you are out of money');
+        this.endWholeDamnGame()
+      }
+    }
+
+    endWholeDamnGame() {
+      this.gameScreen.classList.add('hidden')
+      this.gameOverScreen.classList.remove('hidden')
     }
   }
 
@@ -167,32 +208,35 @@ class Game {
     new Player('jij',100),
   ]
 
-  const newGeem = new Game(playersArray)
+  // const newGeem = new Game(playersArray)
 
-  //console.log(newGeem)
+  // //console.log(newGeem)
 
-  newGeem.players[0].seatNumber = 6
-  //console.log(newGeem.players[0]);
-  newGeem.players[3].seatNumber = 1
-  //console.log(newGeem.players[3]);
+  // newGeem.players[0].seatNumber = 6
+  // //console.log(newGeem.players[0]);
+  // newGeem.players[3].seatNumber = 1
+  // //console.log(newGeem.players[3]);
 
-  newGeem.startNewHand()
-  //console.log(newGeem.hands[0].players);
+  // newGeem.startNewHand()
+  // //console.log(newGeem.hands[0].players);
 
-  newGeem.hands[0].addPlayers([new Player('joji')])
+  // newGeem.hands[0].addPlayers([new Player('joji')])
+
+  
 
 
-  //console.log(newGeem.hands[0].players);
+  // //console.log(newGeem.hands[0].players);
 
-  newGeem.hands[0].stage
-  newGeem.advanceCurrentHand()
-  //console.log(newGeem.hands[0]);
-  newGeem.advanceCurrentHand()
-  //console.log(newGeem.hands[0]);
-  newGeem.advanceCurrentHand()
-  //console.log(newGeem.hands[0]);
-  newGeem.advanceCurrentHand()
-  //console.log(newGeem.hands[0]);
+  // newGeem.hands[0].stage
+  // newGeem.advanceCurrentHand()
+  // //console.log(newGeem.hands[0]);
+  // newGeem.advanceCurrentHand()
+  // console.log('carrrds',newGeem.hands[0].players[0].cards)
+  // //console.log(newGeem.hands[0]);
+  // newGeem.advanceCurrentHand()
+  // //console.log(newGeem.hands[0]);
+  // newGeem.advanceCurrentHand()
+  // //console.log(newGeem.hands[0]);
 
 
   
@@ -422,7 +466,7 @@ class Game {
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.2</a> on Mon Feb 26 2024 16:42:35 GMT+0100 (Central European Standard Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.2</a> on Tue Feb 27 2024 18:15:11 GMT+0100 (Central European Standard Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
 </footer>
 
 <script>prettyPrint();</script>

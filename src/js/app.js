@@ -1,5 +1,5 @@
 import Game from "./game.js";
-import Player from "./player.js";
+import {Player,Playbot} from "./player.js";
 import { replaceInnerText, clearElements } from "./helperFunctions.js";
 
 const splashScreen = document.getElementById('splash-screen')
@@ -7,6 +7,7 @@ const splashScreenLink = document.getElementById('splash-screen-link')
 const gameScreen = document.getElementById('game-screen')
 const gameScreenLink = document.getElementById('game-screen-link')
 const gameOverScreen = document.getElementById('game-over-screen')
+const restartFromGameOverButton = document.getElementById('restart-from-game-over')
 const startButton = document.getElementById('start-game-button')
 const startNewHandButton = document.getElementById('start-new-hand-button')
 const gameEventsContainer = document.getElementById('game-events')
@@ -29,19 +30,6 @@ window.onload = function(){
   },1000);
 };
 
-// let spinTimer;
-// let spin = 0;
-// const element = document.querySelector('#motion-path-example-span')
-
-// spinTimer = setInterval(() => {
-//   if (spin === 360) {
-//     spin = 0
-//   }
-//   element.style.offsetRotate = `${spin}deg`
-//   spin++
-// },10)
-
-//setTimeout(() => clearInterval(spinTimer),100000)
 
 class SpinningCard extends HTMLElement {
   static observedAttributes = ["spin"];
@@ -95,7 +83,7 @@ const cardSpinnerFunc = () => {
 
 let cardThowTimer = setInterval(cardSpinnerFunc,nextInterval)
 
-console.log(gameOverScreen);
+
 
 splashScreenLink.addEventListener('click', () => {
   gameOverScreen.classList.add('hidden')
@@ -115,7 +103,7 @@ startButton.addEventListener('click', () => {
   if (!playerName) {
     playerName = prompt('what\'s your name pardner?')
   }
-  game = new Game([new Player(playerName),new Player('foo'), new Player('bar'), new Player('baz')])
+  game = new Game([new Player(playerName,100, playerPurseSpan),new Playbot('foo'), new Playbot('bar'), new Playbot('baz'), new Playbot('jij')])
   playerNameSpan.innerText = playerName;
   playerPurseSpan.innerText = game.players[0].purse
   playerWinsSpan.innerText = game.players[0].wins
@@ -126,6 +114,7 @@ startButton.addEventListener('click', () => {
   startNewHandButton.innerText = 'Start new hand'
   replaceInnerText(playersLeftInGameElement,game?.hands[game?.round]?.players.length || '')
   clearElements(gameEventsContainer, communityCardsSpan, playerCardsSpan)
+  game.introduce()
   
 })
 
@@ -134,15 +123,17 @@ startNewHandButton.addEventListener('click', () => {
   if (game.hands.length === game.round) {
     console.log('hands length equal to round');
     game.startNewHand()
-    game.advanceCurrentHand()
 
-    playerCardsSpan.innerHTML = game?.hands[game?.round]?.players[0]?.cards.map(card => `<div class="player-card-container"><img onclick="classList.toggle('player')" class="playing-card player" src="static/cardfronts_svg/${card.suit+'_'+card.card}.svg" alt="${card.card} of ${card.suit}"/></div>`).join('')
+    if (!playerCardsSpan.innerText) {
+      playerCardsSpan.innerHTML = game?.hands[game?.round]?.players[0]?.cards.map(card => `<div class="player-card-container"><img onclick="classList.toggle('player')" class="playing-card player" src="static/cardfronts_svg/${card.suit+'_'+card.card}.svg" alt="${card.card} of ${card.suit}"/></div>`).join('')
+    }
     startNewHandButton.innerText = 'Go to next stage'
     replaceInnerText(playersLeftInGameElement,game?.hands[game?.round]?.players.filter(player => !player.folded).length)
   } 
   else if (game.hands.length < game.round) {
     console.log('hands length less than to round');
     console.log('the round is over');
+    clearElements(playerCardsSpan,communityCardsSpan)
     startNewHandButton.innerText = 'New hand'
     replaceInnerText(gameEventsContainer,'')
     replaceInnerText(playersLeftInGameElement,game?.hands[game?.round]?.players.filter(player => !player.folded).length  || '')
@@ -150,21 +141,34 @@ startNewHandButton.addEventListener('click', () => {
   else {
     console.log('else condition');
     game.advanceCurrentHand()
+    const roundCardsInHand = game?.hands[game?.round]?.players[0]?.cards
+    const roundCommunityCards = game?.hands[game?.round]?.communityCards
     
-    console.log('cardsinhand',game?.hands[game?.round]?.players[0]?.cards)
-    console.log('community',game?.hands[game?.round]?.communityCards);
-    if (game?.hands[game?.round]?.communityCards.length > 0) {
-      communityCardsSpan.innerHTML = game?.hands[game?.round]?.communityCards.map(card => `<img class="playing-card community" src="static/cardfronts_svg/${card.suit+'_'+card.card}.svg" alt="${card.card} of ${card.suit}"/>`).join(' ')
-    }
-    playerCardsSpan.innerHTML = game?.hands[game.round]?.players[0]?.cards.map(card => `<div class="player-card-container"><img onclick="classList.toggle('player')" class="playing-card player" src="static/cardfronts_svg/${card.suit+'_'+card.card}.svg" alt="${card.card} of ${card.suit}"/></div>`).join(' ')
+    console.log('cardsinhand',roundCardsInHand)
+    console.log('community',roundCommunityCards);
+    if (roundCommunityCards?.length > 0) {
+      communityCardsSpan.innerHTML = roundCommunityCards.map(card => `<img class="playing-card community" src="static/cardfronts_svg/${card.suit+'_'+card.card}.svg" alt="${card.card} of ${card.suit}"/>`).join(' ')
+    } 
+    if (roundCardsInHand?.length > 0) {
+      playerCardsSpan.innerHTML = roundCardsInHand.map(card => `<div class="player-card-container"><img onclick="classList.toggle('player')" class="playing-card player" src="static/cardfronts_svg/${card.suit+'_'+card.card}.svg" alt="${card.card} of ${card.suit}"/></div>`).join(' ')
+    } 
+
     replaceInnerText(playersLeftInGameElement,game?.hands[game?.round]?.players.filter(player => !player.folded).length  || '')
   }
-
-
-  //console.log(game.hands.length)
-  //console.log(game.hands)
 })
 
-// Create a class for the spinning card element
-
-
+restartFromGameOverButton.addEventListener('click', () => {
+  if (!playerName) {
+    playerName = prompt('what\'s your name pardner?')
+  }
+  replaceInnerText(playersLeftInGameElement,game?.hands[game?.round]?.players.length || '')
+  clearElements(gameEventsContainer, communityCardsSpan, playerCardsSpan)
+  playerNameSpan.innerText = playerName;
+  playerPurseSpan.innerText = game.players[0].purse
+  playerWinsSpan.innerText = game.players[0].wins
+  startNewHandButton.innerText = 'Start new hand'
+  gameOverScreen.classList.add('hidden')
+  gameScreen.classList.remove('hidden')
+  game = new Game([new Player(playerName,100, playerPurseSpan),new Playbot('foo'), new Playbot('bar'), new Playbot('baz'), new Playbot('jij')])
+  game.introduce()
+})

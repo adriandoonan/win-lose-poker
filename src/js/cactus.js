@@ -17,31 +17,31 @@ import * as lookupTables from './cactus-lookup.js';
 // const primeLookup = require( "./primeMultiplicands" );
 
 // Note how suits are represented as set bits
-export const suits = { 8: "Clubs", 4: "Diamonds", 2: "Hearts", 1: "Spades" };
+const suits = { 8: "Clubs", 4: "Diamonds", 2: "Hearts", 1: "Spades" };
 
 // Let's define each rank (2 to 14/Ace) as a prime number
-export const rankPrimes = [ 2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41 ];
+const rankPrimes = [ 2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41 ];
 
 // And a function for a card's rank, 2 to 14/Ace
-export const rank = card => ( card >>> 8 ) % 16;
+const rank = card => ( card >>> 8 ) % 16;
 
 // And another for its suit
-export const suit = card => ( card >>> 12 ) % 16;
+const suit = card => ( card >>> 12 ) % 16;
 
 // Now some arrays & a corresponding function for suit/rank/card name strings
 // Note the irregular spacing to correspond to how we're representing suits as set bits [ 1, 2, 4, 8 ]
-export const rankNames = [ "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Jack", "Queen", "King", "Ace" ];
-export const suitNames = [ null, "Spades", "Hearts", null, "Diamonds", null, null, null, "Clubs" ];
-export const cardName = card => `${ rankNames[ rank( card ) ] } of ${ suitNames[ suit( card ) ] }`;
+const rankNames = [ "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Jack", "Queen", "King", "Ace" ];
+const suitNames = [ null, "Spades", "Hearts", null, "Diamonds", null, null, null, "Clubs" ];
+const cardName = card => `${ rankNames[ rank( card ) ] } of ${ suitNames[ suit( card ) ] }`;
 
 // a fucntion to turn one of my card's suit value into the expected value
-export const toSuit = (suit) => {
+const toSuit = (suit) => {
     const suits = { "spades": 1, "hearts": 2, "diamonds": 4, "clubs": 8 }
     return suits[suit]
 }
 
 // a function to turn one of my card objects into the expected hash
-export const myCardToHash = (cardObject) => {
+const myCardToHash = (cardObject) => {
     const myCardRank = cardObject.card -2
     const myCardSuit = toSuit(cardObject.suit)
     return ( (rankPrimes[myCardRank ]) | (myCardRank << 8) | (myCardSuit << 12) | ( ( 1 << myCardRank ) << 16 ) )
@@ -49,14 +49,14 @@ export const myCardToHash = (cardObject) => {
 
 // This is a clever fast way to count bits in an integer courtesy of Sean Eron Anderson
 // https://graphics.stanford.edu/~seander/bithacks.html
-export const countBits = bit => {
+const countBits = bit => {
     const counter = bit - ( ( bit >>> 1 ) & 3681400539 ) - ( ( bit >>> 2 ) & 1227133513 );
     return ( ( counter + ( counter >>> 3 ) ) & 3340530119 ) % 63;
 }
 
 // Now here's a function to compile a full deck
 // To shuffle, pass anything other than null/undefined/0/NaN/"" as a parameter
-export const fullDeck = shuffled => {
+const fullDeck = shuffled => {
     const result = [];
     for ( let rank = 0; rank < 13; rank++ ) for ( let suit of [ 8, 4, 2, 1 ] )
         result.push( ( rankPrimes[ rank ] ) | ( rank << 8 ) | ( suit << 12 ) | ( ( 1 << rank ) << 16 ) );
@@ -73,30 +73,30 @@ export const fullDeck = shuffled => {
 // When representing cards this way, bitwise-and-ing everything with 61,440 will result in a 0
 // if the hand is not a flush - this is the same as:
 // hand => hand[ 0 ] & hand[ 1 ] & hand[ 2 ] & hand[ 3 ] & hand[ 4 ] & 0xF000;
-export const flush = hand => hand.reduce( ( total, card ) => total & card, 0xF000 );
+const flush = hand => hand.reduce( ( total, card ) => total & card, 0xF000 );
 
 // Here's where it gets interesting
 
 // If a hand is a flush, then bitwise-or-ing everything and shifting it all 16 bits to the right
 // will result in a number with exactly five set bits (one for each card) - these are all unique and
 // they correspond to a lookup table, flushes[], with the value for each
-export const flushBitPattern = flush => flush.reduce( ( total, card ) => total | card , 0 ) >>> 16;
-export const flushRank = flush => lookupTables.flushes[ flushBitPattern( flush ) ];
+const flushBitPattern = flush => flush.reduce( ( total, card ) => total | card , 0 ) >>> 16;
+const flushRank = flush => lookupTables.flushes[ flushBitPattern( flush ) ];
 
 // if the hand isn't a flush or straight flush, let's use a different lookup table to check
 // for straights
-export const fiveUniqueCardsRank = hand => lookupTables.fiveUniqueCards[ flushBitPattern( hand ) ];
+const fiveUniqueCardsRank = hand => lookupTables.fiveUniqueCards[ flushBitPattern( hand ) ];
 
 // We've eliminated flushes, straights and high-card hands – let's move on to pairs & threes
 
 // Since we're representing each rank as a prime, the multiplicand of all rank primes together 
 // is guaranteed to be unique
-export const primeMultiplicand = hand => hand.reduce( ( total, card ) => total * ( card & 0xFF ), 1 );
+const primeMultiplicand = hand => hand.reduce( ( total, card ) => total * ( card & 0xFF ), 1 );
 
 // This multiplicand will be way too large for a lookup table so instead we'll speed things up
 // to log-n time with this perfect hash lookup function - courtesy of Paul Senzee
 // http://senzee.blogspot.com/2006/06/some-perfect-hash.html
-export const findFast = u => {
+const findFast = u => {
     u += 0xe91aaa35;
     u ^= u >>> 16;
     u += u << 8;
@@ -108,7 +108,7 @@ export const findFast = u => {
 
 
 // Finally let's tie it all together - first check for flushes, then straights, then pairs/threes
-export const handRank = hand => {
+const handRank = hand => {
     if ( flush( hand ) ) return flushRank( hand );
     let fiveUniqueCardsRanked = fiveUniqueCardsRank( hand );
     if ( fiveUniqueCardsRanked ) return fiveUniqueCardsRanked;
@@ -116,7 +116,7 @@ export const handRank = hand => {
 };
 
 // Some quick simple branching to return the hand's rank as a string
-export const handValue = hand => {
+const handValue = hand => {
     const rank = handRank( hand );
     if ( rank > 6185 ) return "High card";
     else if ( rank > 3325 ) return "One pair";
@@ -131,7 +131,7 @@ export const handValue = hand => {
 
 // A function to generate possible hands (k-combinations)
 // https://medium.com/nerd-for-tech/july-2-generating-k-combinations-with-recursion-in-javascript-71ef2b90b44b
-export const possibleHands = ( deck, combinationLength ) => {
+const possibleHands = ( deck, combinationLength ) => {
     let head, tail, result = [];
     if ( combinationLength > deck.length || combinationLength < 1 ) { return []; }
     if ( combinationLength === deck.length ) { return [ deck ]; }
@@ -145,48 +145,82 @@ export const possibleHands = ( deck, combinationLength ) => {
 }
 
 
-// pass any non-null argument to shuffle the deck
-const shuffledDeck = fullDeck( true );
 
-const drawFive = shuffledDeck.slice( 0, 5 );
-
-const myCardsArray = [
-    {card: 7, suit: 'spades'},
-    {card: 8, suit:'diamonds'},
-    {card: 10, suit:'clubs'},
-    {card: 11, suit:'diamonds'},
-    {card: 10, suit:'spades'},
-    {card: 3, suit:'spades'},
-    {card: 8, suit:'hearts'}]
-
-
-
-const testArr = []
-
-
-myCardsArray
-myCardsArray.forEach(card => {
-    testArr.push(myCardToHash(card))
-});
-
-handRank(testArr)
-handValue(testArr)
-
-const bestHand = possibleHands(testArr,5).map(hand => ({cards:[...hand],rank:handRank(hand)})).sort((a,b) => a.rank - b.rank)[0]
-
-export const findBestHand = (arrayOfCards) => {
-    const bestHand = possibleHands(arrayOfCards,5).map(hand => ({cards:[...hand],rank:handRank(hand)})).sort((a,b) => a.rank - b.rank)[0]
-    return {...bestHand, description: handValue(bestHand.cards)}
+const findBestHand = (arrayOfCards) => {
+    const bestHand = possibleHands(arrayOfCards,5)
+        .map(hand => ({cards:[...hand],rank: handRank(hand.map(card => card.hash))}))
+        .sort((a,b) => a.rank - b.rank)[0]
+    return {...bestHand, description: handValue(bestHand.cards.map(card => card.hash))}
 }
 
-findBestHand(myCardsArray)
 
-bestHand
-handValue(bestHand.cards)
+export {myCardToHash, findBestHand}
 
-cardName(myCardToHash(myCardsArray[0]))
-cardName(testArr[0])
-console.log(handRank(drawFive))
-console.log(handValue(drawFive));
-console.log( drawFive.map( cardName ) );
-//--> [ 'Nine of Clubs', 'Ten of Clubs', 'Six of Clubs', 'Nine of Diamonds', 'Five of Diamonds' ]
+//#region testing
+// pass any non-null argument to shuffle the deck
+// const shuffledDeck = fullDeck( true );
+
+// const drawFive = shuffledDeck.slice( 0, 5 );
+
+// const myCardsArray = [
+//     {card: 7, suit: 'spades'},
+//     {card: 8, suit:'diamonds'},
+//     {card: 10, suit:'clubs'},
+//     {card: 11, suit:'diamonds'},
+//     {card: 10, suit:'spades'},
+//     {card: 3, suit:'spades'},
+//     {card: 8, suit:'hearts'}]
+
+
+
+// const testArr = []
+
+
+// myCardsArray
+// myCardsArray.forEach(card => {
+//     testArr.push(myCardToHash(card))
+// });
+
+// handRank(testArr)
+// handValue(testArr)
+
+//const bestHand = possibleHands(testArr,5).map(hand => ({cards:[...hand],rank:handRank(hand)})).sort((a,b) => a.rank - b.rank)[0]
+
+const someCrds = [
+    {suit: 'hearts', card: 4, hash: 270853},
+    {suit: 'clubs', card: 8, hash: 4228625},
+    {suit: 'spades', card: 10, hash: 16783383},
+    {suit: 'clubs', card: 11, hash: 33589533},
+    {suit: 'diamonds', card: 13, hash: 134236965}
+]
+const someCrdsTest = [
+    {suit: 'hearts', card: 4},
+    {suit: 'clubs', card: 8},
+    {suit: 'spades', card: 10},
+    {suit: 'clubs', card: 11},
+    {suit: 'diamonds', card: 13}
+]
+const newArr = []
+someCrdsTest.forEach(card => {
+    newArr.push(myCardToHash(card))
+})
+newArr
+handRank(newArr)
+handValue(newArr)
+
+findBestHand(someCrds)
+handRank(someCrds.map(card => card.hash))
+handValue(someCrds.map(card => card.hash))
+
+// findBestHand(myCardsArray)
+
+// bestHand
+// handValue(bestHand.cards)
+
+// cardName(myCardToHash(myCardsArray[0]))
+// cardName(testArr[0])
+// console.log(handRank(drawFive))
+// console.log(handValue(drawFive));
+// console.log( drawFive.map( cardName ) );
+// //--> [ 'Nine of Clubs', 'Ten of Clubs', 'Six of Clubs', 'Nine of Diamonds', 'Five of Diamonds' ]
+//#endregion
