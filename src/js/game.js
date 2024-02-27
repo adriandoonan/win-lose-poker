@@ -30,7 +30,12 @@ class Game {
       this.communityCardsElement = document.getElementById('community-cards');
       this.playerCardsElement = document.getElementById('player-cards');
       this.gameScreen = document.getElementById('game-screen');
-      this.gameOverScreen = document.getElementById('game-over-screen')
+      this.gameOverScreen = document.getElementById('game-over-screen');
+      this.winnerDialogElement = document.querySelector('dialog');
+      this.winnerDialogText = document.querySelector('dialog p');
+      this.playerPurseElement = document.getElementById('player-purse');
+      this.playerWinsElement = document.getElementById('player-wins');
+      this.goToGameOverScreenTimer = null;
     }
   
     /**
@@ -129,13 +134,19 @@ class Game {
         console.log('ending early and not declaring a winner')
         return
       }
-      const message = `ending current round ${this.round}, and declaring ${this.hands[this.round].players[winnerIndex].name} the winner`
+      const message = `<strong>ending round ${this.round + 1}, and declaring ${this.hands[this.round].players[winnerIndex].name} the winner</strong>`
+      
       console.log(message);
-      addToElement(this.eventElement,message)
+      this.winnerDialogText.innerHTML = `<strong>${this.hands[this.round].players[winnerIndex].name} has won the round and a pot of ${this.hands[this.round].pot}</strong>`
+      
+      this.winnerDialogElement.showModal()
+      addToElement(this.eventElement,message,'p',true)
       this.players.forEach(player => player.cards.splice(0))
       clearElements(this.playerCardsElement,this.communityCardsElement)
       this.players[winnerIndex].purse += this.hands[this.round].pot;
+      this.playerPurseElement.innerText = this.players[0].purse;
       this.players[winnerIndex].wins++
+      this.playerWinsElement.innerText = this.players[0].wins;
       this.round++
       if (this.players[0].purse < 0){
         console.log('oh no, the game is over, you are out of money');
@@ -144,8 +155,11 @@ class Game {
     }
 
     endWholeDamnGame() {
-      this.gameScreen.classList.add('hidden')
-      this.gameOverScreen.classList.remove('hidden')
+      this.goToGameOverScreenTimer = setTimeout(() => {
+        this.gameScreen.classList.add('hidden')
+        this.gameOverScreen.classList.remove('hidden')
+      },1500)
+
     }
   }
 

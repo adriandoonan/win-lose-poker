@@ -1,6 +1,10 @@
 import Game from "./game.js";
 import {Player,Playbot} from "./player.js";
 import { replaceInnerText, clearElements } from "./helperFunctions.js";
+import {SpinningCard, PlayingCard} from './custom-elements.js'
+
+customElements.define("playing-card", PlayingCard);
+customElements.define("spinning-card", SpinningCard);
 
 const splashScreen = document.getElementById('splash-screen')
 const splashScreenLink = document.getElementById('splash-screen-link')
@@ -11,6 +15,7 @@ const restartFromGameOverButton = document.getElementById('restart-from-game-ove
 const startButton = document.getElementById('start-game-button')
 const startNewHandButton = document.getElementById('start-new-hand-button')
 const gameEventsContainer = document.getElementById('game-events')
+const darkModeToggle = document.getElementById('don-shades')
 
 let game, playerName;
 
@@ -31,46 +36,17 @@ window.onload = function(){
 };
 
 
-class SpinningCard extends HTMLElement {
-  static observedAttributes = ["spin"];
+const dialog = document.querySelector("dialog");
+const dialogText = document.querySelector('dialog p')
+const dialogCloseButton = document.querySelector("dialog button");
 
-  constructor() {
-    // Always call super first in constructor
-    super();
-    this.spin = 0;
-  }
 
-  connectedCallback() {
-    //console.log("Custom element added to page.");
+// "Close" button closes the dialog
+dialogCloseButton.addEventListener("click", () => {
+  dialog.close();
+});
 
-    this.style.offsetPath = `path(\"M 0 0 C 2 8 80 400 ${Math.floor(Math.random() * 800)} ${Math.floor(Math.random() * 800)}\")`
-    let spinTimer = setInterval(() => {
-      if (this.spin === 360) {
-        this.spin = 0
-      }
-      this.style.offsetRotate = `${this.spin}deg`
-      this.spin += Math.floor(Math.random() * 5)
-    },10)
 
-    let selfDestructTimer = setTimeout(() => {
-      this.remove()
-    },8000)
-  }
-
-  disconnectedCallback() {
-    //console.log("Custom element removed from page.");
-  }
-
-  adoptedCallback() {
-    //console.log("Custom element moved to new page.");
-  }
-
-  attributeChangedCallback(name, oldValue, newValue) {
-    //console.log(`Attribute ${name} has changed. from`,oldValue,'to',newValue);
-  }
-}
-
-customElements.define("spinning-card", SpinningCard);
 
 
 
@@ -103,7 +79,7 @@ startButton.addEventListener('click', () => {
   if (!playerName) {
     playerName = prompt('what\'s your name pardner?')
   }
-  game = new Game([new Player(playerName,100, playerPurseSpan),new Playbot('foo'), new Playbot('bar'), new Playbot('baz'), new Playbot('jij')])
+  game = new Game([new Player(playerName,100, playerPurseSpan),new Playbot('foo'), new Playbot('bar'), new Playbot('baz'), new Playbot('victoria coren')])
   playerNameSpan.innerText = playerName;
   playerPurseSpan.innerText = game.players[0].purse
   playerWinsSpan.innerText = game.players[0].wins
@@ -123,6 +99,7 @@ startNewHandButton.addEventListener('click', () => {
   if (game.hands.length === game.round) {
     console.log('hands length equal to round');
     game.startNewHand()
+    game.advanceCurrentHand()
 
     if (!playerCardsSpan.innerText) {
       playerCardsSpan.innerHTML = game?.hands[game?.round]?.players[0]?.cards.map(card => `<div class="player-card-container"><img onclick="classList.toggle('player')" class="playing-card player" src="static/cardfronts_svg/${card.suit+'_'+card.card}.svg" alt="${card.card} of ${card.suit}"/></div>`).join('')
@@ -171,4 +148,8 @@ restartFromGameOverButton.addEventListener('click', () => {
   gameScreen.classList.remove('hidden')
   game = new Game([new Player(playerName,100, playerPurseSpan),new Playbot('foo'), new Playbot('bar'), new Playbot('baz'), new Playbot('jij')])
   game.introduce()
+})
+
+darkModeToggle.addEventListener('click',() => {
+  document.body.classList.toggle('dark')
 })
