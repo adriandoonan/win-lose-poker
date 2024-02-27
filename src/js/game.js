@@ -93,16 +93,17 @@ class Game {
         }
         case 'river': {
           if (playersRemaining === 1) {
-            this.endCurrentHand(currentHand.players.findIndex(player => player.folded === true))
+            this.endCurrentHand(currentHand.players.findIndex(player => !player.folded))
+            console.log('looks like,',currentHand.players.find(player => !player.folded).name,'won the game');
           } else {
-            console.log('looks like a split pot with',currentHand.players.filter(player => !player.folded));
+            console.log('looks like we need a showdown with',currentHand.players.filter(player => !player.folded),'to decide the winner');
           }
         }
       }
     }
 
     endCurrentHand(winnerIndex) {
-      const message = `ending current round ${this.round},'and declaring ${winnerIndex} the winner`
+      const message = `ending current round ${this.round}, and declaring ${this.hands[this.round].players[winnerIndex].name} the winner`
       console.log(message);
       addToElement(this.eventElement,message)
       this.players[winnerIndex].purse += this.hands[this.round].pot;

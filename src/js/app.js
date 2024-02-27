@@ -68,6 +68,7 @@ startButton.addEventListener('click', () => {
   playerStatsElement.classList.remove('hidden')
   console.log(game.players);
   startButton.innerText = 'Restart'
+  startNewHandButton.disabled = false
   startNewHandButton.innerText = 'Start new hand'
   replaceInnerText(playersLeftInGameElement,game?.hands[game?.round]?.players.length || '')
   replaceInnerText(gameEventsContainer,'')
@@ -139,3 +140,52 @@ class MyCustomElement extends HTMLElement {
 }
 
 customElements.define("my-custom-element", MyCustomElement);
+
+class SpinningCard extends HTMLElement {
+  static observedAttributes = ["spin"];
+
+  constructor() {
+    // Always call super first in constructor
+    super();
+    this.spin = 0;
+  }
+
+  connectedCallback() {
+    console.log("Custom element added to page.");
+
+    this.style.offsetPath = `path(\"M 0 0 C 2 8 80 400 ${Math.floor(Math.random() * 800)} ${Math.floor(Math.random() * 800)}\")`
+    let spinTimer = setInterval(() => {
+      if (this.spin === 360) {
+        this.spin = 0
+      }
+      this.style.offsetRotate = `${this.spin}deg`
+      this.spin += Math.floor(Math.random() * 4)
+    },16)
+
+    let selfDestructTimer = setTimeout(() => {
+      this.remove()
+    },6000)
+  }
+
+  disconnectedCallback() {
+    console.log("Custom element removed from page.");
+  }
+
+  adoptedCallback() {
+    console.log("Custom element moved to new page.");
+  }
+
+  attributeChangedCallback(name, oldValue, newValue) {
+    console.log(`Attribute ${name} has changed. from`,oldValue,'to',newValue);
+  }
+}
+
+customElements.define("spinning-card", SpinningCard);
+
+let nextInterval = 2000;
+let cardThowTimer = setInterval(() => {
+  const newCard = document.createElement('spinning-card')
+  document.getElementById('motion-path-test').appendChild(newCard)
+  nextInterval = Math.floor(Math.random() * 6000 + 1000)
+},nextInterval)
+

@@ -150,28 +150,39 @@ const shuffledDeck = fullDeck( true );
 
 const drawFive = shuffledDeck.slice( 0, 5 );
 
-const myCardsArray = [{card: 7, suit: 'spades'},{card: 8, suit:'diamonds'},{card: 10, suit:'clubs'},{card: 11, suit:'diamonds'},{card: 10, suit:'spades'}]
+const myCardsArray = [
+    {card: 7, suit: 'spades'},
+    {card: 8, suit:'diamonds'},
+    {card: 10, suit:'clubs'},
+    {card: 11, suit:'diamonds'},
+    {card: 10, suit:'spades'},
+    {card: 3, suit:'spades'},
+    {card: 8, suit:'hearts'}]
 
 
-
-rankPrimes[myCardsArray[0].card -2 ]
-toSuit(myCardsArray[0].suit)
 
 const testArr = []
-//result.push( ( rankPrimes[ rank ] ) | ( rank << 8 ) | ( suit << 12 ) | ( ( 1 << rank ) << 16 ) );
-console.log(rankPrimes[myCardsArray[0].card -2 ], myCardsArray[0].card << 8, toSuit(myCardsArray[0].suit) << 12, ( 1 << myCardsArray[0].card) << 16)
-const myCardRank = myCardsArray[0].card -2
-const myCardSuit = toSuit(myCardsArray[0].suit)
 
 
-
-myCardsArray.slice(3)
-myCardsArray.slice(3).forEach(card => {
+myCardsArray
+myCardsArray.forEach(card => {
     testArr.push(myCardToHash(card))
 });
 
 handRank(testArr)
 handValue(testArr)
+
+const bestHand = possibleHands(testArr,5).map(hand => ({cards:[...hand],rank:handRank(hand)})).sort((a,b) => a.rank - b.rank)[0]
+
+export const findBestHand = (arrayOfCards) => {
+    const bestHand = possibleHands(arrayOfCards,5).map(hand => ({cards:[...hand],rank:handRank(hand)})).sort((a,b) => a.rank - b.rank)[0]
+    return {...bestHand, description: handValue(bestHand.cards)}
+}
+
+findBestHand(myCardsArray)
+
+bestHand
+handValue(bestHand.cards)
 
 cardName(myCardToHash(myCardsArray[0]))
 cardName(testArr[0])
