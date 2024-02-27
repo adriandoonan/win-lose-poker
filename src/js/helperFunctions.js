@@ -86,7 +86,7 @@ const circularIncrement = (arrayLength,increment = 0,startIndex = 0) => {
 
 
   const addToElement = (htmlElement,content,tag = 'p') => {
-    console.log(`trying to add`,content,'to',htmlElement);
+    //console.log(`trying to add`,content,'to',htmlElement);
     htmlElement.innerHTML += `<${tag}>${content}</${tag}>`
   }
 

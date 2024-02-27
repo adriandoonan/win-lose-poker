@@ -119,6 +119,10 @@ header {
     width: 100%;
     background-color: cadetblue;
 }
+main {
+    padding: 0 1rem;
+    max-width: 800px;
+}
 nav {
     display: flex;
     flex-direction: row;
@@ -132,6 +136,7 @@ footer {
     margin-top: auto;
     display: flex;
     justify-content: space-between;
+    padding: 0 1rem;
 }
 
 #motion-path-example-span {
@@ -169,7 +174,8 @@ spinning-card {
     "M0,0 C2,8 80,400 500,500"
   );
   /*offset-rotate: auto;*/
-  animation: example2 6s infinite linear forwards;
+  animation: example2 6s linear forwards;
+  transition: offset-rotate cubic-bezier(0.47, 0, 0.745, 0.715);
 }
 
 @keyframes example2 {

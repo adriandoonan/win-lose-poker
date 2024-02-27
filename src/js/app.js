@@ -1,6 +1,6 @@
 import Game from "./game.js";
 import Player from "./player.js";
-import { replaceInnerText } from "./helperFunctions.js";
+import { replaceInnerText, clearElements } from "./helperFunctions.js";
 
 const splashScreen = document.getElementById('splash-screen')
 const splashScreenLink = document.getElementById('splash-screen-link')
@@ -29,19 +29,71 @@ window.onload = function(){
   },1000);
 };
 
-let spinTimer;
-let spin = 0;
-const element = document.querySelector('#motion-path-example-span')
+// let spinTimer;
+// let spin = 0;
+// const element = document.querySelector('#motion-path-example-span')
 
-spinTimer = setInterval(() => {
-  if (spin === 360) {
-    spin = 0
-  }
-  element.style.offsetRotate = `${spin}deg`
-  spin++
-},10)
+// spinTimer = setInterval(() => {
+//   if (spin === 360) {
+//     spin = 0
+//   }
+//   element.style.offsetRotate = `${spin}deg`
+//   spin++
+// },10)
 
 //setTimeout(() => clearInterval(spinTimer),100000)
+
+class SpinningCard extends HTMLElement {
+  static observedAttributes = ["spin"];
+
+  constructor() {
+    // Always call super first in constructor
+    super();
+    this.spin = 0;
+  }
+
+  connectedCallback() {
+    //console.log("Custom element added to page.");
+
+    this.style.offsetPath = `path(\"M 0 0 C 2 8 80 400 ${Math.floor(Math.random() * 800)} ${Math.floor(Math.random() * 800)}\")`
+    let spinTimer = setInterval(() => {
+      if (this.spin === 360) {
+        this.spin = 0
+      }
+      this.style.offsetRotate = `${this.spin}deg`
+      this.spin += Math.floor(Math.random() * 5)
+    },10)
+
+    let selfDestructTimer = setTimeout(() => {
+      this.remove()
+    },8000)
+  }
+
+  disconnectedCallback() {
+    //console.log("Custom element removed from page.");
+  }
+
+  adoptedCallback() {
+    //console.log("Custom element moved to new page.");
+  }
+
+  attributeChangedCallback(name, oldValue, newValue) {
+    //console.log(`Attribute ${name} has changed. from`,oldValue,'to',newValue);
+  }
+}
+
+customElements.define("spinning-card", SpinningCard);
+
+
+
+let nextInterval = 2000;
+const cardSpinnerFunc = () => {
+  const newCard = document.createElement('spinning-card')
+  document.getElementById('motion-path-test').appendChild(newCard)
+  nextInterval = Math.floor(Math.random() * 6000 + 1000)
+}
+
+let cardThowTimer = setInterval(cardSpinnerFunc,nextInterval)
 
 console.log(gameOverScreen);
 
@@ -49,11 +101,13 @@ splashScreenLink.addEventListener('click', () => {
   gameOverScreen.classList.add('hidden')
   gameScreen.classList.add('hidden')
   splashScreen.classList.remove('hidden')
+  cardThowTimer = setInterval(cardSpinnerFunc,nextInterval)
 })
 
 gameScreenLink.addEventListener('click', () => {
   gameOverScreen.classList.add('hidden')
   splashScreen.classList.add('hidden')
+  clearInterval(cardThowTimer)
   gameScreen.classList.remove('hidden')
 })
 
@@ -71,9 +125,7 @@ startButton.addEventListener('click', () => {
   startNewHandButton.disabled = false
   startNewHandButton.innerText = 'Start new hand'
   replaceInnerText(playersLeftInGameElement,game?.hands[game?.round]?.players.length || '')
-  replaceInnerText(gameEventsContainer,'')
-  replaceInnerText(communityCardsSpan,'')
-  replaceInnerText(playerCardsSpan,'')
+  clearElements(gameEventsContainer, communityCardsSpan, playerCardsSpan)
   
 })
 
@@ -113,79 +165,6 @@ startNewHandButton.addEventListener('click', () => {
   //console.log(game.hands)
 })
 
-// Create a class for the element
-class MyCustomElement extends HTMLElement {
-  static observedAttributes = ["color", "size"];
+// Create a class for the spinning card element
 
-  constructor() {
-    // Always call super first in constructor
-    super();
-  }
-
-  connectedCallback() {
-    console.log("Custom element added to page.");
-  }
-
-  disconnectedCallback() {
-    console.log("Custom element removed from page.");
-  }
-
-  adoptedCallback() {
-    console.log("Custom element moved to new page.");
-  }
-
-  attributeChangedCallback(name, oldValue, newValue) {
-    console.log(`Attribute ${name} has changed.`);
-  }
-}
-
-customElements.define("my-custom-element", MyCustomElement);
-
-class SpinningCard extends HTMLElement {
-  static observedAttributes = ["spin"];
-
-  constructor() {
-    // Always call super first in constructor
-    super();
-    this.spin = 0;
-  }
-
-  connectedCallback() {
-    console.log("Custom element added to page.");
-
-    this.style.offsetPath = `path(\"M 0 0 C 2 8 80 400 ${Math.floor(Math.random() * 800)} ${Math.floor(Math.random() * 800)}\")`
-    let spinTimer = setInterval(() => {
-      if (this.spin === 360) {
-        this.spin = 0
-      }
-      this.style.offsetRotate = `${this.spin}deg`
-      this.spin += Math.floor(Math.random() * 4)
-    },16)
-
-    let selfDestructTimer = setTimeout(() => {
-      this.remove()
-    },6000)
-  }
-
-  disconnectedCallback() {
-    console.log("Custom element removed from page.");
-  }
-
-  adoptedCallback() {
-    console.log("Custom element moved to new page.");
-  }
-
-  attributeChangedCallback(name, oldValue, newValue) {
-    console.log(`Attribute ${name} has changed. from`,oldValue,'to',newValue);
-  }
-}
-
-customElements.define("spinning-card", SpinningCard);
-
-let nextInterval = 2000;
-let cardThowTimer = setInterval(() => {
-  const newCard = document.createElement('spinning-card')
-  document.getElementById('motion-path-test').appendChild(newCard)
-  nextInterval = Math.floor(Math.random() * 6000 + 1000)
-},nextInterval)
 
