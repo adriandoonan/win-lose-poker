@@ -3,15 +3,15 @@
   "version": "0.0.1",
   "description": "a basic poker game",
   "main": "scripts/app.js",
-  "type":"module",
+  "type": "module",
   "directories": {
     "test": "tests"
   },
   "scripts": {
     "test": "jasmine-browser-runner runSpecs",
-    "doc": "jsdoc --configure jsdoc.json --verbose",
-    "dev": "mkdir -p dist/static && cp src/static/* dist/static/ && parcel src/index.html src/docs/*.html src/pres/index.html --public-url /win-lose-poker",
-    "build": "parcel build src/index.html src/docs/*.html src/pres/index.html --public-url /win-lose-poker --out-dir public && mkdir -p public/static && cp src/static/* public/static/"
+    "doc": "rm -rf src/docs && jsdoc -p --configure jsdoc.json --verbose",
+    "dev": "parcel src/index.html src/docs/*.html src/pres/index.html --public-url /win-lose-poker",
+    "build": "parcel build src/index.html src/docs/*.html src/pres/index.html --public-url /win-lose-poker --out-dir public"
   },
   "repository": {
     "type": "git",
@@ -34,6 +34,7 @@
   },
   "dependencies": {
     "@popperjs/core": "^2.11.8",
+    "cactus-josh": "^0.0.2",
     "reveal.js": "^5.0.4",
     "reveal.js-mermaid-plugin": "^2.2.0"
   }

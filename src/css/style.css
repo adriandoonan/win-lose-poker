@@ -113,6 +113,20 @@ body {
     display: flex;
     flex-direction: column;
     padding-bottom: 10px;
+    margin: 0;
+}
+header {
+    width: 100%;
+    background-color: cadetblue;
+}
+nav {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 0.75rem 2rem;
+    max-width: 800px;
+    margin: 0 auto;
+    background-color: burlywood;
 }
 footer {
     margin-top: auto;
@@ -121,9 +135,12 @@ footer {
 }
 
 #motion-path-example-span {
-    width: 200px;
-    height: 100px;
-    background-color: red;
+    width: 100px;
+    height: 140px;
+    /* background-color: red; */
+    color: white;
+    background-image: url('../static/blue.png');
+    background-size: contain;
     position: absolute;
     border: 1px solid black;
     margin: 15px;
@@ -155,3 +172,35 @@ footer {
       offset-distance: 100%;
     }
   }
+
+.hidden {
+  display: none;
+} 
+
+/* game screen stuff */
+#player-cards {
+  display: flex;
+  gap: 5px;
+}
+.player-card-container {
+  background: url('../static/blue.png');
+  background-size: contain;
+}
+.playing-card {
+  display: inline;
+  max-width: 4rem;
+  vertical-align: top;
+
+}
+
+.playing-card.player {
+  opacity: 0;
+  transition: opacity 0.7s;
+  &:hover {
+    opacity: 1;
+  }
+}
+
+.playing.card.community {
+
+}

@@ -54,7 +54,7 @@ const knuthShuffle = (arrayToShuffle) => {
  * circularIncrement(5,-3,4) // 1
  * 
  */
-const circularIncrement = (arrayLength,increment,startIndex = 0) => {
+const circularIncrement = (arrayLength,increment = 0,startIndex = 0) => {
     //console.log('length',arrayLength,'increment',increment,'start',startIndex);
     
     if (arrayLength === 0 || startIndex > arrayLength) {
@@ -84,4 +84,25 @@ const circularIncrement = (arrayLength,increment,startIndex = 0) => {
     return modulo === 0 ? startIndex : modulo - 1
   }
 
-  export {circularIncrement, knuthShuffle, pipe}
+
+  const addToElement = (htmlElement,content,tag = 'p') => {
+    console.log(`trying to add`,content,'to',htmlElement);
+    htmlElement.innerHTML += `<${tag}>${content}</${tag}>`
+  }
+
+
+  const replaceInnerText = (htmlElement,content) => {
+    htmlElement.innerText = content
+  }
+
+
+  const removeElements = (...elements) => {
+    elements.forEach(element => element.remove())
+  }
+   
+
+  const clearElements = (...elements) => {
+    elements.forEach(element => element.innerText = '')
+  }
+
+  export {circularIncrement, knuthShuffle, pipe, addToElement, replaceInnerText, removeElements, clearElements}
