@@ -11,7 +11,7 @@
     "test": "jasmine-browser-runner runSpecs",
     "doc": "rm -rf src/docs && jsdoc -p --configure jsdoc.json --verbose",
     "dev": "cp -r src/static dist/static && parcel src/index.html src/docs/*.html src/pres/index.html --public-url /win-lose-poker",
-    "build": "parcel build src/index.html src/docs/*.html src/pres/index.html --out-dir public --public-url /win-lose-poker && cp -r src/static public/"
+    "build": "npm run doc && parcel build src/index.html src/docs/*.html src/pres/index.html --out-dir public --public-url /win-lose-poker && cp -r src/static public/"
   },
   "repository": {
     "type": "git",

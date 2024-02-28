@@ -35,6 +35,7 @@ class Game {
       this.winnerDialogText = document.querySelector('dialog p');
       this.playerPurseElement = document.getElementById('player-purse');
       this.playerWinsElement = document.getElementById('player-wins');
+      this.potElement = document.getElementById('total-pot');
       this.goToGameOverScreenTimer = null;
     }
   
@@ -53,7 +54,7 @@ class Game {
       for (const player of this.players) {
           if ( player.type === 'bot' ) {
               await player.doSomethingAsync(player.sayHello())
-              console.log('did something async')
+              //console.log('did something async')
           }
 
         }
@@ -142,7 +143,7 @@ class Game {
       this.winnerDialogElement.showModal()
       addToElement(this.eventElement,message,'p',true)
       this.players.forEach(player => player.cards.splice(0))
-      clearElements(this.playerCardsElement,this.communityCardsElement)
+      clearElements(this.playerCardsElement,this.communityCardsElement,this.potElement)
       this.players[winnerIndex].purse += this.hands[this.round].pot;
       this.playerPurseElement.innerText = this.players[0].purse;
       this.players[winnerIndex].wins++

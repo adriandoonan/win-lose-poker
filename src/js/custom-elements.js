@@ -172,9 +172,9 @@ export class PlaybotStats extends HTMLElement {
 
     connectedCallback() {
         //this.templateContent.querySelector('.playbot-name').innerText = this.playbotName;
-        console.log(this.innerContent);
-        console.log(this.seatNumber);
-        console.log(this.innerContent);
+        // console.log(this.innerContent);
+        // console.log(this.seatNumber);
+        // console.log(this.innerContent);
         this.setAttribute('id',`playbot-stats-${this.name.toLowerCase().replaceAll(' ','-')}`)
         this.innerContent.querySelector('.playbot-name').innerText = this.name
         this.innerContent.querySelector('.playbot-purse').innerText = this.purse
@@ -183,11 +183,11 @@ export class PlaybotStats extends HTMLElement {
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
-        console.log(`Attribute ${name} has changed. from`,oldValue,'to',newValue);
+        //console.log(`Attribute ${name} has changed. from`,oldValue,'to',newValue);
         if (name === 'playbot-name') {
           this.playbotName = newValue
-          console.log(this.template)
-          console.log(this.template.querySelector('.playbot-name'));
+          //console.log(this.template)
+          //console.log(this.template.querySelector('.playbot-name'));
           this.templateContent.querySelector('.playbot-name').innerText = newValue
         }
         if (name === 'purse') {
@@ -208,9 +208,9 @@ export class PlaybotStats extends HTMLElement {
         }
         if (name === 'target') {
           this.targetElement = newValue
-          console.log(document.querySelector(`#${newValue}`));
+          //console.log(document.querySelector(`#${newValue}`));
           this.directed = true
-          console.log('target now', this.target);
+          //console.log('target now', this.target);
         }
       }
 
