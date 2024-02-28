@@ -146,8 +146,14 @@ a.nav-link {
 }
 
 #game-events {
-  line-height: 0.5;
+  overflow-y: scroll;
+  max-height: 50vh;
 }
+
+#game-events p {
+ margin-top: 4px; 
+}
+
 
 footer {
     margin-top: auto;
@@ -246,5 +252,9 @@ playing-card {
 }
 
 .playing.card.community {
+  opacity: 1;
+}
 
+#game-over-screen > iframe {
+  margin-top: 2rem;
 }

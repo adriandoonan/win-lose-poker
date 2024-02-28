@@ -32,7 +32,7 @@ class Player {
         this.seatNumber = null;
         this.chenScore = 0;
         this.bestHand = {};
-        this.eventsElement = document?.getElementById('game-events') || 'foo'
+        this.eventsElement = document?.getElementById('game-events') || 'foo';
     }
 
     async doSomethingAsync(callbackFunction) {
@@ -119,11 +119,36 @@ class Playbot extends Player {
         super(`${name}bot`,purse);
         this.aggression = aggression || 5;
         this.type = 'bot';
+        this.statsTargetElement = document.getElementById('playbot-stats-container')
+        this.statsElement = '';
+        this.statsElement = document.createElement('playbot-stats');
        
        
     } 
     
-    
+    sayHello(){
+        const message = `Hey, this is ${this.name}, let's play!`
+        
+        this.statsElement.name = this.name;
+        this.statsElement.purse = this.purse
+        console.log(this.name);
+        this.statsTargetElement.appendChild(this.statsElement)
+        addToElement(this.eventsElement,message,'p',true)
+    }
+
+    placeBet(amount,type) {
+        const message = `${this.name} is placing a ${type || 'bet'} of ${amount}`
+        console.log(message)
+        addToElement(this.eventsElement,message,'p',true)
+        
+        this.purse -= amount
+        this.currentBet += amount
+
+        this.statsElement.setAttribute('purse',this.purse)
+        this.statsElement.setAttribute('thrown-down',this.currentBet)
+        
+        return amount
+    }
 
 }
 

@@ -156,9 +156,10 @@ class Game {
 
     endWholeDamnGame() {
       this.goToGameOverScreenTimer = setTimeout(() => {
+        this.winnerDialogElement.close()
         this.gameScreen.classList.add('hidden')
         this.gameOverScreen.classList.remove('hidden')
-      },1500)
+      },2500)
 
     }
   }
