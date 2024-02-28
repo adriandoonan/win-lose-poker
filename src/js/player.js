@@ -27,6 +27,7 @@ class Player {
         this.purseElement = purseElement || null;
         this.wins = 0;
         this.currentBet = 0;
+        this.throwingDown = 0;
         this.cards = [];
         this.folded = false;
         this.seatNumber = null;
@@ -38,10 +39,11 @@ class Player {
     async doSomethingAsync(callbackFunction) {
         const waited = await randomWait()
         console.log('waited for',waited)
+        let result;
         if (typeof callbackFunction === 'function') {
-            callbackFunction()
+            result = await callbackFunction()
         }
-        return waited
+        return result ? result : waited
     }
 
     sayHello() {
@@ -57,7 +59,7 @@ class Player {
      * @return {object} 
      * @memberof Player
      */
-    decideBet(communityCards = []) {
+    async decideBet(communityCards = [],round) {
         if (this.folded) return
 
         const hand = this.cards.concat(communityCards)
@@ -71,7 +73,21 @@ class Player {
 
         }
 
-        return this
+        async function getBetAmount() {
+            console.log('this is in the function for',round)
+            let amount = 0;
+            if (round) {
+                let waitForBet = setTimeout(()=>{
+                    amount = prompt('what do you want to bet',20)
+                },3000)
+            }
+            return amount
+        }
+        
+        this.throwingDown = await getBetAmount()
+        console.log(this.name,'wants to throw down this much',this.throwingDown);
+
+        return this.throwingDown
     }
 
     /**
@@ -134,6 +150,35 @@ class Playbot extends Player {
         console.log(this.name);
         this.statsTargetElement.appendChild(this.statsElement)
         addToElement(this.eventsElement,message,'p',true)
+    }
+
+    async doSomethingAsync(callbackFunction) {
+        const waited = await randomWait()
+        //console.log('waited for',waited)
+        let result;
+        if (typeof callbackFunction === 'function') {
+            console.log('got a callback in the callfor async');
+            result = await callbackFunction()
+        }
+        console.log('result would be',result);
+        return result ? result : waited
+    }
+
+    decideBet(communityCards = []) {
+        if (this.folded) return
+
+        const hand = this.cards.concat(communityCards)
+        if (hand.length === 2) {
+            this.chenScore = calculateChenFormula(hand)
+            console.log(`${this.name} has two cards and chen score of ${this.chenScore}`)
+        }
+        if (hand.length >= 5) {
+            this.bestHand = findBestHand(hand)
+            console.log(`${this.name} has a best hand of`,this.bestHand)
+
+        }
+
+        return this
     }
 
     placeBet(amount,type) {

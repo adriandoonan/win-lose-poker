@@ -17,6 +17,7 @@ const startButton = document.getElementById('start-game-button')
 const startNewHandButton = document.getElementById('start-new-hand-button')
 const gameEventsContainer = document.getElementById('game-events')
 const darkModeToggle = document.getElementById('don-shades')
+const madeDecisionButton = document.getElementById('made-a-decision-button')
 
 let game, playerName;
 
@@ -156,3 +157,11 @@ restartFromGameOverButton.addEventListener('click', () => {
 darkModeToggle.addEventListener('click',() => {
   document.body.classList.toggle('dark')
 })
+
+//madeDecisionButton.addEventListener('click', handleClick)
+
+async function handleClick() {
+  await new Promise((resolve) =>
+                    setTimeout(resolve, 5000))
+  alert('clicked')
+}
