@@ -258,3 +258,7 @@ playing-card {
 #game-over-screen > iframe {
   margin-top: 2rem;
 }
+
+.list-unstyled {
+  list-style-type: none;
+}
