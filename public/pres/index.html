@@ -1,1 +1,58 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>Win Lose Poker | Presentation</title><link rel="icon" href="/win-lose-poker/cards.b76a2f63.png"><link rel="stylesheet" href="/win-lose-poker/reset.95b6265a.css"><link rel="stylesheet" href="/win-lose-poker/reveal.35a6dc9a.css"><link rel="stylesheet" href="/win-lose-poker/black.535e6588.css"><script type="text/javascript" src="/win-lose-poker/pres.1898ac35.js" defer></script><link rel="stylesheet" href="/win-lose-poker/a11y-dark.31946667.css"></head><body> <div class="reveal"> <div class="slides"> <section data-markdown="../static/pres.md"></section> </div> </div> </body></html>
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>Win Lose Poker | Presentation</title><link rel="icon" href="/win-lose-poker/cards.b76a2f63.png"><link rel="stylesheet" href="/win-lose-poker/reset.95b6265a.css"><link rel="stylesheet" href="/win-lose-poker/reveal.a2bd2463.css"><link rel="stylesheet" href="/win-lose-poker/black.535e6588.css"><script type="text/javascript" src="/win-lose-poker/pres.1898ac35.js" defer></script><link rel="stylesheet" href="/win-lose-poker/a11y-dark.31946667.css"></head><body> <div class="reveal"> <div class="slides"> <section> <h1 class="r-fit-text">WIN LOSE POKER</h1> <p>A game that simulates poker with a dealer, a user player and a couple of computer players.</p> </section> <section> <h2>Big Dreams</h2> <video data-autoplay="" src="/win-lose-poker/big-dreams.201f2bdd.mp4" style="max-width:77%;"></video> <ul class="list-unstyled"> <li class="fragment highlight-red strike">Intelligent opponents</li> <li class="fragment highlight-red strike">Learning mode</li> <li class="fragment highlight-red strike">Minigames to win back your money</li> </ul> </section> <section data-background-image="https://c.tenor.com/YQyUjrGMiNAAAAAC/tenor.gif" data-background-size="contain"> </section> <section> <h2>MVP</h2> <ul> <li class="fade-up fragment">Bots will always match current bet</li> <li class="fade-up fragment">It's limit poker and no reraise</li> <li class="fade-up fragment">Nobody gives up<br> <img class="fade-up fragment" src="https://c.tenor.com/cZckVtcoxu4AAAAC/tenor.gif"> </li> <li class="fade-up fragment">Hand data is in the console <ul> <li class="fade-in-then-out fragment"><super>We're web developers now, get used to having it open 😜</super></li> </ul> </li> </ul> </section> <section> <h2>Some things I used</h2> </section> <section> <h3><a href="https://developer.mozilla.org/en-US/docs/Web/API/Web_components/Using_custom_elements">Custom HTML Elements</a></h3> <ul class="list-unstyled"> <li>👍 Spinning, self-destructing playing cards in splash page</li> <li>👍 Playbot stats boxes</li> <li>👎 Tried and failed to use for dealing cards</li> </ul> </section> <section> <h3><a href="https://developer.mozilla.org/en-US/docs/Web/API/Web_components/Using_custom_elements">Custom HTML Elements</a></h3> <pre>
+						<code data-trim="" data-noescape="">
+							export class SpinningCard extends HTMLElement {
+								static observedAttributes = ["spin"];
+							  
+								constructor() {
+								  super();
+								  this.spin = 0;
+								}
+							  
+								connectedCallback() {
+									selfDestruct()
+								}
+								attributeChangedCallback(name, oldValue, newValue) {
+									doSomething(newValue)
+								}
+							}
+							
+							customElements.define("spinning-card", SpinningCard);
+						</code>
+					</pre> </section> <section> <h3><a href="https://github.com/josh-frank/cactus-josh">Cactus-josh</a></h3> <ul class="list-unstyled"> <li>👍 A library for judging hand strength</li> <li>👍 Had to make some small changes to make it work as a module</li> <li>👎 Could be overkill and is impossible to understand in the time we had for development</li> </ul> </section> <section> <h3><a href="https://github.com/josh-frank/cactus-josh">Cactus-josh</a></h3> <pre>
+						<code>
+	export const fiveUniqueCards = [
+		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 0, 0, 0, 0, 1608, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		0, 0, 0, 0, 7462, 0, 0, 0, 0, 0, 0, 0, 7461, 0, 0,  0,  7460,  0,
+		7459, 1607, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7458,
+		0, 0, 0, 0, 0, 0, 0, 7457, 0, 0, 0, 7456, 0, 7455, 7454, 0, 0, 0,
+		0,  0,  0,  0, 0, 7453, 0, 0, 0, 7452, 0, 7451, 7450, 0, 0, 0, 0,
+		7449, 0, 7448, 7447, 0, 0, 7446, 7445, 0, 1606, 0, 0, 0, 0, 0, 0,
+		0,  0,  0,  0, 0, 0, 0, 0, 0, 0, 0, 0, 7444, 0, 0, 0, 0, 0, 0, 0,
+		0,  7428,  0,  7427, 7426, 0, 0, 0, 0, 7425, 0, 7424, 7423, 0, 0,
+		7422, 7421, 0, 7420, 0, 0, 0, 0, 0, 0, 7419, 0, 7418, 7417, 0, 0,
+		7416,  7415,  0,  7414, 0, 0, 0, 0, 7413, 7412, 0, 7411, 0, 0, 0,
+		1605, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		0,  0,  7410,  0, 0, 0, 0, 0, 0, 0, 7409, 0, 0, 0, 7408, 0, 7407,
+		...
+	]
+						</code>
+					</pre> </section> <section data-background-image="https://c.tenor.com/N6qWCDoHwkgAAAAC/tenor.gif" data-background-size="cover"></section> <section> <h3><a href="https://parceljs.org/">Parcel.js</a></h3> <ul class="list-unstyled"> <li>👍 Hot module reloading for changing CSS without resetting game state</li> <li>👍 Bundle up code</li> <li>👎 Could not get it to work in gitlab CI</li> </ul> </section> <section> <h3><a href="https://revealjs.com/">Reveal.js</a></h3> <ul class="list-unstyled"> <li>👍 Do presentation in HTML</li> <li>👍 Have cool effects</li> <li>👎 Nothing bad to say</li> </ul> </section> <section> <h3><a href="https://revealjs.com/">Reveal.js</a></h3> <pre>
+						<code>
+<script type="text/template">
+	<div class="reveal">
+		<div class="slides">
+			<section>
+				<h3><a href="https://revealjs.com/">Reveal.js</a></h3>
+
+					<ul class="list-unstyled">
+						<li>👍 Do presentation in HTML</li>
+						<li>👍 Have cool effects</li>
+						<li>👎 Nothing bad to say</li>
+					</ul>
+			</section>
+		</div>
+	</div>
+</script>
+						</code>
+					</pre> </section> <section> <h2>Things I can work on adding</h2> <ul> <li>Bots bet or fold based on calculated hand strength</li> <li>Player can fold</li> <li>Save record of all your wins and total money won and lost in local storage</li> </ul> </section> <section data-background-image="../static/mario_thumbs_up_wii_by_mariorenderart_dg18ue9-pre.jpg" data-background-size="contain"> <h2 class="r-fit-text">Cheers</h2> </section> </div> </div> </body></html>
