@@ -1,10 +1,11 @@
 import Game from "./game.js";
 import {Player,Playbot} from "./player.js";
 import { replaceInnerText, clearElements } from "./helperFunctions.js";
-import {SpinningCard, PlayingCard} from './custom-elements.js'
+import {SpinningCard, PlayingCard, PlaybotStats} from './custom-elements.js'
 
 customElements.define("playing-card", PlayingCard);
 customElements.define("spinning-card", SpinningCard);
+customElements.define("playbot-stats", PlaybotStats);
 
 const splashScreen = document.getElementById('splash-screen')
 const splashScreenLink = document.getElementById('splash-screen-link')
@@ -141,7 +142,7 @@ restartFromGameOverButton.addEventListener('click', () => {
   replaceInnerText(playersLeftInGameElement,game?.hands[game?.round]?.players.length || '')
   clearElements(gameEventsContainer, communityCardsSpan, playerCardsSpan)
   playerNameSpan.innerText = playerName;
-  playerPurseSpan.innerText = game.players[0].purse
+  playerPurseSpan.innerText = ''
   playerWinsSpan.innerText = game.players[0].wins
   startNewHandButton.innerText = 'Start new hand'
   gameOverScreen.classList.add('hidden')

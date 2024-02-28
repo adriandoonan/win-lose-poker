@@ -141,4 +141,77 @@ export class PlayingCard extends HTMLElement {
     }
   }
   
-  
+
+{/* <template id="playbot-stats">
+  <ul>
+    <li>Name: <span class="playbot-name"></span></li>
+    <li>Purse: <span class="playbot-purse"></span></li>
+    <li>Wins: <span class="playbot-wins"></span></li>
+    <li>In the pot : <span class="playbot-thrown-down"></span></li>
+  </ul>
+</template> */}
+
+export class PlaybotStats extends HTMLElement {
+
+    static observedAttributes = ['playbot-name','seat-number','purse', 'wins','target','thrown-down'];
+
+    constructor(playbotName,seatNumber,purse,wins,targetElement){
+        super();
+        this.targetElement = document.getElementById('playbot-stats-container');
+        this.template = document.getElementById("playbot-stats-template");
+        this.templateContent = this.template.content;
+
+        this.innerContent = this.templateContent.cloneNode(true);
+        this.playbotName = playbotName || '';
+        this.purse = purse || 0;
+        this.wins = wins || 0;
+        this.directed = true;
+       
+        
+    }
+
+    connectedCallback() {
+        //this.templateContent.querySelector('.playbot-name').innerText = this.playbotName;
+        console.log(this.innerContent);
+        console.log(this.seatNumber);
+        console.log(this.innerContent);
+        this.setAttribute('id',`playbot-stats-${this.name.toLowerCase().replaceAll(' ','-')}`)
+        this.innerContent.querySelector('.playbot-name').innerText = this.name
+        this.innerContent.querySelector('.playbot-purse').innerText = this.purse
+        this.innerContent.querySelector('.playbot-wins').innerText = this.wins
+        this.appendChild(this.innerContent)
+    }
+
+    attributeChangedCallback(name, oldValue, newValue) {
+        console.log(`Attribute ${name} has changed. from`,oldValue,'to',newValue);
+        if (name === 'playbot-name') {
+          this.playbotName = newValue
+          console.log(this.template)
+          console.log(this.template.querySelector('.playbot-name'));
+          this.templateContent.querySelector('.playbot-name').innerText = newValue
+        }
+        if (name === 'purse') {
+            this.querySelector('.playbot-purse').innerText = newValue
+            
+        }
+        if (name === 'wins') {
+            this.querySelector('.playbot-wins').innerText = newValue
+            
+        }
+        if (name === 'thrown-down') {
+            this.querySelector('.playbot-thrown-down').innerText = newValue
+            
+        }
+        if (name === 'seat-number') {
+          this.seatNumber = newValue
+          this.templateContent.querySelector('.playbot-stats').setAttribute('id',`playbot-stats-${newValue}`)
+        }
+        if (name === 'target') {
+          this.targetElement = newValue
+          console.log(document.querySelector(`#${newValue}`));
+          this.directed = true
+          console.log('target now', this.target);
+        }
+      }
+
+}

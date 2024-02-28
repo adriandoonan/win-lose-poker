@@ -149,6 +149,7 @@ class Hand {
         this.blind = blind;
         this.dealerIndex = circularIncrement(this.players.length,round);
         this.stage = 'ante';
+        this.potElement = document.getElementById('total-pot');
     }
     
 
@@ -294,7 +295,9 @@ class Hand {
                 }
             } else {
                 this.pot += player.placeBet(20,'wild speculation')
+
             }
+            this.potElement.innerText = this.pot;
             console.log('logging decision',decision)
         }
     

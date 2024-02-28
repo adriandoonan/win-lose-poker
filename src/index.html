@@ -51,15 +51,22 @@
       <button id="start-game-button">Start Game</button><br>
       <button id="start-new-hand-button" disabled>Start new hand</button>
       <p>Players left in game: <span id="players-left-in-game"></span></p>
-      <section id="player-stats" class="hidden">
-        <ul>
-          <li>Name: <span id="player-name"></span></li>
-          <li>Purse: <span id="player-purse"></span></li>
-          <li>Wins: <span id="player-wins"></span></li>
-          <li>Folded: <span id="player-folded"></span></li>
-          <li>Cards: <span id="player-cards"></span></li>
-          <li>Community cards: <span id="community-cards"></span></li>
-        </ul>
+      <p>Total pot: <span id="total-pot"></span></p>
+
+      <section id="game-stats-container">
+        <section id="player-stats" class="hidden">
+          <ul>
+            <li>Name: <span id="player-name"></span></li>
+            <li>Purse: <span id="player-purse"></span></li>
+            <li>Wins: <span id="player-wins"></span></li>
+            <li>Folded: <span id="player-folded"></span></li>
+            <li>Cards: <span id="player-cards"></span></li>
+            <li>Community cards: <span id="community-cards"></span></li>
+          </ul>
+        </section>
+        <section id="playbot-stats-container">
+
+        </section>
       </section>
       <section id="game-events">
 
@@ -69,6 +76,7 @@
       <h2>This would be the game over screen</h2>
       <button id="restart-from-game-over">Restart</button>
       <p>You will be sent here if you run out of money, also, the mob is after you now so find a safe place to lay low.</p>
+      <iframe src="https://giphy.com/embed/E2UlE5Of9zEjK" width="480" height="200" frameBorder="0" class="giphy-embed" allowFullScreen></iframe><p><a href="https://giphy.com/gifs/martin-scorsese-robert-de-niro-goodfellas-E2UlE5Of9zEjK">via GIPHY</a></p>
     </div>
   </main>
 
@@ -76,6 +84,15 @@
     <small>© <script>document.write(new Date().getFullYear())</script> Jijman Enterprises. All Rights Reserved.</small>
     <small><a id="don-shades" href="#">put your sunglasses on</a></small>
   </footer>
+
+  <template id="playbot-stats-template">
+      <ul class="playbot-stats" id="">
+        <li>Name: <span class="playbot-name"></span></li>
+        <li>Purse: <span class="playbot-purse"></span></li>
+        <li>Wins: <span class="playbot-wins"></span></li>
+        <li>In the pot : <span class="playbot-thrown-down"></span></li>
+      </ul>
+  </template>
   
 </body>
 </html>
