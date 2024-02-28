@@ -21,17 +21,20 @@ Happy pokering
 - [ ] make betting round loop async
 - [x] add a function calculate chen formula from the starting two cards
 - [x] allow players to know their chen formula result to help making a decision on whether to bet and how much
+- [ ] at the end who ever has the best hand wins the pot, handle split pot
+- [ ] when the playbots run out of money, they retire
+- [ ] if no playbots are left the player wins
 
 ## MVP
-
-limited functionality for MVP
 
 - [ ] can start a game
 - [ ] can move through the different rounds
 - [ ] betting always starts at same person
 - [ ] everyone always make the same bets: first round we match the big blind, later rounds always bet 20 to speed up game
 - [ ] no one folds
-- [ ] at the end who ever has the best hand wins the pot, handle split pot
 - [ ] when the use player runs out of money the game is over
-- [ ] when the playbots run out of money, they retire
-- [ ] if no playbots are left the player wins
+
+## bugs
+
+- [ ] playbot stats elements should get eliminated after the restart button is clicked in the game over screen and on clicking restart in the main game screen
+- [ ] total pot should be cleared on game over

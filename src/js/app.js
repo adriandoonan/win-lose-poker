@@ -77,6 +77,7 @@ gameScreenLink.addEventListener('click', () => {
 })
 
 startButton.addEventListener('click', () => {
+  document.querySelectorAll('playbot-stats').forEach(element => element.remove())
   if (!playerName) {
     playerName = prompt('what\'s your name pardner?')
   }
@@ -139,6 +140,7 @@ restartFromGameOverButton.addEventListener('click', () => {
   if (!playerName) {
     playerName = prompt('what\'s your name pardner?')
   }
+  document.querySelectorAll('playbot-stats').forEach(element => element.remove())
   replaceInnerText(playersLeftInGameElement,game?.hands[game?.round]?.players.length || '')
   clearElements(gameEventsContainer, communityCardsSpan, playerCardsSpan)
   playerNameSpan.innerText = playerName;
