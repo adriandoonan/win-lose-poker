@@ -262,3 +262,7 @@ playing-card {
 .list-unstyled {
   list-style-type: none;
 }
+
+#player-stats {
+  border: 1px #ccc solid;
+}

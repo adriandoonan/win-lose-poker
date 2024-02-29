@@ -45,7 +45,7 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>import { addToElement,calculateChenFormula } from "./helperFunctions.js";
+            <pre class="prettyprint source linenums"><code>import { addToElement,calculateChenFormula, replaceInnerText } from "./helperFunctions.js";
 import { findBestHand } from "./cactus.js";
 
 async function randomWait() {
@@ -81,6 +81,10 @@ class Player {
         this.chenScore = 0;
         this.bestHand = {};
         this.eventsElement = document?.getElementById('game-events') || 'foo';
+        this.playerThrownDownElement = document.getElementById('player-thrown-down');
+        this.playerFoldedElement = document.getElementById('player-folded');
+        this.chenScoreElement = document.getElementById('player-chen-score');
+        this.bestHandElement = document.getElementById('player-best-hand');
     }
 
     async doSomethingAsync(callbackFunction) {
@@ -98,6 +102,35 @@ class Player {
         addToElement(this.eventsElement,message,'p',true)
     }
 
+    findBestHand(communityCards = []) {
+        
+
+        console.log('getting besthand for',this.name);
+        this.chenScore =  calculateChenFormula(this.cards)
+        console.log(`${this.name} has a chen score of`,this.chenScore);
+
+        if (communityCards.length) {
+            console.log('found community cards of',communityCards,'for',this.name);
+            
+            this.bestHand = findBestHand(this.cards.concat(communityCards))
+            console.log(`${this.name} has a best hand of`,this.bestHand)
+
+        }
+
+        if (!this.bot) {
+            if (this.chenScoreElement) {
+                console.log(this.chenScoreElement);
+                replaceInnerText(this.chenScoreElement,this.chenScore)
+            }
+            if (Object.keys(this.bestHandElement).length) {
+                console.log(this.bestHandElement);
+                replaceInnerText(this.bestHandElement,JSON.stringify(this.bestHand,null,2))
+            }
+        }
+        return {chenScore: this.chenScore,bestHand: this.bestHand}
+
+    }
+
     /**
      * Updates the players chen score and best hand based on
      * the available cards in the current stage of the hand
@@ -109,15 +142,9 @@ class Player {
     async decideBet(communityCards = [],round) {
         if (this.folded) return
 
-        const hand = this.cards.concat(communityCards)
-        if (hand.length === 2) {
-            this.chenScore = calculateChenFormula(hand)
-            console.log(`${this.name} has two cards and chen score of ${this.chenScore}`)
-        }
-        if (hand.length >= 5) {
-            this.bestHand = findBestHand(hand)
-            console.log(`${this.name} has a best hand of`,this.bestHand)
-
+        if (this.cards.length) {
+            console.log(this.cards);
+            this.findBestHand(communityCards)
         }
 
         async function getBetAmount() {
@@ -151,8 +178,12 @@ class Player {
         console.log(message)
         addToElement(this.eventsElement,message,'p',true)
         
+
+        
         this.purse -= amount
         this.currentBet += amount
+
+        replaceInnerText(this.playerThrownDownElement,this.currentBet)
 
         if (this.purseElement) {
             this.purseElement.innerText = this.purse
@@ -172,6 +203,7 @@ class Player {
         console.log(message)
         addToElement(this.eventsElement,message,'p',true)
         this.folded = true
+        this.playerFoldedElement.innerText = 'folded, out of the hand'
         return this
     }
 }
@@ -181,9 +213,14 @@ class Playbot extends Player {
         super(`${name}bot`,purse);
         this.aggression = aggression || 5;
         this.type = 'bot';
+        this.bot = true;
         this.statsTargetElement = document.getElementById('playbot-stats-container')
         this.statsElement = '';
         this.statsElement = document.createElement('playbot-stats');
+        this.playerPotElement = null;
+        this.chenScoreElement = null;
+        this.bestHandElement = null;
+        this.playerFoldedElement = null;
        
        
     } 
@@ -193,7 +230,7 @@ class Playbot extends Player {
         
         this.statsElement.name = this.name;
         this.statsElement.purse = this.purse
-        console.log(this.name);
+        //console.log(this.name);
         this.statsTargetElement.appendChild(this.statsElement)
         addToElement(this.eventsElement,message,'p',true)
     }
@@ -214,24 +251,16 @@ class Playbot extends Player {
             console.log('got a callback in the callfor async');
             result = await callbackFunction()
         }
-        console.log('result would be',result);
+        if (result) {console.log('result of an async function would be',result);}
         return result ? result : waited
     }
 
     decideBet(communityCards = []) {
         if (this.folded) return
 
-        const hand = this.cards.concat(communityCards)
-        if (hand.length === 2) {
-            this.chenScore = calculateChenFormula(hand)
-            console.log(`${this.name} has two cards and chen score of ${this.chenScore}`)
+        if (this.cards) {
+            return this.findBestHand(communityCards)
         }
-        if (hand.length >= 5) {
-            this.bestHand = findBestHand(hand)
-            console.log(`${this.name} has a best hand of`,this.bestHand)
-
-        }
-
         return this
     }
 
@@ -268,7 +297,7 @@ export {Player,Playbot}</code></pre>
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.2</a> on Thu Feb 29 2024 13:09:54 GMT+0100 (Central European Standard Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.2</a> on Thu Feb 29 2024 14:59:21 GMT+0100 (Central European Standard Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
 </footer>
 
 <script>prettyPrint();</script>

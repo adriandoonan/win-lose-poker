@@ -53,7 +53,7 @@
       <article id="decision-section">
         <button id="place-bet-button">bet</button>
         <button id="fold-button">fold</button>
-        <input type="text" id="bet-amount" default="how much do you want to pony up">
+        <input type="number" min="0" id="bet-amount" default="how much do you want to pony up">
       </article>
 
       <p>Players left in game: <span id="players-left-in-game"></span></p>
@@ -64,10 +64,13 @@
           <ul>
             <li>Name: <span id="player-name"></span></li>
             <li>Purse: <span id="player-purse"></span></li>
+            <li>Thrown down: <span id="player-thrown-down"></span></li>
             <li>Wins: <span id="player-wins"></span></li>
             <li>Folded: <span id="player-folded"></span></li>
             <li>Cards: <span id="player-cards"></span></li>
+            <li>Chen score: <span id="player-chen-score"></span> </li>
             <li>Community cards: <span id="community-cards"></span></li>
+            <li>Best hand: <span id="player-best-hand"></span></li>
           </ul>
         </section>
         <section id="playbot-stats-container">
@@ -97,7 +100,7 @@
         <li>Folded: <span class="playbot-folded"></span></li>
         <li>Purse: <span class="playbot-purse"></span></li>
         <li>Wins: <span class="playbot-wins"></span></li>
-        <li>In the pot : <span class="playbot-thrown-down"></span></li>
+        <li>In the pot: <span class="playbot-thrown-down"></span></li>
       </ul>
   </template>
   
