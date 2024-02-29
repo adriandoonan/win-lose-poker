@@ -3,6 +3,7 @@
 import {Player,Playbot} from './player.js';
 import Hand from './hand.js';
 import {pipe, knuthShuffle, circularIncrement, addToElement,clearElements} from './helperFunctions.js';
+import { findBestHand } from './cactus.js';
 
 
 
@@ -73,7 +74,7 @@ class Game {
           return this
         }
         let currentHand = this.hands[this.round];
-        let playersRemaining = this.hands[this.round].players.filter(player => player.folded).length
+        let playersRemaining = this.hands[this.round].players.filter(player => !player.folded).length
         console.log('\n\nstarting next round after',currentHand.stage,'with',playersRemaining,'players remaining')
       switch (currentHand.stage) {
         case 'ante': {
@@ -135,10 +136,10 @@ class Game {
         console.log('ending early and not declaring a winner')
         return
       }
-      const message = `<strong>ending round ${this.round + 1}, and declaring ${this.hands[this.round].players[winnerIndex].name} the winner</strong>`
+      const message = `<strong>ending round ${this.round + 1}, and declaring ${this.hands[this.round].players[winnerIndex].name} the winner with a ${findBestHand(this.hands[this.round].players[winnerIndex].cards.concat(this.hands[this.round].communityCards)).description}</strong>`
       
       console.log(message);
-      this.winnerDialogText.innerHTML = `<strong>${this.hands[this.round].players[winnerIndex].name} has won the round and a pot of ${this.hands[this.round].pot}</strong>`
+      this.winnerDialogText.innerHTML = `<strong>${this.hands[this.round].players[winnerIndex].name} has won the round with a ${findBestHand(this.hands[this.round].players[winnerIndex].cards.concat(this.hands[this.round].communityCards)).description} and a pot of ${this.hands[this.round].pot}</strong>`
       
       this.winnerDialogElement.showModal()
       addToElement(this.eventElement,message,'p',true)

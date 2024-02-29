@@ -125,7 +125,6 @@ class Player {
         console.log(message)
         addToElement(this.eventsElement,message,'p',true)
         this.folded = true
-
         return this
     }
 }
@@ -150,6 +149,14 @@ class Playbot extends Player {
         console.log(this.name);
         this.statsTargetElement.appendChild(this.statsElement)
         addToElement(this.eventsElement,message,'p',true)
+    }
+    fold() {
+        const message = `${this.name} is folding`
+        console.log(message)
+        this.folded = true
+        this.statsElement.setAttribute('folded',this.folded)
+
+        return this
     }
 
     async doSomethingAsync(callbackFunction) {

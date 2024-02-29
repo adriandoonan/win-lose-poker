@@ -17,7 +17,7 @@ const startButton = document.getElementById('start-game-button')
 const startNewHandButton = document.getElementById('start-new-hand-button')
 const gameEventsContainer = document.getElementById('game-events')
 const darkModeToggle = document.getElementById('don-shades')
-const madeDecisionButton = document.getElementById('made-a-decision-button')
+
 
 let game, playerName;
 
@@ -158,10 +158,40 @@ darkModeToggle.addEventListener('click',() => {
   document.body.classList.toggle('dark')
 })
 
-//madeDecisionButton.addEventListener('click', handleClick)
+
 
 async function handleClick() {
   await new Promise((resolve) =>
                     setTimeout(resolve, 5000))
   alert('clicked')
 }
+
+
+/* <article id="decision-section">
+<button id="made-a-decision-button">decided</button>
+<button id="place-bet-button">bet</button>
+<button id="fold-button">fold</button>
+<input type="text" id="bet-amount" default="how much do you want to pony up">
+</article> */
+
+const decisionSection = document.getElementById('decision-section')
+const placeBetButton = document.getElementById('place-bet-button')
+const foldButton = document.getElementById('fold-button')
+const betAmountInput = document.getElementById('bet-amount')
+
+decisionSection.addEventListener('click', (e) => {
+  console.log('something was clicked in the decision section',e);
+  console.log('this was in the input',betAmountInput.value);
+  console.log('this was the button',e.target.getAttribute('id'))
+})
+
+placeBetButton.addEventListener('click',() => {
+  console.log('the place bet button was clicked');
+  console.log('this was in the input',betAmountInput.value);
+  return {button: 'place-bet',amount: Number(betAmountInput.value)}
+})
+foldButton.addEventListener('click',() => {
+  console.log('the fold button was clicked');
+  console.log('this was in the input',betAmountInput.value);
+  return {button: 'fold',amount: Number(betAmountInput.value)}
+})
