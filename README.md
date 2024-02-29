@@ -33,6 +33,7 @@ Happy pokering
 - [ ] everyone always make the same bets: first round we match the big blind, later rounds always bet 20 to speed up game
 - [ ] no one folds
 - [ ] when the use player runs out of money the game is over
+- [ ] write a revel best hand function for a player that just returns the best hand
 
 ## bugs
 

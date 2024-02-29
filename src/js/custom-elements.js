@@ -179,6 +179,7 @@ export class PlaybotStats extends HTMLElement {
         this.innerContent.querySelector('.playbot-name').innerText = this.name
         this.innerContent.querySelector('.playbot-purse').innerText = this.purse
         this.innerContent.querySelector('.playbot-wins').innerText = this.wins
+        this.innerContent.querySelector('.playbot-folded').innerText = this.wins
         this.appendChild(this.innerContent)
     }
 
@@ -198,6 +199,10 @@ export class PlaybotStats extends HTMLElement {
             this.querySelector('.playbot-wins').innerText = newValue
             
         }
+        if (name === 'folded') {
+          this.querySelector('.playbot-folded').innerText = newValue
+          
+      }
         if (name === 'thrown-down') {
             this.querySelector('.playbot-thrown-down').innerText = newValue
             

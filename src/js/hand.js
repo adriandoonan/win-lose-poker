@@ -305,43 +305,51 @@ class Hand {
                 //console.log('logging decision',decision)
             } else {
                 console.log('found the human player');
-                async function randomWait() {
-                    const timeToWait = Math.floor(Math.random() * 1000)
-                    await new Promise((resolve) => setTimeout(resolve, timeToWait))
-                    return timeToWait
-                }
-
-                async function handleForm() {
-                    let userInput = '';
-                    console.log('Before getting the user input: ', userInput);
-                    userInput = await getUserInput();
-                    console.log('After getting user input: ', userInput);
-                    return Number(userInput)
-                  };
-                  
-                  function getUserInput() {
-                    return new Promise((resolve, reject) => {
-                      document.getElementById('bet-amount').addEventListener('keydown',(e)=>{
-                        console.log('edfefe')
-                        console.log(e)
-                        if (e.code === 'Enter') {
-                            const inputVal = Number(document.getElementById('bet-amount').value)
-                            resolve(inputVal);
-                          }
-                    })
+                if (!player.folded) {
+                    async function randomWait() {
+                        const timeToWait = Math.floor(Math.random() * 1000)
+                        await new Promise((resolve) => setTimeout(resolve, timeToWait))
+                        return timeToWait
+                    }
+    
+                    async function handleForm() {
+                        let userInput = '';
+                        console.log('Before getting the user input: ', userInput);
+                        userInput = await getUserInput();
+                        console.log('After getting user input: ', userInput);
+                        return Number(userInput)
+                      };
                       
-
-                    });
-                  };
-                    const decision = await handleForm()
-                    let playerWantsToBet;
-                    // const decision = await new Promise((resolve) =>{
-                    //     playerWantsToBet = prompt('how much do you want to throw down?')
-                        
-                    // })
-                    console.log('logging decision',decision)
-                this.pot += player.placeBet(Number(decision),'custom')
-                console.log(player.name,'did a custom bet of',decision);
+                      function getUserInput() {
+                        return new Promise((resolve, reject) => {
+                          document.getElementById('decision-section').addEventListener('click',(e)=>{
+                            console.log('something was clicked in the decision section',e);
+                            console.log('this was in the input',document.getElementById('bet-amount').value);
+                            console.log('this was the button',e.target.getAttribute('id'))
+                            if (e.target.getAttribute('id') === 'place-bet-button') {
+                                const inputVal = Number(document.getElementById('bet-amount').value)
+                                resolve(inputVal);
+                              } else if (e.target.getAttribute('id') === 'fold-button') {
+                                resolve(-1)
+                              }
+                            })
+                        });
+                      };
+                        const decision = await handleForm()
+                        let playerWantsToBet;
+                        // const decision = await new Promise((resolve) =>{
+                        //     playerWantsToBet = prompt('how much do you want to throw down?')
+                            
+                        // })
+                        console.log('logging decision',decision)
+                        if (decision < 0) {
+                            player.fold()
+                        }
+                    this.pot += player.placeBet(Number(decision),'custom')
+                    console.log(player.name,'did a custom bet of',decision);
+                } else {
+                    console.log('skipping',player.name,'because they already folded');
+                }
             }
             this.potElement.innerText = this.pot;
         }
