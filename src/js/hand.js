@@ -138,6 +138,7 @@ class Hand {
             const takenSeats = players.map(player => player.seatNumber)
             const freeSeats = Array.from(' '.repeat(players.length)).map((_,index) => {if (!takenSeats.includes(index +1)) return index + 1}).filter(elem => elem)
             return players.map((player) => {
+                player.folded = false;
                 if (!player.seatNumber) { 
                     player.seatNumber = freeSeats.shift()
                 }

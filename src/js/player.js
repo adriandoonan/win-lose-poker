@@ -57,7 +57,7 @@ class Player {
 
     findBestHand(communityCards = []) {
         
-
+        
         console.log('getting besthand for',this.name);
         this.chenScore =  calculateChenFormula(this.cards)
         console.log(`${this.name} has a chen score of`,this.chenScore);

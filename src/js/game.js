@@ -35,6 +35,7 @@ class Game {
       this.winnerDialogElement = document.querySelector('dialog');
       this.winnerDialogText = document.querySelector('dialog p');
       this.playerPurseElement = document.getElementById('player-purse');
+      this.playerFoldedElement = document.getElementById('player-folded');
       this.playerWinsElement = document.getElementById('player-wins');
       this.potElement = document.getElementById('total-pot');
       this.goToGameOverScreenTimer = null;
@@ -62,6 +63,7 @@ class Game {
   }
 
     startNewHand() {
+      this.playerFoldedElement.innerText = ''
       this.players.sort((player1,player2) => player1.seatNumber < player2.seatNumber ? -1 : 1)
       this.hands.push(new Hand(this.players,this.round))
 
@@ -93,6 +95,10 @@ class Game {
             console.log('now we would start a betting round after the',currentHand.stage);
             currentHand.makeBettingRound()
           }
+          if (this.players[0].folded) {
+            console.log('user player has already folded, auto advancing from',currentHand.stage);
+            setTimeout(() => this.advanceCurrentHand(),2500)
+          }
           break
         }
         case 'flop': {
@@ -103,6 +109,10 @@ class Game {
           console.log('now we would start a betting round after the',currentHand.stage);
           currentHand.makeBettingRound()
           }
+          if (this.players[0].folded) {
+            console.log('user player has already folded, auto advancing from',currentHand.stage);
+            setTimeout(() => this.advanceCurrentHand(),5000)
+          }
           break;
         }
         case 'turn': {
@@ -112,6 +122,10 @@ class Game {
           currentHand.dealRiver()
           console.log('now we would start a betting round after the',currentHand.stage);
           currentHand.makeBettingRound()
+          }
+          if (this.players[0].folded) {
+            console.log('user player has already folded, auto advancing from',currentHand.stage);
+            setTimeout(() => this.advanceCurrentHand(),7000)
           }
           break;
         }
@@ -127,8 +141,8 @@ class Game {
             this.endCurrentHand(winnersArr[0].index)
           }
         }
-
       }
+
     }
 
     endCurrentHand(winnerIndex) {
