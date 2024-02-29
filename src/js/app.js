@@ -179,11 +179,11 @@ const placeBetButton = document.getElementById('place-bet-button')
 const foldButton = document.getElementById('fold-button')
 const betAmountInput = document.getElementById('bet-amount')
 
-decisionSection.addEventListener('click', (e) => {
-  console.log('something was clicked in the decision section',e);
-  console.log('this was in the input',betAmountInput.value);
-  console.log('this was the button',e.target.getAttribute('id'))
-})
+// decisionSection.addEventListener('click', (e) => {
+//   console.log('something was clicked in the decision section',e);
+//   console.log('this was in the input',betAmountInput.value);
+//   console.log('this was the button',e.target.getAttribute('id'))
+// })
 
 placeBetButton.addEventListener('click',() => {
   console.log('the place bet button was clicked');

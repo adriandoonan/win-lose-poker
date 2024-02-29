@@ -139,7 +139,7 @@ class Game {
       const message = `<strong>ending round ${this.round + 1}, and declaring ${this.hands[this.round].players[winnerIndex].name} the winner with a ${findBestHand(this.hands[this.round].players[winnerIndex].cards.concat(this.hands[this.round].communityCards)).description}</strong>`
       
       console.log(message);
-      this.winnerDialogText.innerHTML = `<strong>${this.hands[this.round].players[winnerIndex].name} has won the round with a ${findBestHand(this.hands[this.round].players[winnerIndex].cards.concat(this.hands[this.round].communityCards)).description} and a pot of ${this.hands[this.round].pot}</strong>`
+      this.winnerDialogText.innerHTML = `<strong>${this.hands[this.round].players[winnerIndex].name} has won a pot of ${this.hands[this.round].pot} with a ${findBestHand(this.hands[this.round].players[winnerIndex].cards.concat(this.hands[this.round].communityCards)).description}</strong>`
       
       this.winnerDialogElement.showModal()
       addToElement(this.eventElement,message,'p',true)

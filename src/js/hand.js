@@ -145,7 +145,8 @@ class Hand {
             }).sort((a,b) => a.seatNumber < b.seatNumber ? -1 : 1)
         }() || [];
         this.communityCards = [];
-        this.pot = 20;
+        this.pot = 0;
+        this.currentHighestBet = 0;
         this.blind = blind;
         this.dealerIndex = circularIncrement(this.players.length,round);
         this.stage = 'ante';
@@ -200,11 +201,14 @@ class Hand {
             this.players[bigBlindPlayerIndex].placeBet(bigBlind,'big blind')
             // this should be a method on the player
             this.pot += bigBlind
+            this.potElement.innerText = this.pot
+
         }
         { // handle small blind
             this.players[smallBlindPlayerIndex].placeBet(smallBlind, 'small blind')
     
             this.pot += smallBlind
+            this.potElement.innerText = this.pot
         }
     
         return this
@@ -285,18 +289,18 @@ class Hand {
         let bettingRound = 0;
         let totalMoves = 0;
         let currentRoundMoves = 0;
-        let currentHighestBet = this.players.reduce((acc,cur) => cur.currentBet > acc ? cur.currentBet : acc,0)
+        this.currentHighestBet = this.players.reduce((acc,cur) => cur.currentBet > acc ? cur.currentBet : acc,0)
         console.log('round fed to makebettinground',this.stage);
         for (const player of this.players) {
             //console.log(player.constructor, player.constructor === Playbot);
             if (player.constructor === Playbot) {
-                currentHighestBet = this.players.reduce((acc,cur) => cur.currentBet > acc ? cur.currentBet : acc,0)
-                console.log('current highest bet is',currentHighestBet)
+                this.currentHighestBet = this.players.reduce((acc,cur) => cur.currentBet > acc ? cur.currentBet : acc,0)
+                console.log('current highest bet is',this.currentHighestBet)
                 const decision = await player.doSomethingAsync(player.decideBet(this.communityCards, this.stage))
     
                 //if (this.stage === 'preFlop') {
-                    if (currentHighestBet > player.currentBet) {
-                        this.pot += player.placeBet(currentHighestBet - player.currentBet,'call')
+                    if (this.currentHighestBet > player.currentBet) {
+                        this.pot += player.placeBet(this.currentHighestBet - player.currentBet,'call')
                     }
                 //} else {
                 //    this.pot += player.placeBet(20,'wild speculation')
@@ -320,12 +324,18 @@ class Hand {
                         return Number(userInput)
                       };
                       
+                      let minimumBetValue = this.currentHighestBet - this.players[0].currentBet || 0
                       function getUserInput() {
                         return new Promise((resolve, reject) => {
                           document.getElementById('decision-section').addEventListener('click',(e)=>{
                             console.log('something was clicked in the decision section',e);
                             console.log('this was in the input',document.getElementById('bet-amount').value);
                             console.log('this was the button',e.target.getAttribute('id'))
+                            console.log('can we see the game data?', minimumBetValue)//this.currentHighestBet - this.players[0].currentBet);
+                            console.log('more event data',e);
+                            if (e.target.getAttribute('id') === 'bet-amount') {
+                                e.target.setAttribute('min',minimumBetValue)
+                            } 
                             if (e.target.getAttribute('id') === 'place-bet-button') {
                                 const inputVal = Number(document.getElementById('bet-amount').value)
                                 resolve(inputVal);
@@ -344,6 +354,7 @@ class Hand {
                         console.log('logging decision',decision)
                         if (decision < 0) {
                             player.fold()
+                            return
                         }
                     this.pot += player.placeBet(Number(decision),'custom')
                     console.log(player.name,'did a custom bet of',decision);
@@ -436,7 +447,7 @@ class Hand {
         if (winners.length === 1) {
             console.log('going to award the winner a pot of',this.pot)
         }
-
+        this.currentHighestBet = 0;
         return winners
     }
     
