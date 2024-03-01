@@ -29,7 +29,7 @@
 <nav >
     
     
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Deck.html">Deck</a><ul class='methods'><li data-type='method'><a href="Deck.html#acesHigh">acesHigh</a></li><li data-type='method'><a href="Deck.html#acesLow">acesLow</a></li><li data-type='method'><a href="Deck.html#burn">burn</a></li><li data-type='method'><a href="Deck.html#deal">deal</a></li><li data-type='method'><a href="Deck.html#shuffle">shuffle</a></li></ul></li><li><a href="Game.html">Game</a><ul class='methods'><li data-type='method'><a href="Game.html#addPlayer">addPlayer</a></li></ul></li><li><a href="Hand.html">Hand</a></li><li><a href="Player.html">Player</a><ul class='methods'><li data-type='method'><a href="Player.html#decideBet">decideBet</a></li><li data-type='method'><a href="Player.html#fold">fold</a></li><li data-type='method'><a href="Player.html#placeBet">placeBet</a></li></ul></li></ul><h3>Global</h3><ul><li><a href="global.html#circularIncrement">circularIncrement</a></li><li><a href="global.html#knuthShuffle">knuthShuffle</a></li><li><a href="global.html#pipe">pipe</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Deck.html">Deck</a><ul class='methods'><li data-type='method'><a href="Deck.html#acesHigh">acesHigh</a></li><li data-type='method'><a href="Deck.html#acesLow">acesLow</a></li><li data-type='method'><a href="Deck.html#burn">burn</a></li><li data-type='method'><a href="Deck.html#deal">deal</a></li><li data-type='method'><a href="Deck.html#shuffle">shuffle</a></li></ul></li><li><a href="Game.html">Game</a><ul class='methods'><li data-type='method'><a href="Game.html#addPlayer">addPlayer</a></li></ul></li><li><a href="Hand.html">Hand</a><ul class='methods'><li data-type='method'><a href="Hand.html#acesHigh">acesHigh</a></li><li data-type='method'><a href="Hand.html#acesLow">acesLow</a></li><li data-type='method'><a href="Hand.html#addPlayers">addPlayers</a></li><li data-type='method'><a href="Hand.html#anteUp">anteUp</a></li><li data-type='method'><a href="Hand.html#dealFlop">dealFlop</a></li><li data-type='method'><a href="Hand.html#dealPreFlop">dealPreFlop</a></li><li data-type='method'><a href="Hand.html#dealRiver">dealRiver</a></li><li data-type='method'><a href="Hand.html#dealTurn">dealTurn</a></li><li data-type='method'><a href="Hand.html#decideWinner">decideWinner</a></li><li data-type='method'><a href="Hand.html#getPlayers">getPlayers</a></li><li data-type='method'><a href="Hand.html#makeBettingRound">makeBettingRound</a></li><li data-type='method'><a href="Hand.html#updatePlaybotFoldState">updatePlaybotFoldState</a></li></ul></li><li><a href="Playbot.html">Playbot</a><ul class='methods'><li data-type='method'><a href="Playbot.html#acceptPot">acceptPot</a></li><li data-type='method'><a href="Playbot.html#autobet">autobet</a></li><li data-type='method'><a href="Playbot.html#decideBet">decideBet</a></li><li data-type='method'><a href="Playbot.html#doSomethingAsync">doSomethingAsync</a></li><li data-type='method'><a href="Playbot.html#findBestHand">findBestHand</a></li><li data-type='method'><a href="Playbot.html#fold">fold</a></li><li data-type='method'><a href="Playbot.html#placeBet">placeBet</a></li><li data-type='method'><a href="Playbot.html#sayHello">sayHello</a></li></ul></li><li><a href="PlaybotStats.html">PlaybotStats</a></li><li><a href="Player.html">Player</a><ul class='methods'><li data-type='method'><a href="Player.html#acceptPot">acceptPot</a></li><li data-type='method'><a href="Player.html#decideBet">decideBet</a></li><li data-type='method'><a href="Player.html#doSomethingAsync">doSomethingAsync</a></li><li data-type='method'><a href="Player.html#findBestHand">findBestHand</a></li><li data-type='method'><a href="Player.html#fold">fold</a></li><li data-type='method'><a href="Player.html#placeBet">placeBet</a></li><li data-type='method'><a href="Player.html#sayHello">sayHello</a></li></ul></li><li><a href="SpinningCard.html">SpinningCard</a></li></ul><h3>Global</h3><ul><li><a href="global.html#addToElement">addToElement</a></li><li><a href="global.html#calculateChenFormula">calculateChenFormula</a></li><li><a href="global.html#circularIncrement">circularIncrement</a></li><li><a href="global.html#clearElements">clearElements</a></li><li><a href="global.html#findBestHand">findBestHand</a></li><li><a href="global.html#knuthShuffle">knuthShuffle</a></li><li><a href="global.html#pipe">pipe</a></li><li><a href="global.html#randomWait">randomWait</a></li><li><a href="global.html#removeElements">removeElements</a></li><li><a href="global.html#replaceInnerText">replaceInnerText</a></li></ul>
     
 </nav>
 
@@ -131,81 +131,113 @@ const circularIncrement = (arrayLength,increment = 0,startIndex = 0) => {
     return modulo === 0 ? startIndex : modulo - 1
   }
 
-
-  const addToElement = (htmlElement,content,tag = 'p', prepend) => {
-    //console.log(`trying to add`,content,'to',htmlElement);
-    if (prepend) {
-      htmlElement.innerHTML = `&lt;${tag}>${content}&lt;/${tag}>` + htmlElement.innerHTML
-    }else {
-      htmlElement.innerHTML += `&lt;${tag}>${content}&lt;/${tag}>`
-    }
+/**
+ * Will add a supplied string as a given HTML element
+ * to the start or end of a container element
+ *
+ * @param {HTMLElement} htmlElement - The target element
+ * @param {string} content          - The content you want to add
+ * @param {string} [tag='p']        - The tag of the element with which to wrap the content
+ * @param {boolean} prepend         - If set the true, the element will be added to the start
+ *                                    of the target element rather than the end.
+ */
+const addToElement = (htmlElement,content,tag = 'p', prepend) => {
+  //console.log(`trying to add`,content,'to',htmlElement);
+  if (prepend) {
+    htmlElement.innerHTML = `&lt;${tag}>${content}&lt;/${tag}>` + htmlElement.innerHTML
+  }else {
+    htmlElement.innerHTML += `&lt;${tag}>${content}&lt;/${tag}>`
   }
+}
 
 
 
-
-  const replaceInnerText = (htmlElement,content) => {
+/**
+ * Replaced the innerText of the given element
+ * with the provided string
+ *
+ * @param {HTMLElement} htmlElement
+ * @param {string} content
+ */
+const replaceInnerText = (htmlElement,content) => {
     htmlElement.innerText = content
   }
 
-
-  const removeElements = (...elements) => {
-    elements.forEach(element => element.remove())
-  }
+/**
+ * Removes the given HTMLElements one after the other
+ *
+ * @param {HTMLElement} elements - Comma,separated list of elements
+ */
+const removeElements = (...elements) => {
+  elements.forEach(element => element.remove())
+}
    
+/**
+ * Clears the innerText of the provided elements
+ *
+ * @param {HTMLElement} elements - Comma,separated list of elements
+ */
+const clearElements = (...elements) => {
+  elements.forEach(element => {
+    try {
+      element.innerText = ''
+    } catch(e) {
+      console.error('error trying to clear',element,)
+      console.error(e)
+    }
+  })
+}
 
-  const clearElements = (...elements) => {
-    elements.forEach(element => {
-      try {
-        element.innerText = ''
-      } catch(e) {
-        console.error('error trying to clear',element,)
-        console.error(e)
-      }
-    })
+/**
+ * Calculates a score based on the two cards provided.
+ * Details on the chen score can be found, for example,
+ * at {@link https://www.thepokerbank.com/strategy/basic/starting-hand-selection/chen-formula/ | the poker bank}
+ * website.
+ *
+ * @param {Array.&lt;Object>} cardPair An array containing two card objects
+ * @return {integer} The caculated Chen score
+ */
+const calculateChenFormula = (cardPair) => {
+  let score = 0;
+  const card1Value = cardPair[0].card
+  const card2Value = cardPair[1].card
+  const cardScores = [ , , 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 6, 7, 8, 10]
+  const highestCard = card1Value > card2Value ? cardScores[card1Value] : cardScores[card2Value]
+  const gap = Math.abs(card1Value - card2Value)
+  //score += highestCard
+  if (
+    card1Value === card2Value
+  ) {
+    const pairBonus = highestCard * 2
+    score += pairBonus > 5 ?  pairBonus  : 5
+    //score += highestCard &lt; 5 ? highestCard  : 5
+  } else {
+    score += highestCard
   }
-
-  const calculateChenFormula = (cardPair) => {
-    let score = 0;
-    const card1Value = cardPair[0].card
-    const card2Value = cardPair[1].card
-    const cardScores = [ , , 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 6, 7, 8, 10]
-    const highestCard = card1Value > card2Value ? cardScores[card1Value] : cardScores[card2Value]
-    const gap = Math.abs(card1Value - card2Value)
-    //score += highestCard
-    if (
-      card1Value === card2Value
-    ) {
-      const pairBonus = highestCard * 2
-      score += pairBonus > 5 ?  pairBonus  : 5
-      //score += highestCard &lt; 5 ? highestCard  : 5
-    } else {
-      score += highestCard
-    }
-    if (cardPair[0].suit === cardPair[1].suit) {
-      score += 2
-    }
-    switch(gap) {
-      case 0:
-      case 1:
-        break
-      case 2:
-        score -= 1
-        break
-      case 3: 
-        score -= 2
-        break
-      case 4:
-        score -= 4
-        break
-      default:
-        score -=5
-    }
-    if (gap &amp;&amp; gap &lt;= 2 &amp;&amp; card1Value &lt; 12 &amp;&amp; card2Value &lt; 12) {
-      score++
-    }
-    return Math.round(score)
+  if (cardPair[0].suit === cardPair[1].suit) {
+    score += 2
   }
+  switch(gap) {
+    case 0:
+    case 1:
+      break
+    case 2:
+      score -= 1
+      break
+    case 3: 
+      score -= 2
+      break
+    case 4:
+      score -= 4
+      break
+    default:
+      score -=5
+  }
+  if (gap &amp;&amp; gap &lt;= 2 &amp;&amp; card1Value &lt; 12 &amp;&amp; card2Value &lt; 12) {
+    score++
+  }
+  return Math.round(score)
+}
 
   // const myCardsArray = [
   //   {card: 7, suit: 'spades'},
@@ -234,7 +266,7 @@ const circularIncrement = (arrayLength,increment = 0,startIndex = 0) => {
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.2</a> on Fri Mar 01 2024 09:36:01 GMT+0100 (Central European Standard Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.2</a> on Fri Mar 01 2024 11:40:26 GMT+0100 (Central European Standard Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
 </footer>
 
 <script>prettyPrint();</script>

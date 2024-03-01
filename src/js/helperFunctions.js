@@ -84,81 +84,113 @@ const circularIncrement = (arrayLength,increment = 0,startIndex = 0) => {
     return modulo === 0 ? startIndex : modulo - 1
   }
 
-
-  const addToElement = (htmlElement,content,tag = 'p', prepend) => {
-    //console.log(`trying to add`,content,'to',htmlElement);
-    if (prepend) {
-      htmlElement.innerHTML = `<${tag}>${content}</${tag}>` + htmlElement.innerHTML
-    }else {
-      htmlElement.innerHTML += `<${tag}>${content}</${tag}>`
-    }
+/**
+ * Will add a supplied string as a given HTML element
+ * to the start or end of a container element
+ *
+ * @param {HTMLElement} htmlElement - The target element
+ * @param {string} content          - The content you want to add
+ * @param {string} [tag='p']        - The tag of the element with which to wrap the content
+ * @param {boolean} prepend         - If set the true, the element will be added to the start
+ *                                    of the target element rather than the end.
+ */
+const addToElement = (htmlElement,content,tag = 'p', prepend) => {
+  //console.log(`trying to add`,content,'to',htmlElement);
+  if (prepend) {
+    htmlElement.innerHTML = `<${tag}>${content}</${tag}>` + htmlElement.innerHTML
+  }else {
+    htmlElement.innerHTML += `<${tag}>${content}</${tag}>`
   }
+}
 
 
 
-
-  const replaceInnerText = (htmlElement,content) => {
+/**
+ * Replaced the innerText of the given element
+ * with the provided string
+ *
+ * @param {HTMLElement} htmlElement
+ * @param {string} content
+ */
+const replaceInnerText = (htmlElement,content) => {
     htmlElement.innerText = content
   }
 
-
-  const removeElements = (...elements) => {
-    elements.forEach(element => element.remove())
-  }
+/**
+ * Removes the given HTMLElements one after the other
+ *
+ * @param {HTMLElement} elements - Comma,separated list of elements
+ */
+const removeElements = (...elements) => {
+  elements.forEach(element => element.remove())
+}
    
+/**
+ * Clears the innerText of the provided elements
+ *
+ * @param {HTMLElement} elements - Comma,separated list of elements
+ */
+const clearElements = (...elements) => {
+  elements.forEach(element => {
+    try {
+      element.innerText = ''
+    } catch(e) {
+      console.error('error trying to clear',element,)
+      console.error(e)
+    }
+  })
+}
 
-  const clearElements = (...elements) => {
-    elements.forEach(element => {
-      try {
-        element.innerText = ''
-      } catch(e) {
-        console.error('error trying to clear',element,)
-        console.error(e)
-      }
-    })
+/**
+ * Calculates a score based on the two cards provided.
+ * Details on the chen score can be found, for example,
+ * at {@link https://www.thepokerbank.com/strategy/basic/starting-hand-selection/chen-formula/ | the poker bank}
+ * website.
+ *
+ * @param {Array.<Object>} cardPair An array containing two card objects
+ * @return {integer} The caculated Chen score
+ */
+const calculateChenFormula = (cardPair) => {
+  let score = 0;
+  const card1Value = cardPair[0].card
+  const card2Value = cardPair[1].card
+  const cardScores = [ , , 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 6, 7, 8, 10]
+  const highestCard = card1Value > card2Value ? cardScores[card1Value] : cardScores[card2Value]
+  const gap = Math.abs(card1Value - card2Value)
+  //score += highestCard
+  if (
+    card1Value === card2Value
+  ) {
+    const pairBonus = highestCard * 2
+    score += pairBonus > 5 ?  pairBonus  : 5
+    //score += highestCard < 5 ? highestCard  : 5
+  } else {
+    score += highestCard
   }
-
-  const calculateChenFormula = (cardPair) => {
-    let score = 0;
-    const card1Value = cardPair[0].card
-    const card2Value = cardPair[1].card
-    const cardScores = [ , , 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 6, 7, 8, 10]
-    const highestCard = card1Value > card2Value ? cardScores[card1Value] : cardScores[card2Value]
-    const gap = Math.abs(card1Value - card2Value)
-    //score += highestCard
-    if (
-      card1Value === card2Value
-    ) {
-      const pairBonus = highestCard * 2
-      score += pairBonus > 5 ?  pairBonus  : 5
-      //score += highestCard < 5 ? highestCard  : 5
-    } else {
-      score += highestCard
-    }
-    if (cardPair[0].suit === cardPair[1].suit) {
-      score += 2
-    }
-    switch(gap) {
-      case 0:
-      case 1:
-        break
-      case 2:
-        score -= 1
-        break
-      case 3: 
-        score -= 2
-        break
-      case 4:
-        score -= 4
-        break
-      default:
-        score -=5
-    }
-    if (gap && gap <= 2 && card1Value < 12 && card2Value < 12) {
-      score++
-    }
-    return Math.round(score)
+  if (cardPair[0].suit === cardPair[1].suit) {
+    score += 2
   }
+  switch(gap) {
+    case 0:
+    case 1:
+      break
+    case 2:
+      score -= 1
+      break
+    case 3: 
+      score -= 2
+      break
+    case 4:
+      score -= 4
+      break
+    default:
+      score -=5
+  }
+  if (gap && gap <= 2 && card1Value < 12 && card2Value < 12) {
+    score++
+  }
+  return Math.round(score)
+}
 
   // const myCardsArray = [
   //   {card: 7, suit: 'spades'},

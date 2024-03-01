@@ -97,38 +97,16 @@ class Deck {
 
 
 
-//region testing
-// const crds = new Deck()
-// const crds2 = new Deck()
-
-// console.log(crds.shuffle());
-// console.log(crds2)
-// crds2.shuffle()
-// console.log(crds2);
-// crds.acesLow()
-// console.log(crds);
-// crds.cards.length
-// crds.burn()
-// crds.cards.length
-
-// crds.deal(4)
-// crds.cards.length
-// const newCard = crds.deal()
-// crds.cards.length
-//#endregion
-
-
-// TODO figue out why this can't be instantiated with the array of new players
-// or with creating a new deck on instantiation, it is just undefined before i
-// set using another fucntion
-
 class Hand {
     /**
      * Represents a hand in the game of poker
      * 
-     * @param {Array} players 
-     * @param {integer} [round = 0] 
-     * @param {integer} [blind = 2] 
+     * @param {Array} players       - An array of players see {@link Player}
+     * @param {integer} [round = 0] - The round this hand represents in a full game.
+     *                                This will determine who is the dealer and,
+     *                                consequently, which players will be big and
+     *                                small blind for the hand.
+     * @param {integer} [blind = 2] - The amount of the small blind. Defaults to 2.
      * @class Hand
      */
     constructor(players,round = 0, blind = 2) {
@@ -158,11 +136,26 @@ class Hand {
 
     }
     
+    /**
+     * A loop to reset the fold status of any bot players. Will be run on
+     * start of a new hand.
+     *
+     * @memberof Hand
+     */
     updatePlaybotFoldState() {
         //console.log(this.playbotElements)
         this.playbotElements.forEach(element => element.setAttribute('folded','false'))
     };
     
+    /**
+     * Adds an array of players to an already started hand and 
+     * assigns them a seat number based on empty seats that may
+     * have been previously vacated by bankrupted players or bots.
+     *
+     * @param {*} players - An array of players, see {@link Player}
+     * @return {*} 
+     * @memberof Hand
+     */
     addPlayers(players) {
         const allPlayers = [...this.players,...players]
         const takenSeats = allPlayers.map(player => player.seatNumber)
@@ -178,15 +171,50 @@ class Hand {
         return this
     }
 
+    /**
+     *  Returns the players in this hand.
+     *
+     * @return {Array.<object>} The players in this hand 
+     * @memberof Hand
+     */
     getPlayers() {
         return this.players
     }
    
+    /**
+     * Aces will be treated as having a value of 1 in this hand.
+     * Calls a method of the {@link Deck} class
+     *
+     * @return {Array.<object>} 
+     * @memberof Hand
+     */
     acesLow()  {
             this.deck.acesLow();
             return this.deck.cards
     }
 
+    /**
+     * Aces will be treated as having a value of 14 in this hand.
+     * Calls a method of the {@link Deck} class
+     *
+     * @return {Array.<object>} 
+     * @memberof Hand
+     */
+        acesHigh()  {
+            this.deck.acesHigh();
+            return this.deck.cards
+    }
+
+    /**
+     * Will be run at the start of a hand. The players who will
+     * be posting the ante is decided based on the round of this
+     * hand in the game. Player at index 0 will be considered the 
+     * dealer at the start and the dealer chip will move one position
+     * forward on every round, eventually coming back to player 0.
+     *
+     * @return {*} 
+     * @memberof Hand
+     */
     anteUp() {
         this.updatePlaybotFoldState()
         const bigBlind = this.blind * 2
@@ -223,6 +251,16 @@ class Hand {
         return this
     }
 
+
+    /**
+     * Shuffles the deck and deals two cards to each player in the
+     * hand then runs a loop over the players so they can generate
+     * some stats about the cards and make a betting decision.
+     * See {@link Deck} and {@link Player} classes for related methods.
+     *
+     * @return {*} 
+     * @memberof Hand
+     */
     dealPreFlop() {
         this.deck.shuffle()
         if (
@@ -245,6 +283,14 @@ class Hand {
         return this
     }
     
+    /**
+     * Burns a card and deals three to the table.
+     * See {@link Deck} and {@link Player} classes 
+     * for related methods.
+     *
+     * @return {*} 
+     * @memberof Hand
+     */
     dealFlop() {
         if (
             this.players.some(player => player.cards.length !== 2) || 
@@ -264,6 +310,14 @@ class Hand {
         return this
     }
     
+    /**
+     * Burns a card and deals one to the table.
+     * See {@link Deck} and {@link Player} classes 
+     * for related methods.
+     *
+     * @return {*} 
+     * @memberof Hand
+     */
     dealTurn() {
         if ( this.communityCards.length !== 3) {
             console.error(`can only deal the turn once, after the flop and before the river`)
@@ -278,7 +332,15 @@ class Hand {
         }
         return this
     }
-       
+
+    /**
+     * Burns a card and deals one to the table.
+     * See {@link Deck} and {@link Player} classes 
+     * for related methods.
+     *
+     * @return {*} 
+     * @memberof Hand
+     */
     dealRiver() {
         if ( this.communityCards.length !== 4 ) {
             console.error(`can only deal the river once, after the flop and turn`)
@@ -294,6 +356,14 @@ class Hand {
         return this
     }
     
+    /**
+     * Runs a loop over the players in the hand and asks each one to
+     * make a decision whether to check, call, raise or fold. Bets made
+     * will increase the rekated HTML element
+     *
+     * @return {*} 
+     * @memberof Hand
+     */
     async makeBettingRound() {
         let bettingRound = 0;
         let totalMoves = 0;
@@ -376,6 +446,17 @@ class Hand {
         return this
     }
 
+
+    /**
+     * For players who have not already folded, will compare the
+     * five-card combinations currently possible for those players and 
+     * return the player holding the best hand. If there are more
+     * than one player who have the exact same strength of hand, returns
+     * them all. See {@link findBestHand} for related function.
+     *
+     * @return {Array} An array of winners, can have only one member
+     * @memberof Hand
+     */
     decideWinner() {
         const playersStillInIt = this.players.filter(player => !player.folded)
         if (playersStillInIt.length === 1) {

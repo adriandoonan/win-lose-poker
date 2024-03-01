@@ -1,6 +1,11 @@
 import { addToElement,calculateChenFormula, replaceInnerText } from "./helperFunctions.js";
 import { findBestHand } from "./cactus.js";
 
+/**
+ * A function that just waits a random amount of time before returning
+ *
+ * @return {integer} The amount of time the function waited for
+ */
 async function randomWait() {
     const timeToWait = Math.floor(Math.random() * 1000)
     await new Promise((resolve) => setTimeout(resolve, timeToWait))
@@ -18,6 +23,13 @@ class Player {
      * @param {Array.<Object>} cards - The cards held by this player
      * @param {bool} folded          - Whether this player has already folded
      * @param {integer} seatNumber   - The position this player has around the table
+     * @param {integer} chenScore    - The chen score calculated for the current pocket cards
+     * @param {Object} bestHand      - The best hand that can be made out of the pocket and community cards
+     * @param {HTMLElement} eventsElement
+     * @param {HTMLElement} playerThrownDownElement
+     * @param {HTMLElement} playerFoldedElement
+     * @param {HTMLElement} bestHandElement
+     * @param {boolean} bot - Whether this player is a bot or user player.
      * 
      * @class Player
      */
@@ -38,23 +50,48 @@ class Player {
         this.playerFoldedElement = document.getElementById('player-folded');
         this.chenScoreElement = document.getElementById('player-chen-score');
         this.bestHandElement = document.getElementById('player-best-hand');
+        this.bot = false;
     }
 
+    /**
+     * Will wait a random amount of time and then run a function that may also 
+     * be asynchronous
+     *
+     * @param {function} callbackFunction a fuction to be run following the async function
+     * @return {*} 
+     * @memberof Player
+     */
     async doSomethingAsync(callbackFunction) {
         const waited = await randomWait()
-        console.log('waited for',waited)
+        //console.log('waited for',waited)
         let result;
         if (typeof callbackFunction === 'function') {
+            console.log('got a callback in the callfor async');
             result = await callbackFunction()
+            console.log('this was the callback result',result);
         }
         return result ? result : waited
     }
 
+    /**
+     * Gets the player to introduce themselves and update the events log
+     *
+     * @memberof Player
+     */
     sayHello() {
         const message = `Hey, this is ${this.name}, let's play!`
         addToElement(this.eventsElement,message,'p',true)
     }
 
+    /**
+     * Will try and get some scores for the firt two pocket cards, and, if
+     * provided, the best five-card combination from the set of the pocket and
+     * community cards. See {@link calculateChenFormula} and {@link findBestHand}.
+     *
+     * @param {Array.<Object>} [communityCards=[]] The cards currently on the table.
+     * @return {Object} 
+     * @memberof Player
+     */
     findBestHand(communityCards = []) {
         
         
@@ -160,12 +197,26 @@ class Player {
         return this
     }
 
+    /**
+     * Will log the amount awarded for winning a pot to the console.
+     *
+     * @param {integer} amount
+     * @memberof Player
+     */
     acceptPot(amount) {
-        console.log('pot has been awarded to user player',this.name);
+        console.log(amount,'pot has been awarded to user player',this.name);
     }
 }
 
+
 class Playbot extends Player {
+    /**
+     * A computer controlled player that can take part in hands of 
+     * win lose poker
+     *
+     * @class Playbot
+     * @extends {Player}
+     */
     constructor(name,purse,aggression) {
         super(`${name}bot`,purse);
         this.aggression = aggression || 5;
@@ -177,20 +228,32 @@ class Playbot extends Player {
         this.playerPotElement = null;
         this.chenScoreElement = null;
         this.bestHandElement = null;
-        this.playerFoldedElement = null;
-       
-       
+        this.playerFoldedElement = null;  
     } 
     
+    /**
+     * Gets the player to introduce themselves, update the events log
+     * and add an element to the page that will hold the playbots 
+     * stats on money held, won, bet and whether they have folded
+     *
+     * @memberof Playbot
+     */
     sayHello(){
         const message = `Hey, this is ${this.name}, let's play!`
-        
         this.statsElement.name = this.name;
         this.statsElement.purse = this.purse
         //console.log(this.name);
         this.statsTargetElement.appendChild(this.statsElement)
         addToElement(this.eventsElement,message,'p',true)
     }
+
+    /**
+     * Carries out some actions when a player folds including
+     * updating stats element, and state.
+     *
+     * @return {*} 
+     * @memberof Playbot
+     */
     fold() {
         const message = `${this.name} is folding`
         console.log(message)
@@ -200,18 +263,13 @@ class Playbot extends Player {
         return this
     }
 
-    async doSomethingAsync(callbackFunction) {
-        const waited = await randomWait()
-        //console.log('waited for',waited)
-        let result;
-        if (typeof callbackFunction === 'function') {
-            console.log('got a callback in the callfor async');
-            result = await callbackFunction()
-        }
-        if (result) {console.log('result of an async function would be',result);}
-        return result ? result : waited
-    }
-
+    /**
+     * Finds the best hand the playbot currently has
+     *
+     * @param {Array.<Object>} [communityCards=[]] The set of cards on the table
+     * @return {*} 
+     * @memberof Playbot
+     */
     decideBet(communityCards = []) {
         if (this.folded) return
 
@@ -221,6 +279,15 @@ class Playbot extends Player {
         return this
     }
 
+    /**
+     * Places a bet or folds based on how much the playbot decides to bet
+     *
+     * @param {integer} amount - the amount the playbot wants to bet. If the amount is less
+     *                           than 0, will fold.
+     * @param {string} type    - the type of bet being made, this is currently just shown in the console
+     * @return {*} 
+     * @memberof Playbot
+     */
     placeBet(amount,type) {
         if (amount < 0) {
             this.fold()
@@ -239,6 +306,16 @@ class Playbot extends Player {
         
         return amount
     }
+
+    /**
+     * Calculates how much a playbot should bet based on their chen score or current best hand.
+     * Can return a value of -1, which would lead the playbot folding. In certain conditions
+     * the playbot will just bet 20, no matter what.
+     *
+     * @param {integer} currentHighestBet
+     * @return {integer} 
+     * @memberof Playbot
+     */
     autobet(currentHighestBet) {
         console.log('got a request for an autobet from',this.name,'current highest is',currentHighestBet);
         console.log(this.name,'would be working with a chen score of',this.chenScore, 'and best hand of',this.bestHand);
@@ -256,6 +333,12 @@ class Playbot extends Player {
         
     }
 
+    /**
+     * Accepts a winning pot and updates some HTML elements.
+     *
+     * @param {integer} amount
+     * @memberof Playbot
+     */
     acceptPot(amount) {
         console.log(amount,'pot has been awarded to playbot',this.name);
         this.purse += amount;
@@ -264,7 +347,5 @@ class Playbot extends Player {
 
 }
 
-const newBot = new Playbot('bob')
-newBot
 
 export {Player,Playbot}

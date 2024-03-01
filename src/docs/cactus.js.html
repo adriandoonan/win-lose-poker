@@ -1,4 +1,51 @@
-// adapted from https://github.com/josh-frank/cactus-josh.git
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="utf-8">
+    <title>cactus.js - Documentation</title>
+    
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+    <script src="scripts/nav.js" defer></script>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav >
+    
+    
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Deck.html">Deck</a><ul class='methods'><li data-type='method'><a href="Deck.html#acesHigh">acesHigh</a></li><li data-type='method'><a href="Deck.html#acesLow">acesLow</a></li><li data-type='method'><a href="Deck.html#burn">burn</a></li><li data-type='method'><a href="Deck.html#deal">deal</a></li><li data-type='method'><a href="Deck.html#shuffle">shuffle</a></li></ul></li><li><a href="Game.html">Game</a><ul class='methods'><li data-type='method'><a href="Game.html#addPlayer">addPlayer</a></li></ul></li><li><a href="Hand.html">Hand</a><ul class='methods'><li data-type='method'><a href="Hand.html#acesHigh">acesHigh</a></li><li data-type='method'><a href="Hand.html#acesLow">acesLow</a></li><li data-type='method'><a href="Hand.html#addPlayers">addPlayers</a></li><li data-type='method'><a href="Hand.html#anteUp">anteUp</a></li><li data-type='method'><a href="Hand.html#dealFlop">dealFlop</a></li><li data-type='method'><a href="Hand.html#dealPreFlop">dealPreFlop</a></li><li data-type='method'><a href="Hand.html#dealRiver">dealRiver</a></li><li data-type='method'><a href="Hand.html#dealTurn">dealTurn</a></li><li data-type='method'><a href="Hand.html#decideWinner">decideWinner</a></li><li data-type='method'><a href="Hand.html#getPlayers">getPlayers</a></li><li data-type='method'><a href="Hand.html#makeBettingRound">makeBettingRound</a></li><li data-type='method'><a href="Hand.html#updatePlaybotFoldState">updatePlaybotFoldState</a></li></ul></li><li><a href="Playbot.html">Playbot</a><ul class='methods'><li data-type='method'><a href="Playbot.html#acceptPot">acceptPot</a></li><li data-type='method'><a href="Playbot.html#autobet">autobet</a></li><li data-type='method'><a href="Playbot.html#decideBet">decideBet</a></li><li data-type='method'><a href="Playbot.html#doSomethingAsync">doSomethingAsync</a></li><li data-type='method'><a href="Playbot.html#findBestHand">findBestHand</a></li><li data-type='method'><a href="Playbot.html#fold">fold</a></li><li data-type='method'><a href="Playbot.html#placeBet">placeBet</a></li><li data-type='method'><a href="Playbot.html#sayHello">sayHello</a></li></ul></li><li><a href="PlaybotStats.html">PlaybotStats</a></li><li><a href="Player.html">Player</a><ul class='methods'><li data-type='method'><a href="Player.html#acceptPot">acceptPot</a></li><li data-type='method'><a href="Player.html#decideBet">decideBet</a></li><li data-type='method'><a href="Player.html#doSomethingAsync">doSomethingAsync</a></li><li data-type='method'><a href="Player.html#findBestHand">findBestHand</a></li><li data-type='method'><a href="Player.html#fold">fold</a></li><li data-type='method'><a href="Player.html#placeBet">placeBet</a></li><li data-type='method'><a href="Player.html#sayHello">sayHello</a></li></ul></li><li><a href="SpinningCard.html">SpinningCard</a></li></ul><h3>Global</h3><ul><li><a href="global.html#addToElement">addToElement</a></li><li><a href="global.html#calculateChenFormula">calculateChenFormula</a></li><li><a href="global.html#circularIncrement">circularIncrement</a></li><li><a href="global.html#clearElements">clearElements</a></li><li><a href="global.html#findBestHand">findBestHand</a></li><li><a href="global.html#knuthShuffle">knuthShuffle</a></li><li><a href="global.html#pipe">pipe</a></li><li><a href="global.html#randomWait">randomWait</a></li><li><a href="global.html#removeElements">removeElements</a></li><li><a href="global.html#replaceInnerText">replaceInnerText</a></li></ul>
+    
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">cactus.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>// adapted from https://github.com/josh-frank/cactus-josh.git
 
 // Here's how a card is represented in Cactus:
 
@@ -28,7 +75,7 @@ const rank = card => ( card >>> 8 ) % 16;
 // And another for its suit
 const suit = card => ( card >>> 12 ) % 16;
 
-// Now some arrays & a corresponding function for suit/rank/card name strings
+// Now some arrays &amp; a corresponding function for suit/rank/card name strings
 // Note the irregular spacing to correspond to how we're representing suits as set bits [ 1, 2, 4, 8 ]
 const rankNames = [ "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Jack", "Queen", "King", "Ace" ];
 const suitNames = [ null, "Spades", "Hearts", null, "Diamonds", null, null, null, "Clubs" ];
@@ -44,22 +91,22 @@ const toSuit = (suit) => {
 const myCardToHash = (cardObject) => {
     const myCardRank = cardObject.card -2
     const myCardSuit = toSuit(cardObject.suit)
-    return ( (rankPrimes[myCardRank ]) | (myCardRank << 8) | (myCardSuit << 12) | ( ( 1 << myCardRank ) << 16 ) )
+    return ( (rankPrimes[myCardRank ]) | (myCardRank &lt;&lt; 8) | (myCardSuit &lt;&lt; 12) | ( ( 1 &lt;&lt; myCardRank ) &lt;&lt; 16 ) )
 }
 
 // This is a clever fast way to count bits in an integer courtesy of Sean Eron Anderson
 // https://graphics.stanford.edu/~seander/bithacks.html
 const countBits = bit => {
-    const counter = bit - ( ( bit >>> 1 ) & 3681400539 ) - ( ( bit >>> 2 ) & 1227133513 );
-    return ( ( counter + ( counter >>> 3 ) ) & 3340530119 ) % 63;
+    const counter = bit - ( ( bit >>> 1 ) &amp; 3681400539 ) - ( ( bit >>> 2 ) &amp; 1227133513 );
+    return ( ( counter + ( counter >>> 3 ) ) &amp; 3340530119 ) % 63;
 }
 
 // Now here's a function to compile a full deck
 // To shuffle, pass anything other than null/undefined/0/NaN/"" as a parameter
 const fullDeck = shuffled => {
     const result = [];
-    for ( let rank = 0; rank < 13; rank++ ) for ( let suit of [ 8, 4, 2, 1 ] )
-        result.push( ( rankPrimes[ rank ] ) | ( rank << 8 ) | ( suit << 12 ) | ( ( 1 << rank ) << 16 ) );
+    for ( let rank = 0; rank &lt; 13; rank++ ) for ( let suit of [ 8, 4, 2, 1 ] )
+        result.push( ( rankPrimes[ rank ] ) | ( rank &lt;&lt; 8 ) | ( suit &lt;&lt; 12 ) | ( ( 1 &lt;&lt; rank ) &lt;&lt; 16 ) );
     if ( !shuffled ) return result;
     for ( let i = 51; i > 0; i-- ) {
         const j = Math.floor( Math.random() * ( i + 1 ) );
@@ -72,8 +119,8 @@ const fullDeck = shuffled => {
 
 // When representing cards this way, bitwise-and-ing everything with 61,440 will result in a 0
 // if the hand is not a flush - this is the same as:
-// hand => hand[ 0 ] & hand[ 1 ] & hand[ 2 ] & hand[ 3 ] & hand[ 4 ] & 0xF000;
-const flush = hand => hand.reduce( ( total, card ) => total & card, 0xF000 );
+// hand => hand[ 0 ] &amp; hand[ 1 ] &amp; hand[ 2 ] &amp; hand[ 3 ] &amp; hand[ 4 ] &amp; 0xF000;
+const flush = hand => hand.reduce( ( total, card ) => total &amp; card, 0xF000 );
 
 // Here's where it gets interesting
 
@@ -87,11 +134,11 @@ const flushRank = flush => lookupTables.flushes[ flushBitPattern( flush ) ];
 // for straights
 const fiveUniqueCardsRank = hand => lookupTables.fiveUniqueCards[ flushBitPattern( hand ) ];
 
-// We've eliminated flushes, straights and high-card hands – let's move on to pairs & threes
+// We've eliminated flushes, straights and high-card hands – let's move on to pairs &amp; threes
 
 // Since we're representing each rank as a prime, the multiplicand of all rank primes together 
 // is guaranteed to be unique
-const primeMultiplicand = hand => hand.reduce( ( total, card ) => total * ( card & 0xFF ), 1 );
+const primeMultiplicand = hand => hand.reduce( ( total, card ) => total * ( card &amp; 0xFF ), 1 );
 
 // This multiplicand will be way too large for a lookup table so instead we'll speed things up
 // to log-n time with this perfect hash lookup function - courtesy of Paul Senzee
@@ -99,10 +146,10 @@ const primeMultiplicand = hand => hand.reduce( ( total, card ) => total * ( card
 const findFast = u => {
     u += 0xe91aaa35;
     u ^= u >>> 16;
-    u += u << 8;
+    u += u &lt;&lt; 8;
     u ^= u >>> 4;
-    let a  = ( u + ( u << 2 ) ) >>> 19;
-    return a ^ lookupTables.hashAdjust[ ( u >>> 8 ) & 0x1ff ];
+    let a  = ( u + ( u &lt;&lt; 2 ) ) >>> 19;
+    return a ^ lookupTables.hashAdjust[ ( u >>> 8 ) &amp; 0x1ff ];
 };
 
 
@@ -133,13 +180,13 @@ const handValue = hand => {
 // https://medium.com/nerd-for-tech/july-2-generating-k-combinations-with-recursion-in-javascript-71ef2b90b44b
 const possibleHands = ( deck, combinationLength ) => {
     let head, tail, result = [];
-    if ( combinationLength > deck.length || combinationLength < 1 ) { return []; }
+    if ( combinationLength > deck.length || combinationLength &lt; 1 ) { return []; }
     if ( combinationLength === deck.length ) { return [ deck ]; }
     if ( combinationLength === 1 ) { return deck.map( element => [ element ] ); }
-    for ( let i = 0; i < deck.length - combinationLength + 1; i++ ) {
+    for ( let i = 0; i &lt; deck.length - combinationLength + 1; i++ ) {
       head = deck.slice( i, i + 1 );
       tail = possibleHands( deck.slice( i + 1 ), combinationLength - 1 );
-      for ( let j = 0; j < tail.length; j++ ) { result.push( head.concat( tail[ j ] ) ); }
+      for ( let j = 0; j &lt; tail.length; j++ ) { result.push( head.concat( tail[ j ] ) ); }
     }
     return result;
 }
@@ -149,7 +196,7 @@ const possibleHands = ( deck, combinationLength ) => {
  * Returns the best hand out of the possible five-card combinations
  * that can be made out of a set of 5 - 7 cards.
  *
- * @param {Array.<object>} arrayOfCards The set of cards to check for the best hand. A set of 7
+ * @param {Array.&lt;object>} arrayOfCards The set of cards to check for the best hand. A set of 7
  *                                      cards will have 21 possible five-card combinations.
  * @return {object} 
  */
@@ -231,3 +278,28 @@ handValue(someCrds.map(card => card.hash))
 // console.log( drawFive.map( cardName ) );
 // //--> [ 'Nine of Clubs', 'Ten of Clubs', 'Six of Clubs', 'Nine of Diamonds', 'Five of Diamonds' ]
 //#endregion
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+    
+    
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.2</a> on Fri Mar 01 2024 11:40:26 GMT+0100 (Central European Standard Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/polyfill.js"></script>
+<script src="scripts/linenumber.js"></script>
+
+
+
+</body>
+</html>
