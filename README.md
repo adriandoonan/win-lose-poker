@@ -2,6 +2,8 @@
 
 Howdy partner, this is a poker simulator where you can play a couple of hands against some rootin-tootin-computer-controlled players and maybe win some space dollarpounds.
 
+You can find the game online at [win lose poker](https://adriandoonan.github.io/win-lose-poker/)
+
 ## How does it work?
 
 The game is a simple, class-based javascript app that runs in the browser. We keep track of the game state in a `Game` class, players are held in a `Player` class. Computer controlled players, `Playbots` extend the player class and add some functions to try and help them decide what to do next given a set of conditions.
@@ -12,7 +14,7 @@ A computer-controlled player who has lost their money will leave the game. When 
 
 ## What else can I say?
 
-Happy pokering
+For deployment you need parcel, however, you should generally be able to play locally using any old web server.
 
 ## burndown tasks
 
