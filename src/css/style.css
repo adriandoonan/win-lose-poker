@@ -267,3 +267,20 @@ playing-card {
 #player-stats {
   border: 1px #ccc solid;
 }
+
+#playbot-stats-container {
+  display: flex;
+  flex-flow: row wrap;
+  gap: 0.5rem;
+  justify-content: space-between;
+}
+
+playbot-stats {
+  border: 1px #cccccc solid;
+  margin-top: -1px;
+}
+
+ul.playbot-stats {
+  list-style-type: none ;
+  padding: 0 0.5rem;
+}

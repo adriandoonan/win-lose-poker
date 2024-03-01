@@ -108,7 +108,14 @@ const circularIncrement = (arrayLength,increment = 0,startIndex = 0) => {
    
 
   const clearElements = (...elements) => {
-    elements.forEach(element => element.innerText = '')
+    elements.forEach(element => {
+      try {
+        element.innerText = ''
+      } catch(e) {
+        console.error('error trying to clear',element,)
+        console.error(e)
+      }
+    })
   }
 
   const calculateChenFormula = (cardPair) => {

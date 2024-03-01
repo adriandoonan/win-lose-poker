@@ -32,11 +32,13 @@ class Game {
       this.playerCardsElement = document.getElementById('player-cards');
       this.gameScreen = document.getElementById('game-screen');
       this.gameOverScreen = document.getElementById('game-over-screen');
+      this.advanceButtonElement = document.getElementById('start-new-hand-button');
       this.winnerDialogElement = document.querySelector('dialog');
       this.winnerDialogText = document.querySelector('dialog p');
       this.playerPurseElement = document.getElementById('player-purse');
       this.playerFoldedElement = document.getElementById('player-folded');
       this.playerWinsElement = document.getElementById('player-wins');
+      this.playerThrownDownElement = document.getElementById('player-thrown-down');
       this.potElement = document.getElementById('total-pot');
       this.goToGameOverScreenTimer = null;
     }
@@ -70,18 +72,24 @@ class Game {
     }
 
     advanceCurrentHand() {
-
+        
         if (this.round >= this.hands.length ) {
           console.log('hey, this round is over');
+          this.startNewHand()
           return this
         }
         let currentHand = this.hands[this.round];
+       
         let playersRemaining = this.hands[this.round].players.filter(player => !player.folded).length
         console.log('\n\nstarting next round after',currentHand.stage,'with',playersRemaining,'players remaining')
       switch (currentHand.stage) {
+        case 'zero': {
+          currentHand.anteUp()
+          console.log('Anted up, let\'s play some cards');
+          break
+        }
         case 'ante': {
           //console.log('round 0',);
-          currentHand.anteUp()
           currentHand.dealPreFlop()
           console.log('now we would start a betting round after the',currentHand.stage);
           currentHand.makeBettingRound()
@@ -142,7 +150,7 @@ class Game {
           }
         }
       }
-
+      //this.advanceButtonElement.innerText = currentHand.stage === 'zero' ? 'Ante up' : `Deal ${currentHand.stage}`
     }
 
     endCurrentHand(winnerIndex) {
@@ -154,11 +162,11 @@ class Game {
       
       console.log(message);
       this.winnerDialogText.innerHTML = `<strong>${this.hands[this.round].players[winnerIndex].name} has won a pot of ${this.hands[this.round].pot} with a ${findBestHand(this.hands[this.round].players[winnerIndex].cards.concat(this.hands[this.round].communityCards)).description}</strong>`
-      
+      this.hands[this.round].players[winnerIndex].acceptPot(this.hands[this.round].pot)
       this.winnerDialogElement.showModal()
       addToElement(this.eventElement,message,'p',true)
       this.players.forEach(player => player.cards.splice(0))
-      clearElements(this.playerCardsElement,this.communityCardsElement,this.potElement)
+      clearElements(this.playerCardsElement,this.communityCardsElement,this.playerThrownDownElement)
       this.players[winnerIndex].purse += this.hands[this.round].pot;
       this.playerPurseElement.innerText = this.players[0].purse;
       this.players[winnerIndex].wins++
