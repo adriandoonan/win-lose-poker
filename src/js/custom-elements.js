@@ -153,7 +153,7 @@ export class PlayingCard extends HTMLElement {
 
 export class PlaybotStats extends HTMLElement {
 
-    static observedAttributes = ['playbot-name','seat-number','purse', 'wins','target','thrown-down'];
+    static observedAttributes = ['playbot-name','seat-number','purse', 'wins','target','thrown-down','folded'];
 
     constructor(playbotName,seatNumber,purse,wins,targetElement){
         super();
@@ -184,7 +184,7 @@ export class PlaybotStats extends HTMLElement {
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
-        //console.log(`Attribute ${name} has changed. from`,oldValue,'to',newValue);
+        console.log(`Attribute ${name} has changed. from`,oldValue,'to',newValue,'for',this.name);
         if (name === 'playbot-name') {
           this.playbotName = newValue
           //console.log(this.template)
@@ -192,6 +192,7 @@ export class PlaybotStats extends HTMLElement {
           this.templateContent.querySelector('.playbot-name').innerText = newValue
         }
         if (name === 'purse') {
+
             this.querySelector('.playbot-purse').innerText = newValue
             
         }
@@ -200,7 +201,15 @@ export class PlaybotStats extends HTMLElement {
             
         }
         if (name === 'folded') {
+          console.log(`Attribute ${name} has changed. from`,oldValue,'to',newValue);
+  
           this.querySelector('.playbot-folded').innerText = newValue
+          if (newValue === 'true') {
+            this.style.backgroundColor = 'lightgray'
+          } else {
+            this.style.backgroundColor = 'white'
+          }
+          
           
       }
         if (name === 'thrown-down') {

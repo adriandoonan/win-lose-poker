@@ -150,11 +150,18 @@ class Hand {
         this.currentHighestBet = 0;
         this.blind = blind;
         this.dealerIndex = circularIncrement(this.players.length,round);
-        this.stage = 'ante';
+        this.stage = 'zero';
         this.potElement = document.getElementById('total-pot');
+        this.advanceButtonElement = document.getElementById('start-new-hand-button');
+        this.playbotElements = document.querySelectorAll('playbot-stats');
+
+
     }
     
-
+    updatePlaybotFoldState() {
+        //console.log(this.playbotElements)
+        this.playbotElements.forEach(element => element.setAttribute('folded','false'))
+    };
     
     addPlayers(players) {
         const allPlayers = [...this.players,...players]
@@ -181,6 +188,7 @@ class Hand {
     }
 
     anteUp() {
+        this.updatePlaybotFoldState()
         const bigBlind = this.blind * 2
         const smallBlind = this.blind
         const numberOfPlayers = this.players.length
@@ -211,7 +219,7 @@ class Hand {
             this.pot += smallBlind
             this.potElement.innerText = this.pot
         }
-    
+        this.stage = 'ante'
         return this
     }
 
@@ -291,37 +299,33 @@ class Hand {
         let totalMoves = 0;
         let currentRoundMoves = 0;
         this.currentHighestBet = this.players.reduce((acc,cur) => cur.currentBet > acc ? cur.currentBet : acc,0)
-        console.log('round fed to makebettinground',this.stage);
+        //console.log('round fed to makebettinground',this.stage);
         for (const player of this.players) {
-            //console.log(player.constructor, player.constructor === Playbot);
+            if (player.folded) {
+                console.log('player',player.name,'has alredy folded, skipping them in the betting round');
+                return this
+            }
             if (player.constructor === Playbot) {
+
                 this.currentHighestBet = this.players.reduce((acc,cur) => cur.currentBet > acc ? cur.currentBet : acc,0)
                 console.log('current highest bet is',this.currentHighestBet)
                 const decision = await player.doSomethingAsync(player.decideBet(this.communityCards, this.stage))
-    
-                //if (this.stage === 'preFlop') {
-                    if (this.currentHighestBet > player.currentBet) {
-                        this.pot += player.placeBet(this.currentHighestBet - player.currentBet,'call')
-                    }
-                //} else {
-                //    this.pot += player.placeBet(20,'wild speculation')
-    
-                //
-                //console.log('logging decision',decision)
+                console.log('decision from,', player.name, decision)
+                player.autobet(this.currentHighestBet)
+                if (this.currentHighestBet >= player.currentBet) {
+                    //player.autobet()
+                    this.pot += player.placeBet(player.autobet(this.currentHighestBet),'auto')
+                }
+
             } else {
                 console.log('found the human player');
                 if (!player.folded) {
-                    async function randomWait() {
-                        const timeToWait = Math.floor(Math.random() * 1000)
-                        await new Promise((resolve) => setTimeout(resolve, timeToWait))
-                        return timeToWait
-                    }
     
                     async function handleForm() {
                         let userInput = '';
-                        console.log('Before getting the user input: ', userInput);
+                        //console.log('Before getting the user input: ', userInput);
                         userInput = await getUserInput();
-                        console.log('After getting user input: ', userInput);
+                        //console.log('After getting user input: ', userInput);
                         return Number(userInput)
                       };
                       
@@ -329,11 +333,11 @@ class Hand {
                       function getUserInput() {
                         return new Promise((resolve, reject) => {
                           document.getElementById('decision-section').addEventListener('click',(e)=>{
-                            console.log('something was clicked in the decision section',e);
-                            console.log('this was in the input',document.getElementById('bet-amount').value);
-                            console.log('this was the button',e.target.getAttribute('id'))
-                            console.log('can we see the game data?', minimumBetValue)//this.currentHighestBet - this.players[0].currentBet);
-                            console.log('more event data',e);
+                            // console.log('something was clicked in the decision section',e);
+                            // console.log('this was in the input',document.getElementById('bet-amount').value);
+                            // console.log('this was the button',e.target.getAttribute('id'))
+                            // console.log('can we see the game data?', minimumBetValue)//this.currentHighestBet - this.players[0].currentBet);
+                            // console.log('more event data',e);
                             if (e.target.getAttribute('id') === 'bet-amount') {
                                 e.target.setAttribute('min',minimumBetValue)
                             } 
@@ -366,50 +370,6 @@ class Hand {
             this.potElement.innerText = this.pot;
         }
     
-        //#region old do while
-        // do {
-        //     totalMoves += currentRoundMoves;
-        //     currentRoundMoves = 0;
-        //     console.log('\nmaking some moves in round',bettingRound,'of the',this.stage);
-        //     // as a player makes a move that is not a check the 
-        //     // current moves increases by one
-        //     // once every player has had the option to make a move
-        //     // and the move count does not increase in that round
-        //     // we can end the round
-        //     // we can move the number of moves from current round
-        //     // to moves variable and reset current round to 0 at
-        //     // start of round
-            
-        //     this.players.forEach(player => {
-
-        //         if (!player.folded && player.currentBet < currentHighestBet) {
-        //             console.log(player.name,' is chumpin->',player.currentBet,'highest',currentHighestBet,);
-        //             if ( Math.random() > 0.4 ) {
-        //                 const currentDeficit = currentHighestBet - player.currentBet
-        //                 const bet = Math.random() > 0.4 ? currentDeficit : 4
-                        
-        //                 bet === currentDeficit ? player.placeBet(bet,'call') : player.placeBet(4)
-                        
-        //                 this.pot += bet
-        //                 currentRoundMoves++
-        //                 if (player.currentBet > currentHighestBet) {
-        //                     currentHighestBet = player.currentBet
-        //                 } 
-        //             } else  {
-        //                 player.fold()
-        //             }
-        //         }
-        //     })
-        //     console.log('round',bettingRound,'currentRoundMoves',currentRoundMoves,'totalMoves',totalMoves);
-        //     bettingRound++
-        // }
-        // while (
-        //     currentRoundMoves !== 0 && bettingRound < 5
-        // )
-        //#endregion
-
-
-        //console.log(playersArray);
 
         console.log('round',bettingRound,'currentRoundMoves',currentRoundMoves,'totalMoves',totalMoves);
         
@@ -448,170 +408,14 @@ class Hand {
         if (winners.length === 1) {
             console.log('going to award the winner a pot of',this.pot)
         }
+        console.log('winner object',winners[0])//.acceptPot(Math.round(this.pot / winners.length))_
+        
         this.currentHighestBet = 0;
+        this.advanceButtonElement.innerText = 'Deal new hand'
         return winners
     }
     
 }
 
-
-// const newt = new Hand()
-
-// newt.players
-
-// const findBestHand = (cardsInHand = [],communityCards = []) => {
-//     const allCards = cardsInHand.concat(communityCards).sort((a,b) => b.card - a.card)
-//     if (!allCards.length) {
-//         console.log('no cards to sort through');
-//         return {highCard: {card:null,suit:null}, allCards}
-//     }
-//     else if (allCards.length <= 5) {
-       
-//         return {highCard: allCards[0], allCards}
-//     }
-
-//     return {highCard: allCards[0], allCards}
-// }
-
-// const communityCardsTestEmpty = []
-// const communityCardsTest3 = [{card: 2,suit:'diamonds'},{card: 4,suit:'spades'},{card: 10,suit:'hearts'}]
-// const communityCardsTest4 = [{card: 2,suit:'diamonds'},{card: 4,suit:'spades'},{card: 3,suit:'hearts'},{card: 11,suit:'clubs'}]
-// const communityCardsTest5 = [{card: 2,suit:'diamonds'},{card: 4,suit:'spades'},{card: 3,suit:'hearts'},{card: 11,suit:'clubs'},{card: 12,suit:'spades'}]
-// const cardsArrayEmpty = []
-// const cardsArray2 = [{card: 2,suit:'hearts'},{card:7,suit:'clubs'}]
-
-// console.log(findBestHand(cardsArrayEmpty,communityCardsTestEmpty).highCard.card);
-// console.log(findBestHand(cardsArray2,communityCardsTestEmpty).highCard.card);
-// console.log(findBestHand(cardsArray2,communityCardsTest3).highCard.card);
-// console.log(findBestHand(cardsArray2,communityCardsTest4).highCard.card);
-// console.log(findBestHand(cardsArray2,communityCardsTest5).highCard.card);
-
-
-
-// const decideWinner = (playersArray,communityCards) => {
-//     const playersStillInIt = playersArray.filter(player => !player.folded)
-//     if (playersStillInIt.length === 1) {
-//         return playersArray.findIndex(player => !player.folded)
-//     }
-//     let winners = [];
-//     let bestHand = 0;
-
-
-
-//     for (let i = 0; i < playersStillInIt.length; i++) {
-//         console.log(playersStillInIt[i].name,'foo')
-//         const playerBestHand = findBestHand(playersStillInIt[i].cards.concat(communityCards)).highCard.card
-//         if (playerBestHand > bestHand) {
-//             bestHand = playerBestHand
-//             winners = [{name:playersStillInIt[i].name, index: playersArray.findIndex(player => player.name === playersStillInIt[i].name)}]
-//         }
-//         else if (playerBestHand === bestHand) {
-//             winners.push({name:playersStillInIt[i].name, index: playersArray.findIndex(player => player.name === playersStillInIt[i].name)})
-//         }
-//     }
-//     return winners
-// }
-
-const playersTestArray = [
-    {
-        name:'jijer',
-        folded: false,
-        cards:[
-            {
-                card: 2,suit:'hearts'
-            },{
-                card:7,suit:'clubs'
-            }
-        ]
-    },{
-        name:'philpot',
-        folded: false,
-        cards:[
-            {
-                card: 8,suit:'hearts'
-            },{
-                card:7,suit:'clubs'
-            }
-        ]
-    },{
-        name:'arthur',
-        folded: true,
-        cards:[
-            {
-                card: 12,suit:'hearts'
-            },{
-                card:7,suit:'clubs'
-            }
-        ]
-    }
-]
-
-
-//decideWinner(playersTestArray,[])
-
-
-//#region testing
-// let playersArray = [
-//     new Player('foo',100),
-//     new Player('bar',100),
-//     new Player('baz',100),
-//     new Player('jij',100),
-//   ]
-
-  //const newHand = new Hand(playersArray);
-//   console.log(newHand.deck)
-//   console.log(newHand)
-
-//   console.log(newHand.deck);
-//   //newHand.addPlayers(playersArray)
-//   console.log(newHand)
-
-
-//   newHand.dealPreFlop()
-//   console.log(newHand,newHand.deck.cards.length)
-//   newHand.dealFlop()
-//   console.log(newHand,newHand.deck.cards.length)
-//   newHand.dealTurn()
-//   console.log(newHand,newHand.deck.cards.length)
-//   newHand.dealRiver()
-//   console.log(newHand,newHand.deck.cards.length)
-
-//   console.log(JSON.stringify(newHand,null,4));
-
-//   console.log(newHand.deck)
-//   console.log(newHand.newDeck())
-//   console.log(newHand.deck)
-
-//   console.log(newHand.players)
-//   console.log(newHand.getPlayers())
-//   console.log(newHand.addPlayers(playersArray))
-//   console.log(newHand.players)
-// const arr = [
-//     {seatNumber: 1},
-//     {seatNumber: 4},
-//     {seatNumber: 6},
-//     {seatNumber: null},
-//     {seatNumber: null},
-//     {seatNumber: null},
-
-// ]
-
-// const fillSeats = (players) => {
-//     return players.map((player,_,arr) => {
-//         let takenSeats = arr.map(player => player.seatNumber)
-//         let firstFreeSeat = Array.from(' '.repeat(arr.length)).map((_,index) => {if (!takenSeats.includes(index +1)) return index + 1}).filter(elem => elem)[0]
-//         console.log(firstFreeSeat);
-//         if (!player.seatNumber) { 
-//             console.log('empt');
-//             player.seatNumber = firstFreeSeat
-//         }
-//         return player
-//     }).sort((a,b) => a.seatNumber < b.seatNumber ? -1 : 1)
-// }
-
-//console.log(fillSeats(arr))
-
-
-//#endregion
 
 export default Hand

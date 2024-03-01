@@ -40,3 +40,7 @@ Happy pokering
 - [ ] playbot stats elements should get eliminated after the restart button is clicked in the game over screen and on clicking restart in the main game screen
 - [ ] total pot should be cleared on game over
 - [ ] the logic for updating the community cards is not in the hand so can't be used when auto-progressing the game on use player folding and the community cards don't update
+
+## new todo
+
+- [ ] update playbot purse when they win, encapsulate the whole winning into a method on the player, maybe a method on the hand to declare winner that calls this

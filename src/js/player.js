@@ -58,25 +58,25 @@ class Player {
     findBestHand(communityCards = []) {
         
         
-        console.log('getting besthand for',this.name);
+        //console.log('getting besthand for',this.name);
         this.chenScore =  calculateChenFormula(this.cards)
-        console.log(`${this.name} has a chen score of`,this.chenScore);
+        //console.log(`${this.name} has a chen score of`,this.chenScore);
 
         if (communityCards.length) {
-            console.log('found community cards of',communityCards,'for',this.name);
+            //console.log('found community cards of',communityCards,'for',this.name);
             
             this.bestHand = findBestHand(this.cards.concat(communityCards))
-            console.log(`${this.name} has a best hand of`,this.bestHand)
+            //console.log(`${this.name} has a best hand of`,this.bestHand)
 
         }
 
         if (!this.bot) {
             if (this.chenScoreElement) {
-                console.log(this.chenScoreElement);
+                //console.log(this.chenScoreElement);
                 replaceInnerText(this.chenScoreElement,this.chenScore)
             }
             if (Object.keys(this.bestHandElement).length) {
-                console.log(this.bestHandElement);
+                //console.log(this.bestHandElement);
                 replaceInnerText(this.bestHandElement,JSON.stringify(this.bestHand,null,2))
             }
         }
@@ -96,12 +96,12 @@ class Player {
         if (this.folded) return
 
         if (this.cards.length) {
-            console.log(this.cards);
+            //console.log(this.cards);
             this.findBestHand(communityCards)
         }
 
         async function getBetAmount() {
-            console.log('this is in the function for',round)
+            //console.log('this is in the function for',round)
             let amount = 0;
             if (round) {
                 let waitForBet = setTimeout(()=>{
@@ -158,6 +158,10 @@ class Player {
         this.folded = true
         this.playerFoldedElement.innerText = 'folded, out of the hand'
         return this
+    }
+
+    acceptPot(amount) {
+        console.log('pot has been awarded to user player',this.name);
     }
 }
 
@@ -218,8 +222,13 @@ class Playbot extends Player {
     }
 
     placeBet(amount,type) {
+        if (amount < 0) {
+            this.fold()
+            return amount
+        }
         const message = `${this.name} is placing a ${type || 'bet'} of ${amount}`
         console.log(message)
+        
         addToElement(this.eventsElement,message,'p',true)
         
         this.purse -= amount
@@ -229,6 +238,28 @@ class Playbot extends Player {
         this.statsElement.setAttribute('thrown-down',this.currentBet)
         
         return amount
+    }
+    autobet(currentHighestBet) {
+        console.log('got a request for an autobet from',this.name,'current highest is',currentHighestBet);
+        console.log(this.name,'would be working with a chen score of',this.chenScore, 'and best hand of',this.bestHand);
+        if (this.chenScore < 3) {
+            
+            console.log(this.name,'folded due to low chen score');
+            return -1
+        }
+        if (this.bestHand?.rank < 6000) {
+            console.log(this.name,'thinks they have a good hand and would call with',currentHighestBet - this.currentBet );
+            return currentHighestBet - this.currentBet 
+        }
+        console.log(this.name,'thinks they can go wild and will throw down 20');
+        return 20
+        
+    }
+
+    acceptPot(amount) {
+        console.log(amount,'pot has been awarded to playbot',this.name);
+        this.purse += amount;
+        this.statsElement.setAttribute('purse',this.purse)
     }
 
 }
