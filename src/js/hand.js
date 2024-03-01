@@ -117,6 +117,8 @@ class Hand {
             const freeSeats = Array.from(' '.repeat(players.length)).map((_,index) => {if (!takenSeats.includes(index +1)) return index + 1}).filter(elem => elem)
             return players.map((player) => {
                 player.folded = false;
+                player.thrownDown = 0;
+                player.currentBet = 0;
                 if (!player.seatNumber) { 
                     player.seatNumber = freeSeats.shift()
                 }
@@ -144,7 +146,10 @@ class Hand {
      */
     updatePlaybotFoldState() {
         //console.log(this.playbotElements)
-        this.playbotElements.forEach(element => element.setAttribute('folded','false'))
+        this.playbotElements.forEach(element => {
+            element.setAttribute('folded','false');
+            element.setAttribute('thrown-down','0')
+        })
     };
     
     /**
