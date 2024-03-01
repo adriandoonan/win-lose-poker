@@ -3,6 +3,7 @@
         "include": ["src/js", "README.md"]
     },
      "templates": {
+      "cleverLinks": true,
       "default": {
         "outputSourceFiles": true
       }

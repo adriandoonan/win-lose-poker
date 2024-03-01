@@ -29,7 +29,7 @@
 <nav >
     
     
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Deck.html">Deck</a><ul class='methods'><li data-type='method'><a href="Deck.html#acesHigh">acesHigh</a></li><li data-type='method'><a href="Deck.html#acesLow">acesLow</a></li><li data-type='method'><a href="Deck.html#burn">burn</a></li><li data-type='method'><a href="Deck.html#deal">deal</a></li><li data-type='method'><a href="Deck.html#shuffle">shuffle</a></li></ul></li><li><a href="Game.html">Game</a><ul class='methods'><li data-type='method'><a href="Game.html#addPlayer">addPlayer</a></li></ul></li><li><a href="Hand.html">Hand</a></li><li><a href="Player.html">Player</a><ul class='methods'><li data-type='method'><a href="Player.html#decideBet">decideBet</a></li><li data-type='method'><a href="Player.html#fold">fold</a></li><li data-type='method'><a href="Player.html#placeBet">placeBet</a></li></ul></li></ul><h3>Global</h3><ul><li><a href="global.html#circularIncrement">circularIncrement</a></li><li><a href="global.html#knuthShuffle">knuthShuffle</a></li><li><a href="global.html#pipe">pipe</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Deck.html">Deck</a><ul class='methods'><li data-type='method'><a href="Deck.html#acesHigh">acesHigh</a></li><li data-type='method'><a href="Deck.html#acesLow">acesLow</a></li><li data-type='method'><a href="Deck.html#burn">burn</a></li><li data-type='method'><a href="Deck.html#deal">deal</a></li><li data-type='method'><a href="Deck.html#shuffle">shuffle</a></li></ul></li><li><a href="Game.html">Game</a><ul class='methods'><li data-type='method'><a href="Game.html#addPlayer">addPlayer</a></li></ul></li><li><a href="Hand.html">Hand</a><ul class='methods'><li data-type='method'><a href="Hand.html#acesHigh">acesHigh</a></li><li data-type='method'><a href="Hand.html#acesLow">acesLow</a></li><li data-type='method'><a href="Hand.html#addPlayers">addPlayers</a></li><li data-type='method'><a href="Hand.html#anteUp">anteUp</a></li><li data-type='method'><a href="Hand.html#dealFlop">dealFlop</a></li><li data-type='method'><a href="Hand.html#dealPreFlop">dealPreFlop</a></li><li data-type='method'><a href="Hand.html#dealRiver">dealRiver</a></li><li data-type='method'><a href="Hand.html#dealTurn">dealTurn</a></li><li data-type='method'><a href="Hand.html#decideWinner">decideWinner</a></li><li data-type='method'><a href="Hand.html#getPlayers">getPlayers</a></li><li data-type='method'><a href="Hand.html#makeBettingRound">makeBettingRound</a></li><li data-type='method'><a href="Hand.html#updatePlaybotFoldState">updatePlaybotFoldState</a></li></ul></li><li><a href="Playbot.html">Playbot</a><ul class='methods'><li data-type='method'><a href="Playbot.html#acceptPot">acceptPot</a></li><li data-type='method'><a href="Playbot.html#autobet">autobet</a></li><li data-type='method'><a href="Playbot.html#decideBet">decideBet</a></li><li data-type='method'><a href="Playbot.html#doSomethingAsync">doSomethingAsync</a></li><li data-type='method'><a href="Playbot.html#findBestHand">findBestHand</a></li><li data-type='method'><a href="Playbot.html#fold">fold</a></li><li data-type='method'><a href="Playbot.html#placeBet">placeBet</a></li><li data-type='method'><a href="Playbot.html#sayHello">sayHello</a></li></ul></li><li><a href="PlaybotStats.html">PlaybotStats</a></li><li><a href="Player.html">Player</a><ul class='methods'><li data-type='method'><a href="Player.html#acceptPot">acceptPot</a></li><li data-type='method'><a href="Player.html#decideBet">decideBet</a></li><li data-type='method'><a href="Player.html#doSomethingAsync">doSomethingAsync</a></li><li data-type='method'><a href="Player.html#findBestHand">findBestHand</a></li><li data-type='method'><a href="Player.html#fold">fold</a></li><li data-type='method'><a href="Player.html#placeBet">placeBet</a></li><li data-type='method'><a href="Player.html#sayHello">sayHello</a></li></ul></li><li><a href="SpinningCard.html">SpinningCard</a></li></ul><h3>Global</h3><ul><li><a href="global.html#addToElement">addToElement</a></li><li><a href="global.html#calculateChenFormula">calculateChenFormula</a></li><li><a href="global.html#circularIncrement">circularIncrement</a></li><li><a href="global.html#clearElements">clearElements</a></li><li><a href="global.html#findBestHand">findBestHand</a></li><li><a href="global.html#knuthShuffle">knuthShuffle</a></li><li><a href="global.html#pipe">pipe</a></li><li><a href="global.html#randomWait">randomWait</a></li><li><a href="global.html#removeElements">removeElements</a></li><li><a href="global.html#replaceInnerText">replaceInnerText</a></li></ul>
     
 </nav>
 
@@ -124,6 +124,432 @@
 
     
         <h3 class="subsection-title">Methods</h3>
+
+        
+            
+
+    
+
+    <h4 class="name" id="addToElement"><span class="type-signature"></span>addToElement<span class="signature">(htmlElement, content, tag<span class="signature-attributes">opt</span>, prepend)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li>Will add a supplied string as a given HTML element
+to the start or end of a container element</li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="helperFunctions.js.html">helperFunctions.js</a>, <a href="helperFunctions.js.html#line97">line 97</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5 class="h5-parameters">Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>htmlElement</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">HTMLElement</span>
+
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">The target element</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>content</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">The content you want to add</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>tag</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    <code>'p'</code>
+                
+                </td>
+            
+
+            <td class="description last">The tag of the element with which to wrap the content</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>prepend</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">If set the true, the element will be added to the start
+                                   of the target element rather than the end.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="calculateChenFormula"><span class="type-signature"></span>calculateChenFormula<span class="signature">(cardPair)</span><span class="type-signature"> &rarr; {integer}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li>Calculates a score based on the two cards provided.
+Details on the chen score can be found, for example,
+at <a href="https://www.thepokerbank.com/strategy/basic/starting-hand-selection/chen-formula/">the poker bank</a>
+website.</li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="helperFunctions.js.html">helperFunctions.js</a>, <a href="helperFunctions.js.html#line153">line 153</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5 class="h5-parameters">Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>cardPair</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;Object></span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">An array containing two card objects</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5 class="h5-returns">Returns:</h5>
+
+        
+<div class="param-desc">
+    The caculated Chen score
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">integer</span>
+
+
+
+    </dd>
+</dl>
+
+    
+
+
 
         
             
@@ -379,6 +805,309 @@ circularIncrement(5,-3,4) // 1</code></pre>
     <dd>
         
 <span class="param-type">integer</span>
+
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="clearElements"><span class="type-signature"></span>clearElements<span class="signature">(&hellip;elements)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li>Clears the innerText of the provided elements</li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="helperFunctions.js.html">helperFunctions.js</a>, <a href="helperFunctions.js.html#line133">line 133</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5 class="h5-parameters">Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>elements</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">HTMLElement</span>
+
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                    &lt;repeatable><br>
+                
+                </td>
+            
+
+            
+
+            <td class="description last">Comma,separated list of elements</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="findBestHand"><span class="type-signature"></span>findBestHand<span class="signature">(arrayOfCards)</span><span class="type-signature"> &rarr; {object}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li>Returns the best hand out of the possible five-card combinations
+that can be made out of a set of 5 - 7 cards.</li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="cactus.js.html">cactus.js</a>, <a href="cactus.js.html#line156">line 156</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5 class="h5-parameters">Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>arrayOfCards</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;object></span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The set of cards to check for the best hand. A set of 7
+                                     cards will have 21 possible five-card combinations.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5 class="h5-returns">Returns:</h5>
+
+        
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">object</span>
 
 
 
@@ -718,6 +1447,421 @@ return values of preceding functions.</li></ul></dd>
 
 
         
+            
+
+    
+
+    <h4 class="name" id="randomWait"><span class="type-signature type-signature-async">(async) </span>randomWait<span class="signature">()</span><span class="type-signature"> &rarr; {integer}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li>A function that just waits a random amount of time before returning</li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="player.js.html">player.js</a>, <a href="player.js.html#line9">line 9</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5 class="h5-returns">Returns:</h5>
+
+        
+<div class="param-desc">
+    The amount of time the function waited for
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">integer</span>
+
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="removeElements"><span class="type-signature"></span>removeElements<span class="signature">(&hellip;elements)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li>Removes the given HTMLElements one after the other</li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="helperFunctions.js.html">helperFunctions.js</a>, <a href="helperFunctions.js.html#line124">line 124</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5 class="h5-parameters">Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>elements</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">HTMLElement</span>
+
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                    &lt;repeatable><br>
+                
+                </td>
+            
+
+            
+
+            <td class="description last">Comma,separated list of elements</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="replaceInnerText"><span class="type-signature"></span>replaceInnerText<span class="signature">(htmlElement, content)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li>Replaced the innerText of the given element
+with the provided string</li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="helperFunctions.js.html">helperFunctions.js</a>, <a href="helperFunctions.js.html#line115">line 115</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5 class="h5-parameters">Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>htmlElement</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">HTMLElement</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>content</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
     
 
     
@@ -737,7 +1881,7 @@ return values of preceding functions.</li></ul></dd>
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.2</a> on Fri Mar 01 2024 09:36:01 GMT+0100 (Central European Standard Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.2</a> on Fri Mar 01 2024 11:40:26 GMT+0100 (Central European Standard Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
 </footer>
 
 <script>prettyPrint();</script>

@@ -3,7 +3,7 @@
 <head>
     
     <meta charset="utf-8">
-    <title>Home - Documentation</title>
+    <title>SpinningCard - Documentation</title>
     
     
     <script src="scripts/prettify/prettify.js"></script>
@@ -35,17 +35,85 @@
 
 <div id="main">
     
+    <h1 class="page-title">SpinningCard</h1>
+    
 
     
 
 
 
+
+<section>
+
+<header>
+    
+        <h2>
+        
+            SpinningCard
+        
+        </h2>
+        
+    
+</header>
+
+<article>
+    
+        <div class="container-overview">
+        
+            
+
+    
+
+    <h4 class="name" id="SpinningCard"><span class="type-signature"></span>new SpinningCard<span class="signature">()</span><span class="type-signature"></span></h4>
+
     
 
 
-    <section class="package">
-        <h3> </h3>		
-    </section>
+
+
+<dl class="details">
+    
+    <dt class="tag-description">Description:</dt>
+    <dd class="tag-description"><ul class="dummy"><li>Custom element for a spinning, self-destructing card</li></ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="custom-elements.js.html">custom-elements.js</a>, <a href="custom-elements.js.html#line2">line 2</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
 
 
 
@@ -53,54 +121,71 @@
 
 
 
+
+
+
+
+    <h5 class="h5-examples">Example</h5>
+    
+    <pre class="prettyprint"><code>&lt;spinning-card spin="69" style="background-image: url(../hearts-9.png)">&lt;/spinning-card></code></pre>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+        </div>
+    
+
+    
+        <h3 class="subsection-title">Extends</h3>
+
+        
+
+
+    <ul>
+        <li>HTMLElement</li>
+    </ul>
 
 
     
 
+    
 
+    
+    
+    
 
-    <section class="readme usertext">
-        <article><h1>win-lose-poker</h1>
-<p>Howdy partner, this is a poker simulator where you can play a couple of hands against some rootin-tootin-computer-controlled players and maybe win some space dollarpounds.</p>
-<h2>How does it work?</h2>
-<p>The game is a simple, class-based javascript app that runs in the browser. We keep track of the game state in a <code>Game</code> class, players are held in a <code>Player</code> class. Computer controlled players, <code>Playbots</code> extend the player class and add some functions to try and help them decide what to do next given a set of conditions.</p>
-<p>During the game we try and calculate each player's probability of winning the hand. A <code>Playbot</code> will know their own probability, but, based on their temperament, one <code>Playbot</code> may interpret the probability differently from another <code>Playbot</code> in the same hand. This should hopefully make the game more interesting. If you, as a player are not so knowledgeable about the game of poker, you can enable 'training mode', in which your own probability of winning will be shown to you on the game screen.</p>
-<p>A computer-controlled player who has lost their money will leave the game. When you have lost your money, your game will be over, however, there may be chance to win it back ...</p>
-<h2>What else can I say?</h2>
-<p>Happy pokering</p>
-<h2>burndown tasks</h2>
-<ul>
-<li>[x] add logic for declaring a winner based on their hand and not just because they are the last player standing (but also declare winner if only one player)</li>
-<li>[x] add makeBet function to go through all the steps of deciding on and placing a bet async</li>
-<li>[x] make betting round loop async</li>
-<li>[x] add a function calculate chen formula from the starting two cards</li>
-<li>[x] allow players to know their chen formula result to help making a decision on whether to bet and how much</li>
-<li>[x] at the end who ever has the best hand wins the pot,</li>
-<li>[ ] handle split pot</li>
-<li>[ ] when the playbots run out of money, they retire</li>
-<li>[ ] if no playbots are left the player wins</li>
-<li>[ ] encapsulate the whole winning into a method on the player, maybe a method on the hand to declare winner that calls this</li>
-</ul>
-<h2>MVP</h2>
-<ul>
-<li>[x] can start a game</li>
-<li>[x] can move through the different rounds</li>
-<li>[x] betting always starts at same person</li>
-<li>[x] players and bots can make bets</li>
-<li>[x] players and playbots can fold</li>
-<li>[x] when the user player runs out of money the game is over</li>
-<li>[x] write a revel best hand function for a player that just returns the best hand</li>
-</ul>
-<h2>bugs</h2>
-<ul>
-<li>[x] playbot stats elements should get eliminated after the restart button is clicked in the game over screen and on clicking restart in the main game screen</li>
-<li>[ ] total pot should be cleared on game over</li>
-<li>[ ] the logic for updating the community cards is not in the hand so can't be used when auto-progressing the game on use player folding and the community cards don't update</li>
-<li>[x]  playbot purse not updated when they win,</li>
-</ul></article>
-    </section>
+     
 
+    
 
+    
+
+    
+
+    
+
+    
+</article>
+
+</section>
 
 
 
